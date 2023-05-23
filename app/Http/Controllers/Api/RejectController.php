@@ -11,7 +11,7 @@ use App\Models\ReceiptProduct;
 use App\Models\Reject;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
-
+//Списание
 class RejectController extends Controller
 {
     public function index(RejectIndexRequest $request)

@@ -28,7 +28,6 @@ class RejectStoreRequest extends FormRequest
 
             'products' => 'required|array|min:1',
             'products.*.product_id' => 'required|exists:products,id',
-            'products.*.reason_refund_id' => 'required|exists:reason_refunds,id',
             'products.*.comment' => 'string',
             'products.*.count' => 'required',
         ];

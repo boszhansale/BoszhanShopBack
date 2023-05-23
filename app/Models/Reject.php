@@ -48,10 +48,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Reject whereTotalPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Reject whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Reject whereUserId($value)
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\RejectProduct> $products
  * @property-read \App\Models\Store|null $store
  * @mixin \Eloquent
  */
+
+//Списание
 class Reject extends Model
 {
     use HasFactory;

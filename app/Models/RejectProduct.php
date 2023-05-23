@@ -39,6 +39,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|RejectProduct whereUpdatedAt($value)
  * @mixin \Eloquent
  */
+//Списание
 class RejectProduct extends Model
 {
     use HasFactory;
@@ -53,7 +54,6 @@ class RejectProduct extends Model
         'created_at',
         'deleted_at',
         'product_id',
-        'reason_refund_id',
         'reject_id',
     ];
 
@@ -65,9 +65,5 @@ class RejectProduct extends Model
     public function refund(): BelongsTo
     {
         return $this->belongsTo(Refund::class);
-    }
-    public function reasonRefund(): BelongsTo
-    {
-        return $this->belongsTo(ReasonRefund::class);
     }
 }

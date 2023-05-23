@@ -24,7 +24,6 @@ return new class extends Migration
             $table->decimal('all_price',20,2);
             $table->text('comment')->nullable();
 
-            $table->foreignId('reason_refund_id')->nullable()->constrained('reason_refunds')->cascadeOnDelete();
             $table->softDeletes();
             $table->timestamps();
         });

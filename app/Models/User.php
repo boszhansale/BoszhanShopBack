@@ -146,6 +146,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Receipt::class);
     }
+    //Списание
     public function rejects(): HasMany
     {
         return $this->hasMany(Reject::class);
