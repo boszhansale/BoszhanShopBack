@@ -80,6 +80,10 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereWebkassaLoginAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereWebkassaPassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereWebkassaToken($value)
+ * @property string|null $balance
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Moving> $movings
+ * @property-read int|null $movings_count
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereBalance($value)
  * @mixin \Eloquent
  */
 class User extends Authenticatable
@@ -145,6 +149,10 @@ class User extends Authenticatable
     public function receipts(): HasMany
     {
         return $this->hasMany(Receipt::class);
+    }
+    public function movings(): HasMany
+    {
+        return $this->hasMany(Moving::class);
     }
     //Списание
     public function rejects(): HasMany

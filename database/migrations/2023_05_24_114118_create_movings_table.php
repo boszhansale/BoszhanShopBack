@@ -11,19 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('receipts', function (Blueprint $table) {
+        Schema::create('movings', function (Blueprint $table) {
             $table->id();
             $table->tinyInteger('status')->default(1);
             $table->tinyInteger('operation')->default(1);
-            $table->string('bank')->nullable();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('counteragent_id')->nullable()->constrained('counteragents')->cascadeOnDelete();
+
             $table->foreignId('store_id')->nullable()->constrained('stores')->cascadeOnDelete();
             $table->foreignId('storage_id')->nullable()->constrained('storages')->cascadeOnDelete();
-            $table->foreignId('organization_id')->nullable()->constrained('organizations')->cascadeOnDelete();
-            $table->decimal('total_price',20,2);
-            $table->bigInteger('inventory_id')->nullable();
-            $table->string('description')->nullable();
+
+
+            $table->decimal('total_price',20,2)->nullable();
+            $table->json('product_history')->nullable();
 
 
             $table->timestamp('removed_at')->nullable();
@@ -37,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('receipts');
+        Schema::dropIfExists('movings');
     }
 };

@@ -24,6 +24,8 @@ return new class extends Migration
             $table->foreignId('storage_id')->nullable()->constrained('storages')->cascadeOnDelete();
             $table->foreignId('organization_id')->nullable()->constrained('organizations')->cascadeOnDelete();
             $table->decimal('total_price',20,2);
+            $table->decimal('discount_cashback',20,2);
+            $table->string('discount_phone')->nullable();
 
             $table->boolean('online_sale')->default(0);
 

@@ -54,6 +54,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|Refund whereOrderId($value)
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\RefundProducerProduct> $products
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\RefundProducerProduct> $products
  * @mixin \Eloquent
  */
 class RefundProducer extends Model

@@ -4,6 +4,8 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\CounteragentController;
+use App\Http\Controllers\Api\InventoryController;
+use App\Http\Controllers\Api\MovingController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ReceiptController;
@@ -88,11 +90,25 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::delete('{receipt}',[ReceiptController::class,'delete']);
         Route::post('check/{receipt}',[ReceiptController::class,'check']);
     });
+    //Перемещения товара
+    Route::prefix('moving')->group(function (){
+        Route::get('/',[MovingController::class,'index']);
+        Route::get('history',[MovingController::class,'history']);
+        Route::post('/',[MovingController::class,'store']);
+        Route::delete('{moving}',[MovingController::class,'delete']);
+        Route::post('check/{moving}',[MovingController::class,'check']);
+    });
     //Списание
     Route::prefix('reject')->group(function (){
         Route::get('/',[RejectController::class,'index']);
         Route::get('history',[RejectController::class,'history']);
         Route::post('/',[RejectController::class,'store']);
         Route::delete('{reject}',[RejectController::class,'delete']);
+    });
+    Route::prefix('inventory')->group(function (){
+        Route::get('/',[InventoryController::class,'index']);
+        Route::post('/',[InventoryController::class,'store']);
+        Route::post('add-receipt',[InventoryController::class,'addReceipt']);
+        Route::get('history',[InventoryController::class,'history']);
     });
 });

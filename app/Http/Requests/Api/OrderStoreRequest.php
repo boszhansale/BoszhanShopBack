@@ -26,6 +26,7 @@ class OrderStoreRequest extends FormRequest
             'counteragent_id' => ['exists:counteragents,id'],
             'payment_type' => ['numeric'],
             'online_sale' => ['in:0,1'],
+            'discount_phone' => ['min:10','max:10'],
 
             'products' => 'required|array|min:1',
             'products.*.product_id' => 'required|exists:products,id',

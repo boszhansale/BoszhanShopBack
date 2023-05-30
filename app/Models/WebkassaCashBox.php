@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|WebkassaCashBox whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|WebkassaCashBox whereUniqueNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|WebkassaCashBox whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WebkassaCashBox whereClosedAt($value)
  * @mixin \Eloquent
  */
 class WebkassaCashBox extends Model

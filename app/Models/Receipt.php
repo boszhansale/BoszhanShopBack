@@ -46,7 +46,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read int|null $products_count
  * @property-read \App\Models\Storage|null $storage
  * @property-read \App\Models\Store|null $store
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ReceiptProduct> $products
  * @mixin \Eloquent
  */
 class Receipt extends Model
@@ -63,8 +62,11 @@ class Receipt extends Model
         'counteragent_id',
         'removed_at',
         'operation',
-        'bank'
+        'bank',
+        'inventory_id',
+        'description'
     ];
+    //1. Новый документ поступления товара 2. Журнал документов поступления товара
 
     public function products(): HasMany
     {

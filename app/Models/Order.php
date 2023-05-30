@@ -60,6 +60,11 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read \App\Models\Organization|null $organization
  * @property-read \App\Models\Storage|null $storage
  * @property-read \App\Models\Store|null $store
+ * @property string|null $discount_phone
+ * @property string|null $discount_cashback
+ * @property-read \App\Models\WebkassaCheck|null $webkassaCheck
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereDiscountCashback($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereDiscountPhone($value)
  * @mixin \Eloquent
  */
 class Order extends Model implements Auditable
@@ -82,7 +87,8 @@ class Order extends Model implements Auditable
         'store_id',
         'organization_id',
         'storage_id',
-
+        'discount_phone',
+        'discount_cashback',
         'removed_at',
         'updated_at',
         'created_at',

@@ -35,11 +35,27 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Store wherePhone($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Store whereRemovedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Store whereUpdatedAt($value)
+ * @property int $discount_position
+ * @method static \Illuminate\Database\Eloquent\Builder|Store whereDiscountPosition($value)
  * @mixin \Eloquent
  */
 class Store extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['id','discount','name','enabled','address','lat','lng','phone','deleted_at','created_at','updated_at','removed_at'];
+    protected $fillable = [
+        'id',
+        'discount',
+        'name',
+        'enabled',
+        'address',
+        'lat',
+        'lng',
+        'phone',
+        'discount_position',
+        'deleted_at',
+        'created_at',
+        'updated_at',
+        'removed_at'
+    ];
 }

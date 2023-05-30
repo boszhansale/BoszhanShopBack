@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\ReceiptStoreAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\AuthLoginRequest;
 use App\Http\Requests\Api\OrderCheckRequest;
@@ -21,7 +22,7 @@ use App\Services\WebKassa\WebKassaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+//Поступление товара
 class ReceiptController extends Controller
 {
     public function index(ReceiptIndexRequest $request)
@@ -56,45 +57,18 @@ class ReceiptController extends Controller
         return response()->json($receipts);
     }
 
-    public function store(ReceiptStoreRequest $request)
+    public function store(ReceiptStoreRequest $request,ReceiptStoreAction $receiptStoreAction)
     {
         $data = [];
         $data['storage_id'] = Auth::user()->storage_id;
         $data['store_id'] = Auth::user()->store_id;
         $data['organization_id'] = Auth::user()->organization_id;
-
-        $receipt = Auth::user()->receipts()->create(array_merge($request->validated(),$data));
-        if ($request->has('products'))
+        try {
+            return response()->json($receiptStoreAction->execute(array_merge($request->validated(),$data)));
+        }catch (\Exception $exception)
         {
-            foreach ($request->get('products') as $item) {
-                $product = Product::find($item['product_id']);
-                if (!$product) continue;
-                $receiptProduct = ReceiptProduct::query()->join('receipts','receipts.id','receipt_products.receipt_id')
-                    ->where('receipts.user_id',Auth::id())
-                    ->where('receipt_products.product_id',$item['product_id'])
-                    ->select('receipt_products.*')
-                    ->latest()
-                    ->first();
-                if ($receiptProduct){
-                    $item['old_price'] = $receiptProduct->price;
-                }
-                $item['all_price'] = $item['count'] * $item['price'];
-
-                $receipt->products()->updateOrCreate([
-                    'product_id' => $product->id,
-                    'receipt_id' => $receipt->id
-                ],$item);
-            }
-            $receipt->update([
-                'product_history' => $receipt->products()->select('product_id','count','price','all_price','comment')->get()->toArray(),
-                'total_price' => $receipt->products()->sum('all_price')
-            ]);
+            return response()->json(['message' => $exception->getMessage()],400);
         }
-
-
-
-        return response()->json($receipt);
-
     }
 
     public function delete(Receipt $receipt)

@@ -65,13 +65,13 @@ class Reject extends Model
         'created_at',
         'deleted_at',
         'storage_id',
-        'payment_status',
         'organization_id',
         'store_id',
-        'payment_type',
         'total_price',
         'user_id',
         'status',
+        'inventory_id',
+        'description'
     ];
 
     public function counteragent(): BelongsTo

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->decimal('lat',11,8)->nullable();
             $table->decimal('lng',11,8)->nullable();
             $table->float('discount')->default(0);
+            $table->boolean('discount_position')->default(0);
             $table->boolean('enabled')->default(1);
             $table->timestamp('removed_at')->nullable();
             $table->softDeletes();

@@ -31,6 +31,16 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|WebkassaCheck whereTicketUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|WebkassaCheck whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|WebkassaCheck whereWebkassaCashBoxId($value)
+ * @property string|null $check_number
+ * @property int|null $operation_type
+ * @property int|null $refund_id
+ * @property int|null $receipt_id
+ * @property int|null $refund_producer_id
+ * @method static \Illuminate\Database\Eloquent\Builder|WebkassaCheck whereCheckNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WebkassaCheck whereOperationType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WebkassaCheck whereReceiptId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WebkassaCheck whereRefundId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|WebkassaCheck whereRefundProducerId($value)
  * @mixin \Eloquent
  */
 class WebkassaCheck extends Model
