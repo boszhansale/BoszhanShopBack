@@ -55,7 +55,11 @@ class Moving extends Model
         'operation',
     ];
 
-    //1. с склада 2. на склад
+    const OPERATION = [
+        1 => 'с склада',
+        2 => 'на склад'
+    ];
+
 
     public function products(): HasMany
     {

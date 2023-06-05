@@ -125,10 +125,16 @@ class InventoryController extends Controller
         return response()->json($receipt);
     }
 
-    public function history(){
+    public function history(Request $request){
         $inventories = Inventory::query()
             ->where('user_id',Auth::id())
-            ->with(['products','products.product'])
+            ->with(['products','products.product','store'])
+            ->when($request->has('date_from'),function ($q){
+                $q->whereDate('created_at','>=',request('date_from'));
+            })
+            ->when($request->has('date_to'),function ($q){
+                $q->whereDate('created_at','<=',request('date_to'));
+            })
             ->get();
         return response()->json($inventories);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -131,4 +132,36 @@ class Product extends Model
     {
         return $this->measure == 1 ? 'шт' : 'кг';
     }
+
+    //ostatki
+    public function remainsDateTo($date)
+    {
+        $receiptProductCount = $this->join('receipt_products','receipt_products.product_id','products.id')
+            ->join('receipts','receipts.id','receipt_products.receipt_id')
+            ->where('receipts.user_id',Auth::id())
+            ->whereDate('receipts.created_at','<=',$date)
+            ->select('products.*')
+            ->sum('count') ?? 0;
+
+        $orderProductCount = $this->join('order_products','order_products.product_id','products.id')
+            ->join('orders','orders.id','order_products.order_id')
+            ->where('orders.user_id',Auth::id())
+            ->whereDate('orders.created_at','<=',$date)
+            ->select('products.*')
+            ->sum('count') ?? 0;
+
+        $movingProductCount = $this->join('moving_products','moving_products.product_id','products.id')
+            ->join('movings','movings.id','moving_products.moving_id')
+            ->where('movings.user_id',Auth::id())
+            ->where('movings.operation',1)
+            ->whereDate('movings.created_at','<=',$date)
+            ->select('products.*')
+            ->sum('count') ?? 0;
+
+
+        return $receiptProductCount - $orderProductCount - $movingProductCount;
+
+
+    }
+
 }

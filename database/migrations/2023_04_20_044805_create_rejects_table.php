@@ -14,13 +14,15 @@ return new class extends Migration
         Schema::create('rejects', function (Blueprint $table) {
             $table->id();
             $table->tinyInteger('status')->default(1);
+            $table->tinyInteger('source')->default(1);
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('counteragent_id')->nullable()->constrained('counteragents')->cascadeOnDelete();
             $table->foreignId('store_id')->nullable()->constrained('stores')->cascadeOnDelete();
             $table->foreignId('storage_id')->nullable()->constrained('storages')->cascadeOnDelete();
             $table->foreignId('organization_id')->nullable()->constrained('organizations')->cascadeOnDelete();
 
-            $table->bigInteger('inventory_id')->nullable();
+            $table->bigInteger('inventory_id')->unsigned()->nullable();
+            $table->bigInteger('moving_id')->unsigned()->nullable();
             $table->string('description')->nullable();
 
             $table->decimal('total_price',20,2)->nullable();

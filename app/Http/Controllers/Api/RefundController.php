@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\RefundStoreAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\AuthLoginRequest;
 use App\Http\Requests\Api\OrderCheckRequest;
@@ -21,7 +22,7 @@ use App\Services\WebKassa\WebKassaService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+//Возврат от покупателя
 class RefundController extends Controller
 {
     public function index(RefundIndexRequest $request)
@@ -30,6 +31,12 @@ class RefundController extends Controller
             ->where('refunds.user_id',Auth::id())
             ->with(['products','products.product','products.reasonRefund','store'])
             ->latest()
+            ->when($request->has('date_from'),function ($q){
+                $q->whereDate('created_at','>=',request('date_from'));
+            })
+            ->when($request->has('date_to'),function ($q){
+                $q->whereDate('created_at','<=',request('date_to'));
+            })
             ->get();
         return response()->json($refunds);
     }
@@ -40,48 +47,30 @@ class RefundController extends Controller
             ->where('refunds.user_id',Auth::id())
             ->with(['products','products.product','products.reasonRefund','store'])
             ->latest()
+            ->when($request->has('date_from'),function ($q){
+                $q->whereDate('created_at','>=',request('date_from'));
+            })
+            ->when($request->has('date_to'),function ($q){
+                $q->whereDate('created_at','<=',request('date_to'));
+            })
 
             ->get();
         return response()->json($refunds);
     }
 
-    public function store(RefundStoreRequest $request)
+    public function store(RefundStoreRequest $request,RefundStoreAction $refundStoreAction)
     {
         $data = [];
         $data['storage_id'] = Auth::user()->storage_id;
         $data['store_id'] = Auth::user()->store_id;
         $data['organization_id'] = Auth::user()->organization_id;
 
-        $refund = Auth::user()->refunds()->create(array_merge($request->validated(),$data));
-        $order = Order::findOrFail($request->get('order_id'));
-        if ($request->has('products'))
+        try {
+            return response()->json($refundStoreAction->execute(array_merge($request->validated(),$data)));
+        }catch (\Exception $exception)
         {
-            foreach ($request->get('products') as $item) {
-                $product = Product::find($item['product_id']);
-                if (!$product) continue;
-                $orderProduct = $order->products()->where('product_id',$item['product_id'])->latest()->first();
-                if (!$orderProduct){
-                    $refund->forceDelete();
-
-                    return  response()->json(['message' => "продукт $product->name не найден"],404);
-                };
-                $item['price'] = $orderProduct->price;
-                $item['all_price'] = $item['count'] * $item['price'];
-
-                $refund->products()->updateOrCreate([
-                    'product_id' => $product->id,
-                    'refund_id' => $refund->id
-                ],$item);
-            }
-            $refund->update([
-                'product_history' => $refund->products()->select('product_id','count','price','all_price','comment')->get()->toArray(),
-                'total_price' => $refund->products()->sum('all_price')
-            ]);
+            return response()->json(['message' => $exception->getMessage()],400);
         }
-
-
-
-        return response()->json($refund);
 
     }
 

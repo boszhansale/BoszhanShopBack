@@ -71,7 +71,14 @@ class Reject extends Model
         'user_id',
         'status',
         'inventory_id',
-        'description'
+        'description',
+        'moving_id',
+        'source'
+    ];
+
+    const  SOURCE = [
+        1 => 'списание',
+        2 => 'перемещение на склад'
     ];
 
     public function counteragent(): BelongsTo

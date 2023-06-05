@@ -64,9 +64,24 @@ class Receipt extends Model
         'operation',
         'bank',
         'inventory_id',
-        'description'
+        'description',
+        'source',
+        'moving_id',
+        'refund_id',
     ];
     //1. Новый документ поступления товара 2. Журнал документов поступления товара
+
+    const OPERATION = [
+       1 => 'Поступление товара',
+       2 => 'Оприходование излишков'
+    ];
+
+    const SOURCE = [
+      1 => 'поступления от поставщика',
+      2 => 'перемещение с склада',
+      3 => 'возврат от клиента',
+      4 => 'излишки',
+    ];
 
     public function products(): HasMany
     {

@@ -29,7 +29,8 @@ class ProductController extends Controller
                 return $query->where(function ($q) {
                     $q->where('id_1c','LIKE','%'.request('search').'%')
                         ->orWhere('article','LIKE','%'.request('search').'%')
-                        ->orWhere('name','LIKE','%'.request('search').'%');
+                        ->orWhere('name','LIKE','%'.request('search').'%')
+                        ->orWhere('barcode','LIKE','%'.request('search').'%');
                 });
             })
             ->where('products.remainder', '>', 0)

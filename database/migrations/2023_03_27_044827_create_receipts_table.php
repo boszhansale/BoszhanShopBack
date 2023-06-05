@@ -22,8 +22,11 @@ return new class extends Migration
             $table->foreignId('storage_id')->nullable()->constrained('storages')->cascadeOnDelete();
             $table->foreignId('organization_id')->nullable()->constrained('organizations')->cascadeOnDelete();
             $table->decimal('total_price',20,2);
-            $table->bigInteger('inventory_id')->nullable();
+            $table->bigInteger('inventory_id')->unsigned()->nullable();
+            $table->bigInteger('moving_id')->unsigned()->nullable();
+            $table->bigInteger('refund_id')->unsigned()->nullable();
             $table->string('description')->nullable();
+            $table->tinyInteger('source')->default(1);
 
 
             $table->timestamp('removed_at')->nullable();

@@ -93,6 +93,7 @@ class Order extends Model implements Auditable
         'updated_at',
         'created_at',
         'deleted_at',
+        'ticket_print_url'
     ];
 
 

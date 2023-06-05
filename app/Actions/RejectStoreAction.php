@@ -61,6 +61,17 @@ class RejectStoreAction
                 'product_history' => $reject->products()->select('product_id', 'count', 'price', 'all_price', 'comment')->get()->toArray(),
                 'total_price' => $reject->products()->sum('all_price')
             ]);
+
+//            $rejectAction = new RejectStoreAction();
+//
+//            $rejectAction->execute([
+//                'source' => 2,
+//                'storage_id' => Auth::user()->storage_id,
+//                'store_id' => Auth::user()->store_id,
+//                'organization_id' => Auth::user()->organization_id,
+//                'reject_id' => $reject->id,
+//                'products' => $data['products'],
+//            ]);
         }
 
         return $reject;

@@ -53,9 +53,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \App\Models\Store|null $store
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|Refund whereOrderId($value)
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\RefundProduct> $products
  * @mixin \Eloquent
  */
+//Возврат от покупателя
 class Refund extends Model
 {
     use HasFactory;

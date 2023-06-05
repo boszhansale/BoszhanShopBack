@@ -50,7 +50,7 @@ class MovingController extends Controller
     public function store(MovingStoreRequest $request)
     {
         $data = [];
-        $data['storage_id'] = Auth::user()->storage_id;
+        $data['storage_id'] = $request->has('storage_id') ? $request->get('storage_id') : Auth::user()->storage_id;
         $data['store_id'] = Auth::user()->store_id;
 
         $moving = Auth::user()->movings()->create(array_merge($request->validated(),$data));

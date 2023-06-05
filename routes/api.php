@@ -12,6 +12,8 @@ use App\Http\Controllers\Api\ReceiptController;
 use App\Http\Controllers\Api\RefundController;
 use App\Http\Controllers\Api\RefundProducerController;
 use App\Http\Controllers\Api\RejectController;
+use App\Http\Controllers\Api\ReportController;
+use App\Http\Controllers\Api\StorageController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\WebkassaController;
 use Illuminate\Http\Request;
@@ -31,6 +33,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('brand',[BrandController::class,'index']);
 Route::get('category',[CategoryController::class,'index']);
 Route::get('product',[ProductController::class,'index']);
+Route::get('storage',[StorageController::class,'index']);
 
 
 
@@ -110,5 +113,12 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::post('/',[InventoryController::class,'store']);
         Route::post('add-receipt',[InventoryController::class,'addReceipt']);
         Route::get('history',[InventoryController::class,'history']);
+    });
+    Route::prefix('report')->group(function (){
+        Route::get('remains',[ReportController::class,'remains']);
+        Route::get('discount-card',[ReportController::class,'discountCard']);
+        Route::get('order',[ReportController::class,'order']);
+        Route::get('inventor',[ReportController::class,'inventor']);
+        Route::get('product',[ReportController::class,'product']);
     });
 });

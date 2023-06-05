@@ -109,6 +109,7 @@ class WebKassaService
                     'ticket_print_url' => $data['Data']['TicketPrintUrl']
                 ]
             );
+            $webkassaCheck->order()->update(['ticket_print_url' =>  $data['Data']['TicketPrintUrl']]);
             return $data;
         }
         if (isset($data['Errors'])){
