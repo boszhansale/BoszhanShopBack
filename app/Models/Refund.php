@@ -76,7 +76,10 @@ class Refund extends Model
         'user_id',
         'status',
         'type',
-        'order_id'
+        'order_id',
+        'check_number',
+        'check_status',
+        'ticket_print_url'
     ];
 
     public function counteragent(): BelongsTo

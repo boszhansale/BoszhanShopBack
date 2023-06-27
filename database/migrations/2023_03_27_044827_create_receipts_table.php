@@ -26,6 +26,7 @@ return new class extends Migration
             $table->bigInteger('moving_id')->unsigned()->nullable();
             $table->bigInteger('refund_id')->unsigned()->nullable();
             $table->string('description')->nullable();
+            $table->tinyInteger('nds')->default(2);
             $table->tinyInteger('source')->default(1);
 
 

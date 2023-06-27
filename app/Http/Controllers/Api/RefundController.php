@@ -64,9 +64,13 @@ class RefundController extends Controller
         $data['storage_id'] = Auth::user()->storage_id;
         $data['store_id'] = Auth::user()->store_id;
         $data['organization_id'] = Auth::user()->organization_id;
+        $data['ticket_print_url'] = null;
 
         try {
-            return response()->json($refundStoreAction->execute(array_merge($request->validated(),$data)));
+
+           $refund =  $refundStoreAction->execute(array_merge($request->validated(),$data));
+            WebKassaService::checkRefund($refund);
+            return response()->json(Refund::find($refund->id));
         }catch (\Exception $exception)
         {
             return response()->json(['message' => $exception->getMessage()],400);
@@ -80,12 +84,13 @@ class RefundController extends Controller
         return response()->json($refund);
     }
 
-    public function check(Refund $refund,OrderCheckRequest $request)
+    public function check(Refund $refund)
     {
         try {
-            $data =  WebKassaService::checkRefund($refund,$request->get('payments'));
+            $data =  WebKassaService::checkRefund($refund);
             return response()->json($data);
         }catch (\Exception $exception){
+            $refund->delete();
             return response()->json(['message' => $exception->getMessage()],400);
         }
     }

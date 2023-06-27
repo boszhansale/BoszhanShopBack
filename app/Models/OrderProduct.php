@@ -44,7 +44,7 @@ class OrderProduct extends Model
 {
     use HasFactory,SoftDeletes;
 
-    protected $fillable = ['id','updated_at','created_at','deleted_at','product_id','price','count','order_id','comment','all_price'];
+    protected $fillable = ['id','updated_at','created_at','deleted_at','product_id','price','count','order_id','comment','all_price','discount_price'];
 
     public function product(): BelongsTo
     {

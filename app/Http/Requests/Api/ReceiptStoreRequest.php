@@ -23,10 +23,10 @@ class ReceiptStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'counteragent_id' => ['exists:counteragents,id'],
+            'counteragent_id' => ['required_if:operation,1','exists:counteragents,id'],
             'payment_type' => ['numeric'],
             'operation' => ['required','in:1,2'],
-            'bank' => ['string'],
+            'nds' => ['required','in:1,2'],
 
             'products' => 'required|array|min:1',
             'products.*.product_id' => 'required|exists:products,id',

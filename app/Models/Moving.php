@@ -49,6 +49,7 @@ class Moving extends Model
         'store_id',
         'status',
         'storage_id',
+        'order_id',
         'user_id',
         'total_price',
         'removed_at',
@@ -72,5 +73,9 @@ class Moving extends Model
     public function storage(): BelongsTo
     {
         return $this->belongsTo(Storage::class);
+    }
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class);
     }
 }

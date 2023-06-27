@@ -26,6 +26,7 @@ class MovingStoreRequest extends FormRequest
             'payment_type' => ['numeric'],
             'operation' => ['required','in:1,2'],
             'storage_id' => ['exists:storages,id'],
+            'order_id' => ['exists:orders,id'],
 
             'products' => 'required|array|min:1',
             'products.*.product_id' => 'required|exists:products,id',

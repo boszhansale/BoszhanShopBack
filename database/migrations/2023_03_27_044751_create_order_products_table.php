@@ -22,6 +22,7 @@ return new class extends Migration
             $table->decimal('count',11,2);
             $table->decimal('price',20,2);
             $table->decimal('all_price',20,2);
+            $table->decimal('discount_price',20,2)->default(0);
             $table->text('comment')->nullable();
 
 

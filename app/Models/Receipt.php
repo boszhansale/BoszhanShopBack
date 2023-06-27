@@ -62,12 +62,12 @@ class Receipt extends Model
         'counteragent_id',
         'removed_at',
         'operation',
-        'bank',
         'inventory_id',
         'description',
         'source',
         'moving_id',
         'refund_id',
+        'nds',
     ];
     //1. Новый документ поступления товара 2. Журнал документов поступления товара
 

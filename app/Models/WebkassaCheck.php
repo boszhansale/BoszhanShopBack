@@ -83,4 +83,8 @@ class WebkassaCheck extends Model
     {
         return $this->belongsTo(Order::class);
     }
+    public function refund(): BelongsTo
+    {
+        return $this->belongsTo(Refund::class);
+    }
 }

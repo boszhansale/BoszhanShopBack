@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\Store
@@ -49,6 +50,7 @@ class Store extends Model
         'name',
         'enabled',
         'address',
+        'counteragent_id',
         'lat',
         'lng',
         'phone',
@@ -58,4 +60,9 @@ class Store extends Model
         'updated_at',
         'removed_at'
     ];
+
+    public function counteragent(): BelongsTo
+    {
+        return $this->belongsTo(Counteragent::class);
+    }
 }

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('stores', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->foreignId('counteragent_id')->nullable()->constrained('counteragents')->cascadeOnDelete();
             $table->string('phone');
             $table->string('address');
             $table->decimal('lat',11,8)->nullable();

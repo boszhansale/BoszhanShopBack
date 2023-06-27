@@ -20,10 +20,12 @@ class WebKassaService
     /**
      * @throws Exception
      */
-    public static function authorize (User $user):string
+    public static function authorize (User $user,$check = true):string
     {
-        if (Carbon::parse($user->webkassa_login_at)->addDay()->gt(now())){
-            return  $user->webkassa_token;
+        if ($check){
+            if (Carbon::parse($user->webkassa_login_at)->addHours(23)->gt(now())){
+                return  $user->webkassa_token;
+            }
         }
         if (!$user->webkassa_login or !$user->webkassa_password){
             throw new Exception('login password not found');
@@ -54,10 +56,10 @@ class WebKassaService
     /**
      * @throws Exception
      */
-    public static function checkOrder (Order $order,array $payments)
+    public static function checkOrder (Order $order,array $payments,$authCheck = true)
     {
         $user = $order->user;
-        $token = self::authorize($user);
+        $token = self::authorize($user,$authCheck);
         if (!$user->webkassaCashBox?->unique_number){
             throw new Exception('касса не найден');
         }
@@ -67,6 +69,7 @@ class WebKassaService
         $externalCheckNumber = Str::random(32);
         $params = [
             'Token' => $token,
+            'RoundType' => 0,
             'CashboxUniqueNumber' => $user->webkassaCashBox->unique_number,
             'OperationType' => 2,
             'ExternalCheckNumber' => $externalCheckNumber,
@@ -74,18 +77,25 @@ class WebKassaService
             'Positions' => [],
             "Payments" => $payments,
         ];
+        if ($order->counteragent?->bin){
+            $params['CustomerXin'] = $order->counteragent->bin;
+        }
         foreach ($order->products as $key => $product) {
+
             $params['Positions'][$key] = [
                 'Count' => $product->count,
-                'Price' => $product->price,
+                'Price' => $product->price + $product->discount_price,
+                'Discount' => $product->discount_price *  $product->count,
                 "TaxPercent" => 12,
-                "Tax" => round((($product->all_price )/ 112) * 12,2),
+                "Tax" => round((($product->price *$product->count ) / 112) * 12,2),
                 "TaxType"=> 100,
                 "PositionName"=> $product->product->name,
                 "PositionCode"=> $product->product_id,
                 "UnitCode"=>  $product->measure == 1 ? '896' : '166',
             ];
+
         }
+
         $webkassaCheck = WebkassaCheck::create([
             'order_id' => $order->id,
             'webkassa_cash_box_id' => $user->webkassa_cash_box_id,
@@ -93,7 +103,8 @@ class WebKassaService
             'number' => $externalCheckNumber
         ]);
 
-        $response = Http::withBasicAuth('Bearer',config('services.webkassa.key'))
+
+        $response = Http::withHeaders(['x-api-key' => config('services.webkassa.key')])
             ->post(config('services.webkassa.server').'Check',$params);
 
         if ($response->status() != 200){
@@ -109,7 +120,11 @@ class WebKassaService
                     'ticket_print_url' => $data['Data']['TicketPrintUrl']
                 ]
             );
-            $webkassaCheck->order()->update(['ticket_print_url' =>  $data['Data']['TicketPrintUrl']]);
+            $webkassaCheck->order()->update([
+                'check_number' =>  $data['Data']['CheckNumber'],
+                'ticket_print_url' =>  $data['Data']['TicketPrintUrl'],
+                'check_status' => 2
+            ]);
             return $data;
         }
         if (isset($data['Errors'])){
@@ -118,30 +133,52 @@ class WebKassaService
                     'data' => $data,
                 ]
             );
+            $webkassaCheck->order()->update([
+                'check_status' => 3
+            ]);
+
+           if ($data['Errors'][0]['Code'] == 2){
+              return self::checkOrder($order,$payments,false);
+           }
+
             throw new Exception($data['Errors'][0]['Text']);
         }
         throw new Exception('response data not found');
     }
-    public static function checkRefund (Refund $refund,array $payments)
+
+    /**
+     * @throws Exception
+     */
+    public static function checkRefund (Refund $refund,$authCheck = true)
     {
         $user = $refund->user;
-        $token = self::authorize($user);
+        $token = self::authorize($user,$authCheck);
         if (!$user->webkassaCashBox?->unique_number){
             throw new Exception('касса не найден');
         }
-        if (count($refund->products )== 0){
+        if (count($refund->products ) == 0){
             throw new Exception('продукты не найдены');
         }
         $externalCheckNumber = Str::random(32);
         $params = [
             'Token' => $token,
+            'RoundType' => 0,
             'CashboxUniqueNumber' => $user->webkassaCashBox->unique_number,
             'OperationType' => 3,
             'ExternalCheckNumber' => $externalCheckNumber,
             'ExternalOrderNumber' => $refund->id,
             'Positions' => [],
-            "Payments" => $payments,
+            "Payments" => [
+                [
+                    'Sum' => $refund->total_price,
+                    'PaymentType' => self::paymentType($refund->payment_type)
+                ]
+            ],
         ];
+
+        if ($refund->counteragent?->bin){
+            $params['CustomerXin'] = $refund->counteragent->bin;
+        }
         foreach ($refund->products as $key => $product) {
             $params['Positions'][$key] = [
                 'Count' => $product->count,
@@ -160,8 +197,7 @@ class WebKassaService
             'params' => $params,
             'number' => $externalCheckNumber
         ]);
-
-        $response = Http::withBasicAuth('Bearer',config('services.webkassa.key'))
+        $response = Http::withHeaders(['x-api-key' => config('services.webkassa.key')])
             ->post(config('services.webkassa.server').'Check',$params);
 
         if ($response->status() != 200){
@@ -177,6 +213,11 @@ class WebKassaService
                     'ticket_print_url' => $data['Data']['TicketPrintUrl']
                 ]
             );
+            $webkassaCheck->refund()->update([
+                'check_number' =>  $data['Data']['CheckNumber'],
+                'ticket_print_url' =>  $data['Data']['TicketPrintUrl'],
+                'check_status' => 2
+            ]);
             return $data;
         }
         if (isset($data['Errors'])){
@@ -185,6 +226,14 @@ class WebKassaService
                     'data' => $data,
                 ]
             );
+
+            $webkassaCheck->refund()->update([
+                'check_status' => 3
+            ]);
+            if ($data['Errors'][0]['Code'] == 2){
+                return self::checkRefund($refund,false);
+            }
+
             throw new Exception($data['Errors'][0]['Text']);
         }
         throw new Exception('response data not found');
@@ -205,6 +254,7 @@ class WebKassaService
         $externalCheckNumber = Str::random(32);
         $params = [
             'Token' => $token,
+            'RoundType' => 0,
             'CashboxUniqueNumber' => $user->webkassaCashBox->unique_number,
             'OperationType' => 0,
             'ExternalCheckNumber' => $externalCheckNumber,
@@ -212,6 +262,9 @@ class WebKassaService
             'Positions' => [],
             "Payments" => $payments,
         ];
+        if ($receipt->counteragent?->bin){
+            $params['CustomerXin'] = $receipt->counteragent->bin;
+        }
         foreach ($receipt->products as $key => $product) {
             $params['Positions'][$key] = [
                 'Count' => $product->count,
@@ -231,7 +284,7 @@ class WebKassaService
             'number' => $externalCheckNumber
         ]);
 
-        $response = Http::withBasicAuth('Bearer',config('services.webkassa.key'))
+        $response = Http::withHeaders(['x-api-key' => config('services.webkassa.key')])
             ->post(config('services.webkassa.server').'Check',$params);
 
         if ($response->status() != 200){
@@ -255,6 +308,9 @@ class WebKassaService
                     'data' => $data,
                 ]
             );
+            if ($data['Errors'][0]['Code'] == 2){
+                return self::checkReceipt($receipt,$payments,false);
+            }
             throw new Exception($data['Errors'][0]['Text']);
         }
         throw new Exception('response data not found');
@@ -275,6 +331,7 @@ class WebKassaService
         $externalCheckNumber = Str::random(32);
         $params = [
             'Token' => $token,
+            'RoundType' => 0,
             'CashboxUniqueNumber' => $user->webkassaCashBox->unique_number,
             'OperationType' => 0,
             'ExternalCheckNumber' => $externalCheckNumber,
@@ -282,6 +339,9 @@ class WebKassaService
             'Positions' => [],
             "Payments" => $payments,
         ];
+        if ($refundProducer->counteragent?->bin){
+            $params['CustomerXin'] = $refundProducer->counteragent->bin;
+        }
         foreach ($refundProducer->products as $key => $product) {
             $params['Positions'][$key] = [
                 'Count' => $product->count,
@@ -301,7 +361,7 @@ class WebKassaService
             'number' => $externalCheckNumber
         ]);
 
-        $response = Http::withBasicAuth('Bearer',config('services.webkassa.key'))
+        $response = Http::withHeaders(['x-api-key' => config('services.webkassa.key')])
             ->post(config('services.webkassa.server').'Check',$params);
 
         if ($response->status() != 200){
@@ -325,6 +385,7 @@ class WebKassaService
                     'data' => $data,
                 ]
             );
+
             throw new Exception($data['Errors'][0]['Text']);
         }
         throw new Exception('response data not found');
@@ -343,7 +404,7 @@ class WebKassaService
             'operation_type' => $operationType,
             'number' => $number
         ]);
-        $response = Http::withBasicAuth('Bearer',config('services.webkassa.key'))
+        $response = Http::withHeaders(['x-api-key' => config('services.webkassa.key')])
             ->post(config('services.webkassa.server').'MoneyOperation',[
                 'Token' => $token,
                 'CashboxUniqueNumber' => $user->webkassaCashBox->unique_number,
@@ -377,7 +438,7 @@ class WebKassaService
         if (!$user->webkassaCashBox?->unique_number){
             throw new Exception('касса не найден');
         }
-        $response = Http::withBasicAuth('Bearer',config('services.webkassa.key'))
+        $response = Http::withHeaders(['x-api-key' => config('services.webkassa.key')])
             ->post(config('services.webkassa.server').'ZReport',[
                 'Token' => $token,
                 'CashboxUniqueNumber' => $user->webkassaCashBox->unique_number,
@@ -407,7 +468,7 @@ class WebKassaService
         if (!$user->webkassaCashBox?->unique_number){
             throw new Exception('касса не найден');
         }
-        $response = Http::withBasicAuth('Bearer',config('services.webkassa.key'))
+        $response = Http::withHeaders(['x-api-key' => config('services.webkassa.key')])
             ->post(config('services.webkassa.server').'XReport',[
                 'Token' => $token,
                 'CashboxUniqueNumber' => $user->webkassaCashBox->unique_number,
@@ -424,6 +485,14 @@ class WebKassaService
             throw new Exception($data['Errors'][0]['Text']);
         }
         throw new Exception('response data not found');
+    }
+    public static function paymentType(int $paymentType) : int
+    {
+        return match ($paymentType){
+            1 => 0,
+            2 => 1,
+            4 => 4,
+        };
     }
 
 

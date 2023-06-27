@@ -41,7 +41,7 @@ class RunImport extends Command
         Artisan::call('import:productCounteragentPrice');
         Artisan::call('import:productPriceType');
 
-        Artisan::call('import:user');
+//        Artisan::call('import:user');
 
     }
 }

@@ -37,6 +37,10 @@ class ReceiptStoreAction
                         if (!$priceType) throw new Exception("price not found");
                         $item['price'] = $priceType->price;
                     }
+                }else{
+                   if ($data['nds'] == 1){
+                       $item['price'] = $item['price'] -  (($item['price'] / 112) * 12);
+                   }
                 }
                 $receiptProduct = ReceiptProduct::query()->join('receipts','receipts.id','receipt_products.receipt_id')
                     ->where('receipts.user_id',Auth::id())

@@ -18,6 +18,7 @@ use App\Models\Product;
 use App\Models\Store;
 use App\Models\User;
 use App\Services\WebKassa\WebKassaService;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -27,6 +28,7 @@ class OrderController extends Controller
 {
     public function index(OrderIndexRequest $request)
     {
+
         $orders = Order::query()
             ->where('orders.user_id',Auth::id())
             ->when($request->has('date_from'),function ($q){
@@ -71,10 +73,11 @@ class OrderController extends Controller
         $data['organization_id'] = Auth::user()->organization_id;
         $discountCard = null;
         $store = Store::find($data['store_id']);
+
         try {
             if (!$store) throw new("магазин не найден");
-            if ($request->has('discount_phone')){
-                $discountCard = DiscountCard::where('store_id',$data['store_id'])->where('phone',$request->get('discount_phone'))->first();
+            if ($request->has('phone')){
+                $discountCard = DiscountCard::where('store_id',$data['store_id'])->where('phone',$request->get('phone'))->first();
                 if (!$discountCard) throw new Exception('Пользователь не найден');
             }
             $order = Auth::user()->orders()->create(array_merge($request->validated(),$data));
@@ -83,7 +86,6 @@ class OrderController extends Controller
                 $counteragent = $order->counteragent;
                 $priceType = $counteragent ? $counteragent->priceType : PriceType::find(1);
                 $discount = $counteragent ? $counteragent->discount : 0;
-
                 foreach ($request->get('products') as $item) {
                     $product = Product::find($item['product_id']);
                     if (!$product) continue;
@@ -92,19 +94,26 @@ class OrderController extends Controller
                     if (!$productPriceType) continue;
                     $product->update(['remainder' => $product->remainder - $item['count']]);
                     $productCounteragentPrice = $counteragent ? $product->counteragentPrices()->where('counteragent_id',$counteragent->id )->first() : null;
+                    $item['discount_price'] = 0;
                     if ($productCounteragentPrice) {
                         $item['price'] = $productCounteragentPrice->price;
                     } else {
                         $discount = $discount == 0 ? $product->discount : $discount;
                         if ($discount > 0){
-                            $item['price'] = ($productPriceType->price / 100) * $discount;
+                            $item['discount_price'] = ($productPriceType->price / 100) * $discount ;
+                            $item['price'] = $productPriceType->price -  $item['discount_price'] ;
+
                         }else{
                             $item['price'] = $productPriceType->price ;
                         }
                         //скидка дисконта
                         if ($discountCard){
-                            $item['price'] = ( $item['price'] / 100) * $discountCard->discount;
+                            $discountPrice = ( $item['price'] / 100) * $discountCard->discount;
+
+                            $item['price'] = $item['price'] - $discountPrice;
+                            $item['discount_price'] = $item['discount_price'] + $discountPrice;
                         }
+
                     }
                     $item['all_price'] = $item['count'] * $item['price'];
                     //скидка на 5тую позицию
@@ -123,9 +132,12 @@ class OrderController extends Controller
                     $order->discount_cashback = ($totalPrice / 100) * $discountCard->discount;
                 }
                 $order->product_history = $order->products()->select('product_id','count','price','all_price','comment')->get()->toArray();
+                $order->total_discount_price = $order->products()->sum('discount_price');
                 $order->total_price = $totalPrice;
                 $order->save();
 
+            }else{
+                throw new Exception("products not found");
             }
 
             return response()->json($order);
@@ -169,7 +181,7 @@ class OrderController extends Controller
                             $item['price'] = $productPriceType->price ;
                         }
                     }
-                    $item['all_price'] = $item['count'] * $item['price'];
+                    $item['all_price'] =   $item['price'] * $item['count'];
 
                     $order->products()->updateOrCreate(['product_id' => $product->id,'order_id' => $order->id],$item);
                 }
@@ -200,6 +212,8 @@ class OrderController extends Controller
            $data =  WebKassaService::checkOrder($order,$request->get('payments'));
             return response()->json($data);
         }catch (\Exception $exception){
+
+            $order->delete();
             return response()->json(['message' => $exception->getMessage()],400);
         }
     }
