@@ -18,7 +18,9 @@ use App\Models\RefundProduct;
 use App\Models\PriceType;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\WebkassaCheck;
 use App\Services\WebKassa\WebKassaService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -91,6 +93,23 @@ class RefundController extends Controller
             return response()->json($data);
         }catch (\Exception $exception){
             $refund->delete();
+            return response()->json(['message' => $exception->getMessage()],400);
+        }
+    }
+
+    public function printCheck(Refund $refund)
+    {
+        try {
+            $check = WebkassaCheck::where('refund_id',$refund->id)->latest()->first();
+            if (!$check)
+            {
+                throw new Exception('чек не найден');
+            }
+
+            $data =  WebKassaService::printFormat(Auth::user(),$check->number);
+            return response()->json($data);
+        }catch (\Exception $exception){
+
             return response()->json(['message' => $exception->getMessage()],400);
         }
     }

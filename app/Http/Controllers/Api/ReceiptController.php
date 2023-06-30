@@ -18,7 +18,9 @@ use App\Models\ReceiptProduct;
 use App\Models\PriceType;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\WebkassaCheck;
 use App\Services\WebKassa\WebKassaService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -83,6 +85,24 @@ class ReceiptController extends Controller
             $data =  WebKassaService::checkReceipt($receipt,$request->get('payments'));
             return response()->json($data);
         }catch (\Exception $exception){
+            return response()->json(['message' => $exception->getMessage()],400);
+        }
+    }
+    public function printCheck(Receipt $receipt)
+    {
+        try {
+            $check = WebkassaCheck::where('receipt_id',$receipt->id)->latest()->first();
+
+
+            if (!$check)
+            {
+                throw new Exception('чек не найден');
+            }
+
+            $data =  WebKassaService::printFormat(Auth::user(),$check->number);
+            return response()->json($data);
+        }catch (\Exception $exception){
+
             return response()->json(['message' => $exception->getMessage()],400);
         }
     }

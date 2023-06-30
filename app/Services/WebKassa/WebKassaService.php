@@ -486,6 +486,37 @@ class WebKassaService
         }
         throw new Exception('response data not found');
     }
+
+    /**
+     * @throws Exception
+     */
+    public static function printFormat(User $user, $number,$paperKind = 0)
+    {
+        $token = self::authorize($user);
+        if (!$user->webkassaCashBox?->unique_number){
+            throw new Exception('касса не найден');
+        }
+        $response = Http::withHeaders(['x-api-key' => config('services.webkassa.key')])
+            ->post(config('services.webkassa.server').'Ticket/PrintFormat',[
+                'Token' => $token,
+                'CashboxUniqueNumber' => $user->webkassaCashBox->unique_number,
+                'externalCheckNumber' => $number,
+                'isDuplicate' => true,
+                'paperKind' => $paperKind
+             ]);
+
+        if ($response->status() != 200){
+            throw new Exception($response->json());
+        }
+        $data = $response->json();
+        if (isset($data['Data'])){
+            return $data['Data'];
+        }
+        if (isset($data['Errors'])){
+            throw new Exception($data['Errors'][0]['Text']);
+        }
+        throw new Exception('response data not found');
+    }
     public static function paymentType(int $paymentType) : int
     {
         return match ($paymentType){

@@ -68,6 +68,7 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::post('update/{order}',[OrderController::class,'update']);
         Route::delete('{order}',[OrderController::class,'delete']);
         Route::post('check/{order}',[OrderController::class,'check']);
+        Route::get('print-check/{order}',[OrderController::class,'printCheck']);
     });
     //Возврат от покупателя
     Route::prefix('refund')->group(function (){
@@ -76,6 +77,7 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::post('/',[RefundController::class,'store']);
         Route::delete('{refund}',[RefundController::class,'delete']);
         Route::post('check/{refund}',[RefundController::class,'check']);
+        Route::get('print-check/{refund}',[RefundController::class,'printCheck']);
     });
     //Возврат товара поставщику
     Route::prefix('refund-producer')->group(function (){
@@ -84,6 +86,7 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::post('/',[RefundProducerController::class,'store']);
         Route::delete('{refundProducer}',[RefundProducerController::class,'delete']);
         Route::post('check/{refundProducer}',[RefundProducerController::class,'check']);
+        Route::get('print-check/{refundProducer}',[RefundProducerController::class,'printCheck']);
     });
     //Поступление товара
     Route::prefix('receipt')->group(function (){
@@ -92,6 +95,7 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::post('/',[ReceiptController::class,'store']);
         Route::delete('{receipt}',[ReceiptController::class,'delete']);
         Route::post('check/{receipt}',[ReceiptController::class,'check']);
+        Route::get('print-check/{receipt}',[ReceiptController::class,'printCheck']);
     });
     //Перемещения товара
     Route::prefix('moving')->group(function (){

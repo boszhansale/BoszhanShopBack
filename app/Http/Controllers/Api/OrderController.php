@@ -17,6 +17,7 @@ use App\Models\PriceType;
 use App\Models\Product;
 use App\Models\Store;
 use App\Models\User;
+use App\Models\WebkassaCheck;
 use App\Services\WebKassa\WebKassaService;
 use Carbon\Carbon;
 use Exception;
@@ -214,6 +215,25 @@ class OrderController extends Controller
         }catch (\Exception $exception){
 
             $order->delete();
+            return response()->json(['message' => $exception->getMessage()],400);
+        }
+    }
+
+    public function printCheck(Order $order)
+    {
+        try {
+            $check = WebkassaCheck::where('order_id',$order->id)->latest()->first();
+
+
+            if (!$check)
+            {
+                throw new Exception('чек не найден');
+            }
+
+           $data =  WebKassaService::printFormat(Auth::user(),$check->number);
+            return response()->json($data);
+        }catch (\Exception $exception){
+
             return response()->json(['message' => $exception->getMessage()],400);
         }
     }
