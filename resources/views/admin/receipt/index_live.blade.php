@@ -45,49 +45,49 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($orders as $order)
-                    @if($order->deleted_at)
+                @foreach($receipts as $receipt)
+                    @if($receipt->deleted_at)
                         <tr class="bg-red">
-                    @elseif($order->removed_at)
+                    @elseif($receipt->removed_at)
                         <tr class="bg-black">
                     @else
                         <tr>
                             @endif
-                            <td>{{$order->id}}
+                            <td>{{$receipt->id}}
                             </td>
                             <td class="project-actions text-left">
-                                <a class="btn btn-primary btn-sm" href="{{route('admin.order.show',$order->id)}}">
+                                <a class="btn btn-primary btn-sm" href="{{route('admin.order.show',$receipt->id)}}">
                                     <i class="fas fa-folder">
                                     </i>
                                 </a>
-                                {{--                                    <a class="btn btn-info btn-sm" href="{{route('admin.order.edit',$order->id)}}">--}}
+                                {{--                                    <a class="btn btn-info btn-sm" href="{{route('admin.order.edit',$receipt->id)}}">--}}
                                 {{--                                        <i class="fas fa-pencil-alt">--}}
                                 {{--                                        </i>--}}
                                 {{--                                    </a>--}}
 
                             </td>
                             <td>
-                                @if($order->store?->counteragent_id)
-                                    {{$order->store->counteragent->name}}
+                                @if($receipt->store?->counteragent_id)
+                                    <a href="{{route('admin.counteragent.show',$receipt->store->counteragent_id)}}">{{$receipt->store->counteragent->name}}</a>
                                 @endif
                             </td>
                             <td>
-                                @if($order->store?->counteragent_id)
-                                    {{$order->store?->counteragent?->bin}}
+                                @if($receipt->store?->counteragent_id)
+                                    {{$receipt->store?->counteragent?->bin}}
                                 @endif
                             </td>
                             <td>
-                                <a href="{{route('admin.store.show',$order->store_id)}}">{{$order->store?->name}}</a>
+                                <a href="{{route('admin.store.show',$receipt->store_id)}}">{{$receipt->store?->name}}</a>
                             </td>
-                            <td>{{$order->status}}</td>
+                            <td>{{$receipt->status}}</td>
                             <td>
-                                <a href="{{route('admin.user.show',$order->user_id)}}">{{$order->user->name}}</a>
+                                <a href="{{route('admin.user.show',$receipt->user_id)}}">{{$receipt->user->name}}</a>
                             </td>
 
-                            <td class="price">{{$order->total_price}}</td>
+                            <td class="price">{{$receipt->total_price}}</td>
 
-                            <td>{{$order->created_at}}</td>
-                            <td>{{$order->payment_type}}</td>
+                            <td>{{$receipt->created_at}}</td>
+                            <td>{{$receipt->payment_type}}</td>
                         </tr>
                         @endforeach
                 </tbody>
@@ -96,5 +96,5 @@
         </div>
 
     </div>
-    {{$orders->links()}}
+    {{$receipts->links()}}
 </div>

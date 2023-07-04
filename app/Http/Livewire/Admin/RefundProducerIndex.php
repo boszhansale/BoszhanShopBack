@@ -1,0 +1,72 @@
+<?php
+
+namespace App\Http\Livewire\Admin;
+
+use App\Models\Order;
+use App\Models\RefundProducer;
+use App\Models\User;
+use Livewire\Component;
+use Livewire\WithPagination;
+
+class RefundProducerIndex extends Component
+{
+    use WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
+
+    public $search;
+    public $userId;
+    public $storeId;
+    public $statusId;
+    public $counteragentId;
+
+    public $start_created_at;
+    public $end_created_at;
+
+    public function render()
+    {
+        $query = RefundProducer::query()
+            ->join('stores', 'stores.id', 'refund_producers.store_id')
+            ->when($this->search, function ($q) {
+                return $q->where('refund_producers.id', 'LIKE', $this->search . '%');
+            })
+
+            ->when($this->statusId, function ($q) {
+                return $q->where('refund_producers.status_id', $this->statusId);
+            })
+            ->when($this->userId, function ($q) {
+                return $q->where('refund_producers.user_id', $this->userId);
+            })
+            ->when($this->storeId, function ($q) {
+                return $q->where('refund_producers.store_id', $this->storeId);
+            })
+            ->when($this->counteragentId, function ($q) {
+                return $q->where('stores.counteragent_id', $this->counteragentId);
+            })
+            ->when($this->start_created_at, function ($q) {
+                return $q->whereDate('refund_producers.created_at', '>=', $this->start_created_at);
+            })
+            ->when($this->end_created_at, function ($q) {
+                return $q->whereDate('refund_producers.created_at', '<=', $this->end_created_at);
+            })
+            ->latest()
+            ->select('refund_producers.*');
+
+        return view('admin.refundProducer.index_live', [
+            'users' => User::query()
+                ->where('users.status', 1)
+                ->orderBy('users.name')
+                ->get('users.*'),
+
+            'refundProducers' => $query->clone()
+                ->with(['store'])
+                ->paginate(50),
+            'query' => $query,
+        ]);
+    }
+
+    public function mount()
+    {
+
+    }
+}

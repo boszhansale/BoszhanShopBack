@@ -45,49 +45,49 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($orders as $order)
-                    @if($order->deleted_at)
+                @foreach($inventories as $inventory)
+                    @if($inventory->deleted_at)
                         <tr class="bg-red">
-                    @elseif($order->removed_at)
+                    @elseif($inventory->removed_at)
                         <tr class="bg-black">
                     @else
                         <tr>
                             @endif
-                            <td>{{$order->id}}
+                            <td>{{$inventory->id}}
                             </td>
                             <td class="project-actions text-left">
-                                <a class="btn btn-primary btn-sm" href="{{route('admin.order.show',$order->id)}}">
+                                <a class="btn btn-primary btn-sm" href="{{route('admin.inventory.show',$inventory->id)}}">
                                     <i class="fas fa-folder">
                                     </i>
                                 </a>
-                                {{--                                    <a class="btn btn-info btn-sm" href="{{route('admin.order.edit',$order->id)}}">--}}
+                                {{--                                    <a class="btn btn-info btn-sm" href="{{route('admin.inventory.edit',$inventory->id)}}">--}}
                                 {{--                                        <i class="fas fa-pencil-alt">--}}
                                 {{--                                        </i>--}}
                                 {{--                                    </a>--}}
 
                             </td>
                             <td>
-                                @if($order->store?->counteragent_id)
-                                    {{$order->store->counteragent->name}}
+                                @if($inventory->store?->counteragent_id)
+                                    <a href="{{route('admin.counteragent.show',$inventory->store->counteragent_id)}}">{{$inventory->store->counteragent->name}}</a>
                                 @endif
                             </td>
                             <td>
-                                @if($order->store?->counteragent_id)
-                                    {{$order->store?->counteragent?->bin}}
+                                @if($inventory->store?->counteragent_id)
+                                    {{$inventory->store?->counteragent?->bin}}
                                 @endif
                             </td>
                             <td>
-                                <a href="{{route('admin.store.show',$order->store_id)}}">{{$order->store?->name}}</a>
+                                <a href="{{route('admin.store.show',$inventory->store_id)}}">{{$inventory->store?->name}}</a>
                             </td>
-                            <td>{{$order->status}}</td>
+                            <td>{{$inventory->status}}</td>
                             <td>
-                                <a href="{{route('admin.user.show',$order->user_id)}}">{{$order->user->name}}</a>
+                                <a href="{{route('admin.user.show',$inventory->user_id)}}">{{$inventory->user->name}}</a>
                             </td>
 
-                            <td class="price">{{$order->total_price}}</td>
+                            <td class="price">{{$inventory->total_price}}</td>
 
-                            <td>{{$order->created_at}}</td>
-                            <td>{{$order->payment_type}}</td>
+                            <td>{{$inventory->created_at}}</td>
+                            <td>{{$inventory->payment_type}}</td>
                         </tr>
                         @endforeach
                 </tbody>
@@ -96,5 +96,5 @@
         </div>
 
     </div>
-    {{$orders->links()}}
+    {{$inventories->links()}}
 </div>

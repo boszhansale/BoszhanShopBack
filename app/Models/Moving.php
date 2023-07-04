@@ -78,4 +78,8 @@ class Moving extends Model
     {
         return $this->belongsTo(Order::class);
     }
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

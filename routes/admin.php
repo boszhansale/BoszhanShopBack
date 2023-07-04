@@ -4,9 +4,15 @@ use App\Http\Controllers\Admin\BasketController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CounteragentController;
+use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\MainController;
+use App\Http\Controllers\Admin\MovingController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ReceiptController;
+use App\Http\Controllers\Admin\RefundController;
+use App\Http\Controllers\Admin\RefundProducerController;
+use App\Http\Controllers\Admin\RejectController;
 use App\Http\Controllers\Admin\StoreController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
@@ -54,17 +60,13 @@ Route::middleware(['admin.check','auth:sanctum'])->group(function (){
 
     Route::prefix('user')->name('user.')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('index');
-        Route::get('drivers', [UserController::class, 'drivers'])->name('drivers');
-        Route::get('salesreps', [UserController::class, 'salesreps'])->name('salesreps');
-        Route::get('create/{roleId}', [UserController::class, 'create'])->name('create');
+        Route::get('create', [UserController::class, 'create'])->name('create');
         Route::post('store', [UserController::class, 'store'])->name('store');
         Route::get('edit/{user}', [UserController::class, 'edit'])->name('edit');
         Route::get('show/{user}', [UserController::class, 'show'])->name('show');
         Route::put('update/{user}', [UserController::class, 'update'])->name('update');
         Route::get('delete/{user}', [UserController::class, 'delete'])->name('delete');
         Route::get('position/{user}', [UserController::class, 'position'])->name('position');
-        Route::get('order/{user}/{role}', [UserController::class, 'order'])->name('order');
-        Route::post('statistic/by-order-excel', [UserController::class, 'statisticByOrderExcel'])->name('statisticByOrderExcel');
     });
     Route::prefix('store')->name('store.')->group(function () {
         Route::get('/', [StoreController::class, 'index'])->name('index');
@@ -76,15 +78,6 @@ Route::middleware(['admin.check','auth:sanctum'])->group(function (){
         Route::get('delete/{store}', [StoreController::class, 'delete'])->name('delete');
         Route::get('remove/{store}', [StoreController::class, 'remove'])->name('remove');
         Route::get('recover/{store}', [StoreController::class, 'recover'])->name('recover');
-        Route::get('order/{store}', [StoreController::class, 'order'])->name('order');
-
-        Route::get('salesrep-move', [StoreController::class, 'salesrepMove'])->name('salesrep-move');
-        Route::post('salesrep-moving', [StoreController::class, 'salesrepMoving'])->name('salesrep-moving');
-
-        Route::get('driver-move', [StoreController::class, 'driverMove'])->name('driver-move');
-        Route::post('driver-moving', [StoreController::class, 'driverMoving'])->name('driver-moving');
-
-        Route::get('position/{user}', [StoreController::class, 'position'])->name('position');
     });
     Route::prefix('counteragent')->name('counteragent.')->group(function () {
         Route::get('/', [CounteragentController::class, 'index'])->name('index');
@@ -100,100 +93,100 @@ Route::middleware(['admin.check','auth:sanctum'])->group(function (){
         Route::post('importing', [CounteragentController::class, 'importing'])->name('importing');
     });
 
-    Route::prefix('brand')->name('brand.')->group(function () {
-        Route::get('/', [BrandController::class, 'index'])->name('index');
-        Route::get('create', [BrandController::class, 'create'])->name('create');
-        Route::post('store', [BrandController::class, 'store'])->name('store');
-        Route::get('edit/{brand}', [BrandController::class, 'edit'])->name('edit');
-        Route::put('update/{brand}', [BrandController::class, 'update'])->name('update');
-        Route::get('delete/{brand}', [BrandController::class, 'delete'])->name('delete');
-    });
-    Route::prefix('mobile-app')->name('mobile-app.')->group(function () {
-        Route::get('/', [MobileAppController::class, 'index'])->name('index');
-        Route::get('create/{type}', [MobileAppController::class, 'create'])->name('create');
-        Route::post('store', [MobileAppController::class, 'store'])->name('store');
 
-        Route::get('edit/{mobileApp}', [MobileAppController::class, 'edit'])->name('edit');
-        Route::post('update/{mobileApp}', [MobileAppController::class, 'update'])->name('update');
-
-        Route::get('delete/{mobileApp}', [MobileAppController::class, 'delete'])->name('delete');
-        Route::get('download/{mobileApp}', [MobileAppController::class, 'download'])->name('download')->withoutMiddleware(
-            'auth'
-        );
-    });
-    Route::prefix('category')->name('category.')->group(function () {
-        Route::get('/{brand}', [CategoryController::class, 'index'])->name('index');
-        Route::get('create/{brand}', [CategoryController::class, 'create'])->name('create');
-        Route::post('store/{brand}', [CategoryController::class, 'store'])->name('store');
-        Route::get('edit/{category}', [CategoryController::class, 'edit'])->name('edit');
-        Route::put('update/{category}', [CategoryController::class, 'update'])->name('update');
-        Route::get('delete/{category}', [CategoryController::class, 'delete'])->name('delete');
-    });
-
-    Route::prefix('role')->name('role.')->group(function () {
-        Route::get('/', [RoleController::class, 'index'])->name('index');
-        Route::get('create/', [RoleController::class, 'create'])->name('create');
-        Route::post('store', [RoleController::class, 'store'])->name('store');
-        Route::get('edit/{role}', [RoleController::class, 'edit'])->name('edit');
-        Route::put('update/{role}', [RoleController::class, 'update'])->name('update');
-        Route::get('delete/{role}', [RoleController::class, 'delete'])->name('delete');
-    });
 
     Route::prefix('order')->name('order.')->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('index');
-        Route::get('to-onec/{id?}', [OrderController::class, 'toOnec'])->name('to-onec');
-        Route::get('to-onec/edi', [OrderController::class, 'toOnecEdi'])->name('to-onec-edi');
         Route::get('create', [OrderController::class, 'create'])->name('create');
         Route::post('store', [OrderController::class, 'store'])->name('store');
         Route::get('edit/{order}', [OrderController::class, 'edit'])->name('edit');
-        Route::get('many-edit', [OrderController::class, 'manyEdit'])->name('many-edit');
-        Route::put('many-update', [OrderController::class, 'manyUpdate'])->name('many-update');
         Route::get('show/{order}', [OrderController::class, 'show'])->name('show');
         Route::put('update/{order}', [OrderController::class, 'update'])->name('update');
         Route::get('delete/{order}', [OrderController::class, 'delete'])->name('delete');
         Route::get('remove/{order}', [OrderController::class, 'remove'])->name('remove');
         Route::get('recover/{order}', [OrderController::class, 'recover'])->name('recover');
-        Route::get('export-excel/{order}', [OrderController::class, 'exportExcel'])->name('export-excel')->withoutMiddleware(['auth', 'admin']);
-        Route::get('waybill/{order}', [OrderController::class, 'waybill'])->name('waybill')->withoutMiddleware(['auth', 'admin']);;
-        Route::get('driver-move', [OrderController::class, 'driverMove'])->name('driver-move');
-        Route::post('driver-moving', [OrderController::class, 'driverMoving'])->name('driver-moving');
-        Route::get('statistic', [OrderController::class, 'statistic'])->name('statistic');
         Route::get('history/{order}', [OrderController::class, 'history'])->name('history');
-        Route::get('initial-state/{order}', [OrderController::class, 'initialState'])->name('initial-state');
-        Route::get('edi/parse', [OrderController::class, 'ediParse'])->name('edi-parse');
-        Route::get('edi', [OrderController::class, 'edi'])->name('edi');
-    });
-    Route::prefix('basket')->name('basket.')->group(function () {
-        Route::get('create/{order}/{type}', [BasketController::class, 'create'])->name('create');
-        Route::post('store/{order}', [BasketController::class, 'store'])->name('store');
-        Route::get('edit/{basket}', [BasketController::class, 'edit'])->name('edit');
-        Route::put('update/{basket}', [BasketController::class, 'update'])->name('update');
-        Route::get('delete/{basket}', [BasketController::class, 'delete'])->name('delete');
-    });
-    Route::prefix('plan-group')->name('plan-group.')->group(function () {
-        Route::get('index/', [PlanGroupController::class, 'index'])->name('index');
-        Route::get('create/', [PlanGroupController::class, 'create'])->name('create');
-        Route::post('store/', [PlanGroupController::class, 'store'])->name('store');
-        Route::get('edit/{planGroup}', [PlanGroupController::class, 'edit'])->name('edit');
-        Route::put('update/{planGroup}', [PlanGroupController::class, 'update'])->name('update');
-        Route::get('delete/{planGroup}', [PlanGroupController::class, 'delete'])->name('delete');
     });
 
-    Route::prefix('game')->name('game.')->group(function () {
-        Route::get('/', [GameController::class, 'index'])->name('index');
-        Route::get('edit/{game}', [GameController::class, 'edit'])->name('edit');
-        Route::get('update/{game}', [GameController::class, 'update'])->name('update');
-        Route::get('delete/{game}', [GameController::class, 'delete'])->name('delete');
+
+
+    Route::prefix('refund')->name('refund.')->group(function () {
+        Route::get('/', [RefundController::class, 'index'])->name('index');
+        Route::get('create', [RefundController::class, 'create'])->name('create');
+        Route::post('store', [RefundController::class, 'store'])->name('store');
+        Route::get('edit/{refund}', [RefundController::class, 'edit'])->name('edit');
+        Route::get('show/{refund}', [RefundController::class, 'show'])->name('show');
+        Route::put('update/{refund}', [RefundController::class, 'update'])->name('update');
+        Route::get('delete/{refund}', [RefundController::class, 'delete'])->name('delete');
+        Route::get('remove/{refund}', [RefundController::class, 'remove'])->name('remove');
+        Route::get('recover/{refund}', [RefundController::class, 'recover'])->name('recover');
+        Route::get('history/{refund}', [RefundController::class, 'history'])->name('history');
+    });
+    Route::prefix('refund-producer')->name('refundProducer.')->group(function () {
+        Route::get('/', [RefundProducerController::class, 'index'])->name('index');
+        Route::get('create', [RefundProducerController::class, 'create'])->name('create');
+        Route::post('store', [RefundProducerController::class, 'store'])->name('store');
+        Route::get('edit/{refundProducer}', [RefundProducerController::class, 'edit'])->name('edit');
+        Route::get('show/{refundProducer}', [RefundProducerController::class, 'show'])->name('show');
+        Route::put('update/{refundProducer}', [RefundProducerController::class, 'update'])->name('update');
+        Route::get('delete/{refundProducer}', [RefundProducerController::class, 'delete'])->name('delete');
+        Route::get('remove/{refundProducer}', [RefundProducerController::class, 'remove'])->name('remove');
+        Route::get('recover/{refundProducer}', [RefundProducerController::class, 'recover'])->name('recover');
+        Route::get('history/{refundProducer}', [RefundProducerController::class, 'history'])->name('history');
     });
 
-    Route::prefix('counteragent-group')->name('counteragent-group.')->group(function () {
-        Route::get('/', [CounteragentGroupController::class, 'index'])->name('index');
-        Route::get('create', [CounteragentGroupController::class, 'create'])->name('create');
-        Route::post('/', [CounteragentGroupController::class, 'store'])->name('store');
-        Route::get('edit/{counteragentGroup}', [CounteragentGroupController::class, 'edit'])->name('edit');
-        Route::put('update/{counteragentGroup}', [CounteragentGroupController::class, 'update'])->name('update');
-        Route::get('delete/{counteragentGroup}', [CounteragentGroupController::class, 'delete'])->name('delete');
+    Route::prefix('receipt')->name('receipt.')->group(function () {
+        Route::get('/', [ReceiptController::class, 'index'])->name('index');
+        Route::get('create', [ReceiptController::class, 'create'])->name('create');
+        Route::post('store', [ReceiptController::class, 'store'])->name('store');
+        Route::get('edit/{receipt}', [ReceiptController::class, 'edit'])->name('edit');
+        Route::get('show/{receipt}', [ReceiptController::class, 'show'])->name('show');
+        Route::put('update/{receipt}', [ReceiptController::class, 'update'])->name('update');
+        Route::get('delete/{receipt}', [ReceiptController::class, 'delete'])->name('delete');
+        Route::get('remove/{receipt}', [ReceiptController::class, 'remove'])->name('remove');
+        Route::get('recover/{receipt}', [ReceiptController::class, 'recover'])->name('recover');
+        Route::get('history/{receipt}', [ReceiptController::class, 'history'])->name('history');
     });
+
+
+    Route::prefix('moving')->name('moving.')->group(function () {
+        Route::get('/', [MovingController::class, 'index'])->name('index');
+        Route::get('create', [MovingController::class, 'create'])->name('create');
+        Route::post('store', [MovingController::class, 'store'])->name('store');
+        Route::get('edit/{moving}', [MovingController::class, 'edit'])->name('edit');
+        Route::get('show/{moving}', [MovingController::class, 'show'])->name('show');
+        Route::put('update/{moving}', [MovingController::class, 'update'])->name('update');
+        Route::get('delete/{moving}', [MovingController::class, 'delete'])->name('delete');
+        Route::get('remove/{moving}', [MovingController::class, 'remove'])->name('remove');
+        Route::get('recover/{moving}', [MovingController::class, 'recover'])->name('recover');
+        Route::get('history/{moving}', [MovingController::class, 'history'])->name('history');
+    });
+
+    Route::prefix('reject')->name('reject.')->group(function () {
+        Route::get('/', [RejectController::class, 'index'])->name('index');
+        Route::get('create', [RejectController::class, 'create'])->name('create');
+        Route::post('store', [RejectController::class, 'store'])->name('store');
+        Route::get('edit/{reject}', [RejectController::class, 'edit'])->name('edit');
+        Route::get('show/{reject}', [RejectController::class, 'show'])->name('show');
+        Route::put('update/{reject}', [RejectController::class, 'update'])->name('update');
+        Route::get('delete/{reject}', [RejectController::class, 'delete'])->name('delete');
+        Route::get('remove/{reject}', [RejectController::class, 'remove'])->name('remove');
+        Route::get('recover/{reject}', [RejectController::class, 'recover'])->name('recover');
+        Route::get('history/{reject}', [RejectController::class, 'history'])->name('history');
+    });
+    Route::prefix('inventory')->name('inventory.')->group(function () {
+        Route::get('/', [InventoryController::class, 'index'])->name('index');
+        Route::get('create', [InventoryController::class, 'create'])->name('create');
+        Route::post('store', [InventoryController::class, 'store'])->name('store');
+        Route::get('edit/{inventory}', [InventoryController::class, 'edit'])->name('edit');
+        Route::get('show/{inventory}', [InventoryController::class, 'show'])->name('show');
+        Route::put('update/{inventory}', [InventoryController::class, 'update'])->name('update');
+        Route::get('delete/{inventory}', [InventoryController::class, 'delete'])->name('delete');
+        Route::get('remove/{inventory}', [InventoryController::class, 'remove'])->name('remove');
+        Route::get('recover/{inventory}', [InventoryController::class, 'recover'])->name('recover');
+        Route::get('history/{inventory}', [InventoryController::class, 'history'])->name('history');
+    });
+
 
 });
 

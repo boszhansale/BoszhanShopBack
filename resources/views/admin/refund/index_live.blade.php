@@ -37,57 +37,59 @@
                     <th>Контрагент</th>
                     <th>Контрагент(BIN)</th>
                     <th>ТТ</th>
-                    <th>Статус</th>
+                    <th>Операция</th>
+                    <th>продажа</th>
                     <th>Продавец</th>
                     <th>сумма</th>
                     <th>Дата создание</th>
-                    <th>тип оплаты</th>
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($orders as $order)
-                    @if($order->deleted_at)
+                @foreach($refunds as $refund)
+                    @if($refund->deleted_at)
                         <tr class="bg-red">
-                    @elseif($order->removed_at)
+                    @elseif($refund->removed_at)
                         <tr class="bg-black">
                     @else
                         <tr>
                             @endif
-                            <td>{{$order->id}}
+                            <td>{{$refund->id}}
                             </td>
                             <td class="project-actions text-left">
-                                <a class="btn btn-primary btn-sm" href="{{route('admin.order.show',$order->id)}}">
+                                <a class="btn btn-primary btn-sm" href="{{route('admin.refund.show',$refund->id)}}">
                                     <i class="fas fa-folder">
                                     </i>
                                 </a>
-                                {{--                                    <a class="btn btn-info btn-sm" href="{{route('admin.order.edit',$order->id)}}">--}}
+                                {{--                                    <a class="btn btn-info btn-sm" href="{{route('admin.refund.edit',$refund->id)}}">--}}
                                 {{--                                        <i class="fas fa-pencil-alt">--}}
                                 {{--                                        </i>--}}
                                 {{--                                    </a>--}}
 
                             </td>
                             <td>
-                                @if($order->store?->counteragent_id)
-                                    {{$order->store->counteragent->name}}
+                                @if($refund->store?->counteragent_id)
+                                    {{$refund->store->counteragent->name}}
                                 @endif
                             </td>
                             <td>
-                                @if($order->store?->counteragent_id)
-                                    {{$order->store?->counteragent?->bin}}
+                                @if($refund->store?->counteragent_id)
+                                    {{$refund->store?->counteragent?->bin}}
                                 @endif
                             </td>
                             <td>
-                                <a href="{{route('admin.store.show',$order->store_id)}}">{{$order->store?->name}}</a>
+                                <a href="{{route('admin.store.show',$refund->store_id)}}">{{$refund->store?->name}}</a>
                             </td>
-                            <td>{{$order->status}}</td>
+                            <td>{{$refund->typeInfo()}}</td>
                             <td>
-                                <a href="{{route('admin.user.show',$order->user_id)}}">{{$order->user->name}}</a>
+                                <a target="_blank" href="{{route('admin.order.show',$refund->order_id)}}">{{$refund->order_id}}</a>
+                            </td>
+                            <td>
+                                <a href="{{route('admin.user.show',$refund->user_id)}}">{{$refund->user->name}}</a>
                             </td>
 
-                            <td class="price">{{$order->total_price}}</td>
+                            <td class="price">{{$refund->total_price}}</td>
 
-                            <td>{{$order->created_at}}</td>
-                            <td>{{$order->payment_type}}</td>
+                            <td>{{$refund->created_at}}</td>
                         </tr>
                         @endforeach
                 </tbody>
@@ -96,5 +98,5 @@
         </div>
 
     </div>
-    {{$orders->links()}}
+    {{$refunds->links()}}
 </div>

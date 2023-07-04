@@ -49,3 +49,53 @@
         </a>
     </li>
 
+    <li class="nav-item">
+        <a href="{{route('admin.refund.index')}}" class="nav-link">
+            <i class="nav-icon fas fa-tasks"></i>
+            <p>
+                Возврат
+            </p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="{{route('admin.refundProducer.index')}}" class="nav-link">
+            <i class="nav-icon fas fa-tasks"></i>
+            <p>
+                Возврат поставщику
+            </p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="{{route('admin.receipt.index')}}" class="nav-link">
+            <i class="nav-icon fas fa-tasks"></i>
+            <p>
+                Поступление
+            </p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="{{route('admin.moving.index')}}" class="nav-link">
+            <i class="nav-icon fas fa-tasks"></i>
+            <p>
+                Перемещение
+            </p>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a href="{{route('admin.reject.index')}}" class="nav-link">
+            <i class="nav-icon fas fa-tasks"></i>
+            <p>
+                Списание
+            </p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="{{route('admin.inventory.index')}}" class="nav-link">
+            <i class="nav-icon fas fa-tasks"></i>
+            <p>
+                Инвентаризация
+            </p>
+        </a>
+    </li>
+

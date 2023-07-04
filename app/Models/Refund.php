@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Refund
@@ -58,7 +59,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 //Возврат от покупателя
 class Refund extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
 
     protected $fillable = [
         'id',
@@ -105,5 +106,12 @@ class Refund extends Model
     public function products(): HasMany
     {
         return $this->hasMany(RefundProduct::class);
+    }
+    function typeInfo():string
+    {
+        return match($this->type){
+            1 => 'День в день',
+            2 => 'Не день в день'
+        };
     }
 }

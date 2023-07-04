@@ -45,49 +45,49 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach($orders as $order)
-                    @if($order->deleted_at)
+                @foreach($refundProducers as $refundProducer)
+                    @if($refundProducer->deleted_at)
                         <tr class="bg-red">
-                    @elseif($order->removed_at)
+                    @elseif($refundProducer->removed_at)
                         <tr class="bg-black">
                     @else
                         <tr>
                             @endif
-                            <td>{{$order->id}}
+                            <td>{{$refundProducer->id}}
                             </td>
                             <td class="project-actions text-left">
-                                <a class="btn btn-primary btn-sm" href="{{route('admin.order.show',$order->id)}}">
+                                <a class="btn btn-primary btn-sm" href="{{route('admin.refundProducer.show',$refundProducer->id)}}">
                                     <i class="fas fa-folder">
                                     </i>
                                 </a>
-                                {{--                                    <a class="btn btn-info btn-sm" href="{{route('admin.order.edit',$order->id)}}">--}}
+                                {{--                                    <a class="btn btn-info btn-sm" href="{{route('admin.order.edit',$refundProducer->id)}}">--}}
                                 {{--                                        <i class="fas fa-pencil-alt">--}}
                                 {{--                                        </i>--}}
                                 {{--                                    </a>--}}
 
                             </td>
                             <td>
-                                @if($order->store?->counteragent_id)
-                                    {{$order->store->counteragent->name}}
+                                @if($refundProducer->store?->counteragent_id)
+                                    <a href="{{route('admin.counteragent.show',$refundProducer->store->counteragent_id)}}">{{$refundProducer->store->counteragent->name}}</a>
                                 @endif
                             </td>
                             <td>
-                                @if($order->store?->counteragent_id)
-                                    {{$order->store?->counteragent?->bin}}
+                                @if($refundProducer->store?->counteragent_id)
+                                    {{$refundProducer->store?->counteragent?->bin}}
                                 @endif
                             </td>
                             <td>
-                                <a href="{{route('admin.store.show',$order->store_id)}}">{{$order->store?->name}}</a>
+                                <a href="{{route('admin.store.show',$refundProducer->store_id)}}">{{$refundProducer->store?->name}}</a>
                             </td>
-                            <td>{{$order->status}}</td>
+                            <td>{{$refundProducer->status}}</td>
                             <td>
-                                <a href="{{route('admin.user.show',$order->user_id)}}">{{$order->user->name}}</a>
+                                <a href="{{route('admin.user.show',$refundProducer->user_id)}}">{{$refundProducer->user->name}}</a>
                             </td>
 
-                            <td class="price">{{$order->total_price}}</td>
+                            <td class="price">{{$refundProducer->total_price}}</td>
 
-                            <td>{{$order->created_at}}</td>
-                            <td>{{$order->payment_type}}</td>
+                            <td>{{$refundProducer->created_at}}</td>
+                            <td>{{$refundProducer->payment_type}}</td>
                         </tr>
                         @endforeach
                 </tbody>
@@ -96,5 +96,5 @@
         </div>
 
     </div>
-    {{$orders->links()}}
+    {{$refundProducers->links()}}
 </div>
