@@ -31,14 +31,9 @@
                         @endif
                         <tr>
                             <th>Торговый точка</th>
-                            <td><a href="{{route('admin.store.show',$receipt->store_id)}}">{{$receipt->store->name}}</a>
+                            <td>{{$receipt->store->name}}
                             </td>
                         </tr>
-                        <tr>
-                            <th>Тип оплаты</th>
-                            <td>{{$receipt->payment_type}}</td>
-                        </tr>
-
                         <tr>
                             <th>Дата создании</th>
                             <td>{{$receipt->created_at}}</td>
@@ -47,7 +42,14 @@
                             <th>Сумма</th>
                             <td>{{$receipt->total_price}}</td>
                         </tr>
-
+                        <tr>
+                            <th>чек</th>
+                            <td>
+                                @if($receipt->ticket_print_url)
+                                    <a target="_blank" href="{{$receipt->ticket_print_url}}">{{$refund->check_number}}</a>
+                                @endif
+                            </td>
+                        </tr>
                     </table>
                 </div>
             </div>
@@ -57,7 +59,6 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Покупки на сумму {{$receipt->products()->sum('all_price')}}</div>
                 <div class="card-body">
                     <table class="table table-bordered">
                         <thead>

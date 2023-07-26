@@ -87,4 +87,12 @@ class WebkassaCheck extends Model
     {
         return $this->belongsTo(Refund::class);
     }
+    public function refundProducer(): BelongsTo
+    {
+        return $this->belongsTo(RefundProducer::class);
+    }
+    public function receipt(): BelongsTo
+    {
+        return $this->belongsTo(Receipt::class);
+    }
 }

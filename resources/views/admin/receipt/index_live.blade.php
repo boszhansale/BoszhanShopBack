@@ -56,7 +56,7 @@
                             <td>{{$receipt->id}}
                             </td>
                             <td class="project-actions text-left">
-                                <a class="btn btn-primary btn-sm" href="{{route('admin.order.show',$receipt->id)}}">
+                                <a class="btn btn-primary btn-sm" href="{{route('admin.receipt.show',$receipt->id)}}">
                                     <i class="fas fa-folder">
                                     </i>
                                 </a>

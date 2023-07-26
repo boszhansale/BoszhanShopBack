@@ -7,14 +7,14 @@
         </p>
     </a>
 </li>
-{{--    <li class="nav-item">--}}
-{{--        <a href="{{route('admin.product.index')}}" class="nav-link">--}}
-{{--            <i class="nav-icon fas fa-th"></i>--}}
-{{--            <p>--}}
-{{--                Продукты--}}
-{{--            </p>--}}
-{{--        </a>--}}
-{{--    </li>--}}
+    <li class="nav-item">
+        <a href="{{route('admin.product.index')}}" class="nav-link">
+            <i class="nav-icon fas fa-th"></i>
+            <p>
+                Продукты
+            </p>
+        </a>
+    </li>
     <li class="nav-item">
         <a href="{{route('admin.user.index')}}" class="nav-link">
             <i class="nav-icon fas fa-user"></i>
@@ -23,14 +23,16 @@
             </p>
         </a>
     </li>
-    <li class="nav-item">
-        <a href="{{route('admin.counteragent.index')}}" class="nav-link">
-            <i class="nav-icon fas fa-shopping-bag"></i>
-            <p>
-                Контрагенты
-            </p>
-        </a>
-    </li>
+
+
+{{--    <li class="nav-item">--}}
+{{--        <a href="{{route('admin.counteragent.index')}}" class="nav-link">--}}
+{{--            <i class="nav-icon fas fa-shopping-bag"></i>--}}
+{{--            <p>--}}
+{{--                Контрагенты--}}
+{{--            </p>--}}
+{{--        </a>--}}
+{{--    </li>--}}
     <li class="nav-item">
         <a href="{{route('admin.store.index')}}" class="nav-link">
             <i class="nav-icon fas fa-shopping-basket"></i>

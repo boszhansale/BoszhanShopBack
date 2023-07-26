@@ -29,12 +29,15 @@ class MovingUpdateRequest extends FormRequest
     {
         return [
             'payment_type' => ['numeric'],
+            'operation' => ['in:1,2'],
+            'storage_id' => ['exists:storages,id'],
+            'order_id' => ['exists:orders,id'],
 
-            'products' => 'array|min:1',
-            'products.event' => 'in:update,create,delete',
-            'products.*.product_id' => 'exists:products,id',
+            'products' => 'required|array|min:1',
+            'products.*.product_id' => 'required|exists:products,id',
             'products.*.comment' => 'string',
             'products.*.count' => 'required',
+            'products.*.price' => 'required',
         ];
     }
 

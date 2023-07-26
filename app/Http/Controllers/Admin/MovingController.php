@@ -38,7 +38,8 @@ class MovingController extends Controller
 
     public function show($orderId)
     {
-        $moving = Moving::withTrashed()->find($orderId);
+//        $moving = Moving::withTrashed()->find($orderId);
+        $moving = Moving::find($orderId);
 
         return view('admin.moving.show', compact('moving'));
     }

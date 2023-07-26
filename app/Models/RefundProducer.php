@@ -75,7 +75,10 @@ class RefundProducer extends Model
         'user_id',
         'status',
         'type',
-        'order_id'
+        'order_id',
+        'check_number',
+        'ticket_print_url',
+        'check_status',
     ];
 
     public function counteragent(): BelongsTo

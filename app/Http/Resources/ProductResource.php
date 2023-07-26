@@ -36,8 +36,8 @@ class ProductResource extends JsonResource
             'discount_15' => $this->discount_15,
             'discount_20' => $this->discount_20,
             'rating' => $this->rating,
-            'price_type_id' => $this->price_type_id,
-            'price' => $this->price,
+            'price_type_id' => 3,
+            'price' => $this->prices()->wherePriceTypeId(3)->first()->price,
             'images' => $this->images,
         ];
     }

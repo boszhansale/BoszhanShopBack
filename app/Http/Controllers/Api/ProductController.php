@@ -14,7 +14,7 @@ class ProductController extends Controller
     public function index(ProductIndexRequest $request)
     {
 
-        $priceTypeId = 1;
+//        $priceTypeId = 3;
         if ($request->has('counteragent_id')){
             $counteragent = Counteragent::find($request->get('counteragent_id'));
             $priceTypeId = $counteragent->price_type_id;
@@ -43,9 +43,9 @@ class ProductController extends Controller
 //            ->orderBy('name')
 //            ->get();
         $products = Product::query()
-            ->join('product_price_types', 'product_price_types.product_id', 'products.id')
-            ->join('product_barcodes', 'product_barcodes.product_id', 'products.id')
-            ->where('product_price_types.price_type_id', $priceTypeId)
+//            ->join('product_price_types', 'product_price_types.product_id', 'products.id')
+            ->leftJoin('product_barcodes', 'product_barcodes.product_id', 'products.id')
+//            ->where('product_price_types.price_type_id', $priceTypeId)
             ->when($request->has('category_id'), function ($query) {
                 return $query->where('category_id', request('category_id'));
             })
@@ -60,9 +60,11 @@ class ProductController extends Controller
                 });
             })
             ->where('products.remainder', '>', 0)
+//            ->where('product_price_types.price_type_id',  3)
             ->with(['images'])
-            ->select('products.*', DB::raw('MAX(product_price_types.price) AS price'), 'product_price_types.price_type_id')
-            ->groupBy('products.id', 'product_price_types.price_type_id')
+//            ->select('products.*', DB::raw('MAX(product_price_types.price) AS price'), 'product_price_types.price_type_id')
+            ->select('products.*')
+            ->groupBy('products.id')
             ->orderBy('name')
             ->get();
 

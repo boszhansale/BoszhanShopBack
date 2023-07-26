@@ -22,20 +22,21 @@ class WebKassaService
      */
     public static function authorize (User $user,$check = true):string
     {
+
         if ($check){
-            if (Carbon::parse($user->webkassa_login_at)->addHours(23)->gt(now())){
-                return  $user->webkassa_token;
+            if ($user->webkassa_login_at){
+                if (Carbon::parse($user->webkassa_login_at)->addHours(23)->gt(now())){
+                    return  $user->webkassa_token;
+                }
             }
         }
         if (!$user->webkassa_login or !$user->webkassa_password){
             throw new Exception('login password not found');
         }
-
         $response = Http::post(config('services.webkassa.server').'Authorize',[
             'Login' => $user->webkassa_login,
             'Password' => $user->webkassa_password,
         ]);
-
         if ($response->status() != 200){
             throw new Exception($response->json());
         }
@@ -300,6 +301,12 @@ class WebKassaService
                     'ticket_print_url' => $data['Data']['TicketPrintUrl']
                 ]
             );
+
+            $webkassaCheck->receipt()->update([
+                'check_number' =>  $data['Data']['CheckNumber'],
+                'ticket_print_url' =>  $data['Data']['TicketPrintUrl'],
+                'check_status' => 2
+            ]);
             return $data;
         }
         if (isset($data['Errors'])){
@@ -308,6 +315,10 @@ class WebKassaService
                     'data' => $data,
                 ]
             );
+
+            $webkassaCheck->receipt()->update([
+                'check_status' => 3
+            ]);
             if ($data['Errors'][0]['Code'] == 2){
                 return self::checkReceipt($receipt,$payments,false);
             }
@@ -377,6 +388,11 @@ class WebKassaService
                     'ticket_print_url' => $data['Data']['TicketPrintUrl']
                 ]
             );
+            $webkassaCheck->refundProducer()->update([
+                'check_number' =>  $data['Data']['CheckNumber'],
+                'ticket_print_url' =>  $data['Data']['TicketPrintUrl'],
+                'check_status' => 2
+            ]);
             return $data;
         }
         if (isset($data['Errors'])){
@@ -385,7 +401,9 @@ class WebKassaService
                     'data' => $data,
                 ]
             );
-
+            $webkassaCheck->refundProducer()->update([
+                'check_status' => 3
+            ]);
             throw new Exception($data['Errors'][0]['Text']);
         }
         throw new Exception('response data not found');
@@ -465,10 +483,11 @@ class WebKassaService
     public static function XReport(User $user)
     {
         $token = self::authorize($user);
+
         if (!$user->webkassaCashBox?->unique_number){
             throw new Exception('касса не найден');
         }
-        $response = Http::withHeaders(['x-api-key' => config('services.webkassa.key')])
+        $response = Http::withoutVerifying()->withHeaders(['x-api-key' => config('services.webkassa.key')])
             ->post(config('services.webkassa.server').'XReport',[
                 'Token' => $token,
                 'CashboxUniqueNumber' => $user->webkassaCashBox->unique_number,
@@ -490,7 +509,7 @@ class WebKassaService
     /**
      * @throws Exception
      */
-    public static function printFormat(User $user, $number,$paperKind = 0)
+    public static function printFormat(User $user, $number,$paperKind = 3)
     {
         $token = self::authorize($user);
         if (!$user->webkassaCashBox?->unique_number){

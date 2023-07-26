@@ -2,13 +2,9 @@
     <DOCUMENTNAME>520</DOCUMENTNAME>
     <NUMBER>{{ $receipt->id  }}-0800{{  now()->year  }}-{{  substr($receipt->user->id_1c,-4)  }}-{{  $receipt->payment_type  }}</NUMBER>
     <DATE>{{ $receipt->created_at->format('Y-m-d')  }}</DATE>
-    <DELIVERYDATE>{{ now()->format('Y-m-d') }}</DELIVERYDATE>
-    <MANAGER>{{  config('app.driver_id_onec')  }}</MANAGER>
-    <DRIVER>{{$receipt->user->id_1c}}</DRIVER>
     <CURRENCY>KZT</CURRENCY>
     <HEAD>
         <SUPPLIER>9864232489962</SUPPLIER>
-        <BUYER>{{$idOnec}}</BUYER>
         <DELIVERYPLACE>{{$idSell}}</DELIVERYPLACE>
         <INVOICEPARTNER>{{$idOnec}}</INVOICEPARTNER>
         <SENDER>{{$idSell}}</SENDER>

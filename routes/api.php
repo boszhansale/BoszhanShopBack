@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\StorageController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\WebkassaController;
+use App\Http\Controllers\TestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +35,7 @@ Route::get('brand',[BrandController::class,'index']);
 Route::get('category',[CategoryController::class,'index']);
 Route::get('product',[ProductController::class,'index']);
 Route::get('storage',[StorageController::class,'index']);
+Route::get('test',[TestController::class,'index']);
 
 
 
@@ -102,6 +104,10 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::get('/',[MovingController::class,'index']);
         Route::get('history',[MovingController::class,'history']);
         Route::post('/',[MovingController::class,'store']);
+        Route::post('update/{moving}',[MovingController::class,'update']);
+        Route::post('delete-product/{movingProduct}',[MovingController::class,'deleteProduct']);
+
+
         Route::delete('{moving}',[MovingController::class,'delete']);
         Route::post('check/{moving}',[MovingController::class,'check']);
     });

@@ -34,11 +34,16 @@
                 <tr>
                     <th>ID</th>
                     <th></th>
+                    <th>Покупатель</th>
                     <th>Контрагент</th>
                     <th>Контрагент(BIN)</th>
                     <th>ТТ</th>
+                    <th>Признак</th>
                     <th>Статус</th>
                     <th>Продавец</th>
+                    <th>номер дисконт карты</th>
+                    <th>кэшбек</th>
+                    <th>скидка</th>
                     <th>сумма</th>
                     <th>Дата создание</th>
                     <th>тип оплаты</th>
@@ -66,6 +71,8 @@
                                 {{--                                    </a>--}}
 
                             </td>
+                            <td>{{ $order->counteragent_id ? 'Юр':'физ'  }}</td>
+
                             <td>
                                 @if($order->store?->counteragent_id)
                                     {{$order->store->counteragent->name}}
@@ -79,15 +86,19 @@
                             <td>
                                 <a href="{{route('admin.store.show',$order->store_id)}}">{{$order->store?->name}}</a>
                             </td>
+                            <td>{{$order->online_sale ? 'онлайн' : 'офлайн' }}</td>
                             <td>{{$order->status}}</td>
                             <td>
                                 <a href="{{route('admin.user.show',$order->user_id)}}">{{$order->user->name}}</a>
                             </td>
 
+                            <td>{{$order->discount_phone}}</td>
+                            <td class="price">{{$order->discount_cashback}}</td>
+                            <td class="price">{{$order->total_discount_price}}</td>
                             <td class="price">{{$order->total_price}}</td>
 
                             <td>{{$order->created_at}}</td>
-                            <td>{{$order->payment_type}}</td>
+                            <td>{{$order->paymentTypeInfo()}}</td>
                         </tr>
                         @endforeach
                 </tbody>

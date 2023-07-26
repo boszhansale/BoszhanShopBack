@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * App\Models\Store
@@ -64,5 +65,14 @@ class Store extends Model
     public function counteragent(): BelongsTo
     {
         return $this->belongsTo(Counteragent::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+    public function refunds(): HasMany
+    {
+        return $this->hasMany(Refund::class);
     }
 }

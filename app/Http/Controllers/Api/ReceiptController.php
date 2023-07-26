@@ -30,7 +30,7 @@ class ReceiptController extends Controller
     public function index(ReceiptIndexRequest $request)
     {
         $receipts = Receipt::query()
-            ->where('receipts.user_id',Auth::id())
+            ->where('receipts.store_id',Auth::user()->store_id)
             ->when($request->has('date_from'),function ($q){
                 $q->whereDate('created_at','>=',request('date_from'));
             })
@@ -46,7 +46,7 @@ class ReceiptController extends Controller
     public function history(ReceiptIndexRequest $request)
     {
         $receipts = Receipt::query()
-            ->where('receipts.user_id',Auth::id())
+            ->where('receipts.store_id',Auth::user()->store_id)
             ->when($request->has('date_from'),function ($q){
                 $q->whereDate('created_at','>=',request('date_from'));
             })

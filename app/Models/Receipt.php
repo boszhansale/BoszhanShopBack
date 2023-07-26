@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Receipt
@@ -50,7 +51,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Receipt extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
     protected $fillable = [
         'id',
         'organization_id',
@@ -68,6 +69,9 @@ class Receipt extends Model
         'moving_id',
         'refund_id',
         'nds',
+        'check_number',
+        'ticket_print_url',
+        'check_status',
     ];
     //1. Новый документ поступления товара 2. Журнал документов поступления товара
 
@@ -98,6 +102,10 @@ class Receipt extends Model
     public function storage(): BelongsTo
     {
         return $this->belongsTo(Storage::class);
+    }
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
 }

@@ -38,7 +38,7 @@ class ReceiptStoreRequest extends FormRequest
     public function messages()
     {
         return [
-            'login.exists' => 'неверный логин',
+            'counteragent_id.required_if' => 'выберите поставщика',
         ];
     }
 

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exports\Excel\UserOrderExport;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\UserStoreRequest;
+use App\Http\Requests\Admin\UserUpdateRequest;
 use App\Models\Brand;
 use App\Models\Counteragent;
 use App\Models\CounteragentUser;
@@ -13,6 +15,8 @@ use App\Models\Order;
 use App\Models\PlanGroup;
 use App\Models\PlanGroupUser;
 use App\Models\Role;
+use App\Models\Storage;
+use App\Models\Store;
 use App\Models\SupervisorSalesrep;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -54,301 +58,34 @@ class UserController extends Controller
         return view('admin.user.order', compact('user', 'role'));
     }
 
-    public function create($roleId)
+    public function create()
     {
-        $roles = Role::all();
-        $salesreps = User::query()
-            ->where('users.role_id', 1)
-            ->where('users.status', 1)
-            ->select('users.*')
-            ->orderBy('users.name')
-            ->get();
-        $drivers = User::query()
-            ->where('users.role_id', 2)
-            ->where('users.status', 1)
-            ->select('users.*')
-            ->orderBy('users.name')
-            ->get();
-        $planGroups = PlanGroup::all();
-        $brands = Brand::all();
-        $id_1c = User::max('id_1c') + 1;
 
-        return view(
-            'admin.user.create',
-            compact('roles', 'brands', 'id_1c', 'salesreps', 'drivers', 'planGroups', 'roleId')
-        );
+        $stores = Store::orderBy('name')->get();
+        $storages = Storage::orderBy('name')->get();
+
+        return view('admin.user.create', compact( 'stores','storages' ));
     }
 
-    public function store(Request $request)
+    public function store(UserStoreRequest $request)
     {
-        $user = new User();
-        $user->name = $request->get('name');
-        $user->login = $request->get('login');
-        $user->phone = $request->get('phone');
-        $user->id_1c = $request->get('id_1c');
-        $user->role_id = $request->get('role_id');
-        $user->winning_access = $request->has('winning_access');
-        $user->payout_access = $request->has('payout_access');
-        $user->password = Hash::make($request->get('password'));
-        $user->inventory_number = $request->get('inventory_number');
-        $user->sim_number = $request->get('sim_number');
-        $user->case = $request->has('case');
-        $user->screen_security = $request->has('screen_security');
-        $user->save();
-
-        if ($request->has('counterparty')) {
-            $id_1c = (int)Counterparty::orderBy('id', 'desc')->firstOrFail()->id_1c;
-            $c = new Counterparty();
-            $c->name = $request->get('name');
-            $c->user_id = $user->id;
-            $c->id_1c = $id_1c + 1;
-            $c->save();
-        }
-
-        if ($request->has('drivers')) {
-            foreach ($request->get('drivers') as $driver) {
-                DriverSalesrep::updateOrCreate(
-                    [
-                        'driver_id' => $driver,
-                        'salesrep_id' => $user->id,
-                    ],
-                    [
-                        'driver_id' => $driver,
-                        'salesrep_id' => $user->id,
-                    ]
-                );
-            }
-        }
-        if ($request->has('salesreps')) {
-            foreach ($request->get('salesreps') as $salesrep) {
-                DriverSalesrep::updateOrCreate(
-                    [
-                        'driver_id' => $user->id,
-                        'salesrep_id' => $salesrep,
-                    ],
-                    [
-                        'driver_id' => $user->id,
-                        'salesrep_id' => $salesrep,
-                    ]
-                );
-            }
-        }
-        if ($request->has('counteragents')) {
-            foreach ($request->get('counteragents') as $counteragentId) {
-                CounteragentUser::create([
-                    'user_id' => $user->id,
-                    'counteragent_id' => $counteragentId,
-                ]);
-            }
-        }
-
-
-//        if ($request->has('roles')) {
-//            foreach ($request->get('roles') as $role_id) {
-//                UserRole::updateOrCreate(
-//                    [
-//                        'user_id' => $user->id,
-//                        'role_id' => $role_id,
-//                    ],
-//                    [
-//                        'user_id' => $user->id,
-//                        'role_id' => $role_id,
-//                    ]
-//                );
-//
-//                if ($role_id == 1) {
-//                    PlanGroupUser::create([
-//                        'plan_group_id' => $request->get('plan_group_id'),
-//                        'plan' => $request->get('plan'),
-//                        'user_id' => $user->id,
-//                    ]);
-//                }
-//            }
-//        }
-
-        if ($user->role_id == 1) {
-            PlanGroupUser::create([
-                'plan_group_id' => $request->get('plan_group_id'),
-                'plan' => $request->get('plan'),
-                'user_id' => $user->id,
-            ]);
-        }
-
-        if ($request->has('brand_plans')) {
-            foreach ($request->get('brand_plans') as $item) {
-                $user->brandPlans()->create([
-                    'brand_id' => $item['brand_id'],
-                    'plan' => $item['plan'],
-                ]);
-            }
-        }
+        $user = User::create($request->validated());
 
         return redirect()->route('admin.user.index');
     }
 
     public function edit(User $user)
     {
-        $roles = Role::all();
-        $salesreps = User::query()
-            ->where('users.role_id', 1)
-            ->where('users.status', 1)
-            ->select('users.*')
-            ->orderBy('users.name')
-            ->get();
-        $drivers = User::query()
-            ->where('users.role_id', 2)
-            ->where('users.status', 1)
-            ->select('users.*')
-            ->orderBy('users.name')
-            ->get();
-        $counteragents = Counteragent::orderBy('name')->get();
-        $planGroups = PlanGroup::all();
+        $stores = Store::orderBy('name')->get();
+        $storages = Storage::orderBy('name')->get();
 
-        return view('admin.user.edit', compact('user', 'roles', 'salesreps', 'drivers', 'planGroups', 'counteragents'));
+        return view('admin.user.edit', compact('user', 'stores','storages' ));
     }
 
-    public function update(Request $request, User $user)
+    public function update(UserUpdateRequest $request, User $user)
     {
 
-        $user->name = $request->get('name');
-        $user->id_1c = $request->get('id_1c');
-        $user->login = $request->get('login');
-        $user->phone = $request->get('phone');
-        $user->id_1c = $request->get('id_1c');
-        $user->inventory_number = $request->get('inventory_number');
-        $user->sim_number = $request->get('sim_number');
-        $user->case = $request->has('case');
-        $user->screen_security = $request->has('screen_security');
-        $user->winning_access = $request->has('winning_access');
-        $user->payout_access = $request->has('payout_access');
-        if ($request->has('password')) {
-            $user->password = Hash::make($request->get('password'));
-        }
-        $user->save();
-
-        if ($request->has('drivers')) {
-            DriverSalesrep::where('salesrep_id', $user->id)->delete();
-            foreach ($request->get('drivers') as $driver) {
-                DriverSalesrep::create(
-                    [
-                        'driver_id' => $driver,
-                        'salesrep_id' => $user->id,
-                    ]
-                );
-            }
-        } else {
-            DriverSalesrep::where('salesrep_id', $user->id)->delete();
-        }
-        if ($request->has('salesreps')) {
-            DriverSalesrep::where('driver_id', $user->id)->delete();
-            foreach ($request->get('salesreps') as $salesrep) {
-                DriverSalesrep::create(
-                    [
-                        'driver_id' => $user->id,
-                        'salesrep_id' => $salesrep,
-                    ]
-                );
-            }
-        } else {
-            DriverSalesrep::where('driver_id', $user->id)->delete();
-        }
-
-
-        if ($request->has('supervisor_salesreps')) {
-            SupervisorSalesrep::where('supervisor_id', $user->id)->delete();
-            foreach ($request->get('supervisor_salesreps') as $salesrep) {
-                SupervisorSalesrep::create(
-                    [
-                        'supervisor_id' => $user->id,
-                        'salesrep_id' => $salesrep,
-                    ]
-                );
-            }
-        } else {
-            SupervisorSalesrep::where('supervisor_id', $user->id)->delete();
-        }
-        if ($request->has('counteragents')) {
-            CounteragentUser::whereUserId($user->id)->delete();
-
-            foreach ($request->get('counteragents') as $counteragentId) {
-                CounteragentUser::create([
-                    'user_id' => $user->id,
-                    'counteragent_id' => $counteragentId,
-                ]);
-            }
-        } else {
-            CounteragentUser::whereUserId($user->id)->delete();
-        }
-//        if ($request->has('roles')) {
-//            $user->userRoles()->delete();
-//            foreach ($request->get('roles') as $role_id) {
-//                UserRole::updateOrCreate(
-//                    [
-//                        'user_id' => $user->id,
-//                        'role_id' => $role_id,
-//                    ],
-//                    [
-//                        'user_id' => $user->id,
-//                        'role_id' => $role_id,
-//                    ]
-//                );
-//
-//                if ($role_id == 1) {
-////                    PlanGroupUser::whereUserId($user->id)->delete();
-////
-////                    PlanGroupUser::create([
-////                        'plan_group_id' => $request->get('plan_group_id'),
-////                        'plan' => $request->get('plan'),
-////                        'user_id' => $user->id,
-////                    ]);
-//
-//                    PlanGroupUser::updateOrCreate(
-//                        [
-//                            'user_id' => $user->id,
-//                        ],
-//                        [
-//                            'plan_group_id' => $request->get('plan_group_id'),
-//                            'plan' => $request->get('plan'),
-//                            'user_id' => $user->id,
-//                        ]
-//                    );
-//                }
-//            }
-//        }
-
-        if ($user->role_id == 1) {
-            PlanGroupUser::updateOrCreate(
-                [
-                    'user_id' => $user->id,
-                ],
-                [
-                    'plan_group_id' => $request->get('plan_group_id'),
-                    'plan' => $request->get('plan'),
-                    'user_id' => $user->id,
-                ]
-            );
-        }
-
-//        if ($request->file('images')){
-//
-//            foreach ($request->file('images') as $image) {
-//                $productImage = new ProductImage();
-//                $productImage->product_id = $product->id;
-//                $productImage->name = $image->getClientOriginalName();
-//                $productImage->path =  Storage::disk('public')->put("images",$image);
-//                $productImage->save();
-//            }
-//        }
-
-        if ($request->has('brand_plans')) {
-            foreach ($request->get('brand_plans') as $item) {
-                $user->brandPlans()->updateOrCreate([
-                    'id' => $item['brand_plan_id'],
-                ], [
-                    'plan' => $item['plan'],
-                ]);
-            }
-        }
+        $user->update($request->validated());
 
         return redirect()->back();
     }

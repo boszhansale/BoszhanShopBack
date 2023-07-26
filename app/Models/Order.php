@@ -132,4 +132,15 @@ class Order extends Model implements Auditable
     {
         return $this->hasOne(WebkassaCheck::class);
     }
+    public function paymentTypeInfo(): string
+    {
+        return  match ($this->payment_type)
+        {
+            1  => '💵Наличный',
+            2  => '💳Без наличный',
+            3  => '📆Отсрочка',
+            4  => '🏦Каспи',
+            5  => 'излишка',
+        };
+    }
 }

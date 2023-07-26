@@ -20,8 +20,8 @@ class RefundStoreAction
     {
 
         if (!isset($data['order_id'])) throw  new Exception("order_id not found");
-        $refund = Auth::user()->refunds()->create($data);
         $order = Order::find($data['order_id']);
+        $refund = Auth::user()->refunds()->create(array_merge($data,['payment_type' => $order->payment_type]));
         if (!$order) throw  new Exception("order not found");
         if (isset($data['products']))
         {
