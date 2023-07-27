@@ -63,6 +63,7 @@ class RefundController extends Controller
     public function store(RefundStoreRequest $request,RefundStoreAction $refundStoreAction)
     {
         $data = [];
+        $order = Order::findOrFail($request->get('order_id'));
         $data['storage_id'] = Auth::user()->storage_id;
         $data['store_id'] = Auth::user()->store_id;
         $data['organization_id'] = Auth::user()->organization_id;
@@ -70,9 +71,9 @@ class RefundController extends Controller
 
         try {
 
-           $refund =  $refundStoreAction->execute(array_merge($request->validated(),$data));
-            WebKassaService::checkRefund($refund);
-            return response()->json(Refund::find($refund->id));
+           $refund =  $refundStoreAction->execute(array_merge($request->validated(),$data),$order);
+//            WebKassaService::checkRefund($refund);
+            return response()->json($refund);
         }catch (\Exception $exception)
         {
             return response()->json(['message' => $exception->getMessage()],400);
@@ -86,10 +87,12 @@ class RefundController extends Controller
         return response()->json($refund);
     }
 
-    public function check(Refund $refund)
+    public function check(Refund $refund,OrderCheckRequest $request)
     {
         try {
-            $data =  WebKassaService::checkRefund($refund);
+            $refund->payments = $request->get('payments');
+            $refund->save();
+            $data =  WebKassaService::checkRefund($refund,$request->get('payments'));
             return response()->json($data);
         }catch (\Exception $exception){
             $refund->delete();
@@ -100,6 +103,8 @@ class RefundController extends Controller
     public function printCheck(Refund $refund)
     {
         try {
+
+
             $check = WebkassaCheck::where('refund_id',$refund->id)->latest()->first();
             if (!$check)
             {

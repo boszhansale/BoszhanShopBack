@@ -74,6 +74,7 @@ class Refund extends Model
         'store_id',
         'payment_type',
         'total_price',
+        'payments',
         'user_id',
         'status',
         'type',
@@ -83,6 +84,9 @@ class Refund extends Model
         'ticket_print_url'
     ];
 
+    protected $casts = [
+      'payments' => 'array'
+    ];
     public function counteragent(): BelongsTo
     {
         return $this->belongsTo(Counteragent::class);

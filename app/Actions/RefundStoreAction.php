@@ -16,13 +16,11 @@ class RefundStoreAction
     /**
      * @throws Exception
      */
-    public function execute($data) :Refund
+    public function execute($data,Order $order) :Refund
     {
 
         if (!isset($data['order_id'])) throw  new Exception("order_id not found");
-        $order = Order::find($data['order_id']);
-        $refund = Auth::user()->refunds()->create(array_merge($data,['payment_type' => $order->payment_type]));
-        if (!$order) throw  new Exception("order not found");
+        $refund = Auth::user()->refunds()->create($data);
         if (isset($data['products']))
         {
             foreach ($data['products'] as $item) {

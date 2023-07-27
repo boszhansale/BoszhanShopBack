@@ -150,7 +150,7 @@ class WebKassaService
     /**
      * @throws Exception
      */
-    public static function checkRefund (Refund $refund,$authCheck = true)
+    public static function checkRefund (Refund $refund,array $payments,$authCheck = true)
     {
         $user = $refund->user;
         $token = self::authorize($user,$authCheck);
@@ -169,12 +169,7 @@ class WebKassaService
             'ExternalCheckNumber' => $externalCheckNumber,
             'ExternalOrderNumber' => $refund->id,
             'Positions' => [],
-            "Payments" => [
-                [
-                    'Sum' => $refund->total_price,
-                    'PaymentType' => self::paymentType($refund->payment_type)
-                ]
-            ],
+            "Payments" => $payments,
         ];
 
         if ($refund->counteragent?->bin){

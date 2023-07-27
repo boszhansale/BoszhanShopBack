@@ -22,7 +22,7 @@ class WebkassaController extends Controller
         } catch (\Exception $e) {
 
             return  response()->json([
-                'error' => $e->getMessage()
+                'message' => $e->getMessage()
             ],400);
         }
     }
@@ -36,7 +36,7 @@ class WebkassaController extends Controller
         } catch (\Exception $e) {
 
             return  response()->json([
-                'error' => $e->getMessage()
+                'message' => $e->getMessage()
             ],400);
         }
     }
@@ -48,7 +48,7 @@ class WebkassaController extends Controller
         } catch (\Exception $e) {
 
             return  response()->json([
-                'error' => $e->getMessage()
+                'message' => $e->getMessage()
             ],400);
         }
     }
@@ -59,7 +59,7 @@ class WebkassaController extends Controller
             return response()->json(WebKassaService::XReport($user));
         } catch (\Exception $e) {
             return  response()->json([
-                'error' => $e->getMessage()
+                'message' => $e->getMessage()
             ],400);
         }
     }

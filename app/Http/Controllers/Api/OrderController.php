@@ -41,6 +41,7 @@ class OrderController extends Controller
             ->when($request->has('search'),function ($q){
                 $q->where('orders.id','LIKE',request('search').'%');
             })
+            ->whereNotNull('check_number')
             ->with(['products','products.product','store','organization','storage','counteragent','webkassaCheck'])
             ->latest()
             ->get();
@@ -61,6 +62,7 @@ class OrderController extends Controller
                 $q->where('orders.id','LIKE',request('search').'%');
             })
             ->with(['products','products.product','store','organization','storage','counteragent','webkassaCheck'])
+            ->whereNotNull('check_number')
             ->latest()
             ->get();
         return response()->json($orders);
@@ -84,37 +86,33 @@ class OrderController extends Controller
             $order = Auth::user()->orders()->create(array_merge($request->validated(),$data));
             if ($request->has('products'))
             {
-                $counteragent = $order->counteragent;
-                $priceType = $counteragent ? $counteragent->priceType : PriceType::find(1);
-                $discount = $counteragent ? $counteragent->discount : 0;
+
+
                 foreach ($request->get('products') as $item) {
+                    $discount = 0;
+
                     $product = Product::find($item['product_id']);
                     if (!$product) continue;
-                    $productPriceType = $product->prices()->where('price_type_id', $priceType->id)->first();
-                    $discount = $discount == 0 ? $product->discount : $discount;
+                    $productPriceType = $product->prices()->where('price_type_id', 3)->first();
+                    $discount = $discount + $product->discount ;
                     if (!$productPriceType) continue;
+
                     $product->update(['remainder' => $product->remainder - $item['count']]);
-                    $productCounteragentPrice = $counteragent ? $product->counteragentPrices()->where('counteragent_id',$counteragent->id )->first() : null;
+
+
                     $item['discount_price'] = 0;
-                    if ($productCounteragentPrice) {
-                        $item['price'] = $productCounteragentPrice->price;
-                    } else {
-                        $discount = $discount == 0 ? $product->discount : $discount;
-                        if ($discount > 0){
-                            $item['discount_price'] = ($productPriceType->price / 100) * $discount ;
-                            $item['price'] = $productPriceType->price -  $item['discount_price'] ;
+                    if ($discount > 0){
+                        $item['discount_price'] = ($productPriceType->price / 100) * $discount ;
+                        $item['price'] = $productPriceType->price -  $item['discount_price'] ;
+                    }else{
+                        $item['price'] = $productPriceType->price ;
+                    }
+                    //скидка дисконта
+                    if ($discountCard){
+                        $discountPrice = ( $item['price'] / 100) * $discountCard->discount;
 
-                        }else{
-                            $item['price'] = $productPriceType->price ;
-                        }
-                        //скидка дисконта
-                        if ($discountCard){
-                            $discountPrice = ( $item['price'] / 100) * $discountCard->discount;
-
-                            $item['price'] = $item['price'] - $discountPrice;
-                            $item['discount_price'] = $item['discount_price'] + $discountPrice;
-                        }
-
+                        $item['price'] = $item['price'] - $discountPrice;
+                        $item['discount_price'] = $item['discount_price'] + $discountPrice;
                     }
                     $item['all_price'] = $item['count'] * $item['price'];
                     //скидка на 5тую позицию
@@ -123,6 +121,8 @@ class OrderController extends Controller
                     }
 
                     $order->products()->updateOrCreate(['product_id' => $product->id,'order_id' => $order->id],$item);
+                    unset($item);
+
                 }
                 $totalPrice =  $order->products()->sum('all_price');
                 //кешбэк
@@ -210,7 +210,10 @@ class OrderController extends Controller
     public function check(Order $order,OrderCheckRequest $request)
     {
         try {
-           $data =  WebKassaService::checkOrder($order,$request->get('payments'));
+            $order->payments = $request->get('payments');
+            $order->save();
+
+            $data =  WebKassaService::checkOrder($order,$request->get('payments'));
             return response()->json($data);
         }catch (\Exception $exception){
 

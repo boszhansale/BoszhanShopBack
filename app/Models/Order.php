@@ -80,6 +80,7 @@ class Order extends Model implements Auditable
         'total_price',
         'payment_type',
         'payment_status',
+        'payments',
 
         'product_history',
         'online_sale',
@@ -101,7 +102,8 @@ class Order extends Model implements Auditable
 
 
     protected $casts = [
-        'product_history' => 'array'
+        'product_history' => 'array',
+        'payments' => 'array'
     ];
 
     public function user(): BelongsTo
