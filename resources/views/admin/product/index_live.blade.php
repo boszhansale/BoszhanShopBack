@@ -33,7 +33,9 @@
                     <th>#</th>
                     <th>артикул</th>
                     <th>name</th>
-                        <th>цена A</th>
+                    @foreach(\App\Models\PriceType::all() as $priceType)
+                        <th>{{$priceType->name}}</th>
+                    @endforeach
                     <th>шт/кг</th>
                     <th>остаток</th>
                 </tr>
@@ -61,7 +63,9 @@
                             <a>{{$product->name}}</a>
                         </th>
 
-                        <th>{{$product->prices()->where('price_type_id',3)->first()?->price}}</th>
+                        @foreach(\App\Models\PriceType::all() as $priceType)
+                            <th>{{$product->prices()->where('price_type_id',$priceType->id)->first()?->price}}</th>
+                        @endforeach
                         <th>
                             @if($product->measure == 1)
                                 штука

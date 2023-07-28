@@ -125,6 +125,21 @@ class OrderController extends Controller
 
                 }
                 $totalPrice =  $order->products()->sum('all_price');
+
+                if ($totalPrice >= 3000 AND $request->get('online_sale') == 0){
+                    //скидка суп набор
+                    //2677
+
+                    $order->products()->updateOrCreate(['product_id' => 2677,'order_id' => $order->id],[
+                        'product_id' => 2677,
+                        'order_id' => $order->id,
+                        'count' => 2,
+                        'price' => 0.5,
+                        'all_price' => 1,
+                        'comment' => 'подарок'
+                    ]);
+                    $totalPrice += 1;
+                }
                 //кешбэк
                 if ($discountCard){
                     $discountCard->increment(
@@ -207,8 +222,12 @@ class OrderController extends Controller
         return response()->json($order);
     }
 
-    public function check(Order $order,OrderCheckRequest $request)
+    public function check($orderId,OrderCheckRequest $request)
     {
+        $order = Order::find($orderId);
+        if (!$order){
+            return response()->json(['message' =>'ошибка, попробуйте заново создать заявку'],400);
+        }
         try {
             $order->payments = $request->get('payments');
             $order->save();
@@ -216,6 +235,15 @@ class OrderController extends Controller
             $data =  WebKassaService::checkOrder($order,$request->get('payments'));
             return response()->json($data);
         }catch (\Exception $exception){
+
+
+            foreach ($order->products as $orderProduct)
+            {
+                $product = $orderProduct->product;
+                $count =  (int) $product->remainder + (int)$orderProduct->count;
+
+                $product->update(['remainder' => $count]);
+            }
 
             $order->delete();
             return response()->json(['message' => $exception->getMessage()],400);

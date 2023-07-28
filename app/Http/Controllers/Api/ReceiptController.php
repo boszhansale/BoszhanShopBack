@@ -73,6 +73,26 @@ class ReceiptController extends Controller
         }
     }
 
+    public function update(ReceiptUpdateRequest $request,Receipt $receipt)
+    {
+
+        try {
+
+            foreach ($request->get('products') as $item) {
+                $product = Product::find($item['product_id']);
+                if (!$product) continue;
+
+                $item['all_price'] = $item['count'] * $item['price'];
+                $receipt->products()->updateOrCreate(['product_id' => $product->id,'receipt_id' => $receipt->id ],$item);
+            }
+            $receipt->update(['product_history' => $receipt->products()->select('product_id','count','price','all_price','comment')->get()->toArray(), 'total_price' => $receipt->products()->sum('all_price')]);
+
+        }catch (\Exception $exception)
+        {
+            return response()->json(['message' => $exception->getMessage()],400);
+        }
+    }
+
     public function delete(Receipt $receipt)
     {
         $receipt->delete();

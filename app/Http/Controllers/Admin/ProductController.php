@@ -65,17 +65,19 @@ class ProductController extends Controller
 //            );
 //        }
 
-        ProductPriceType::updateOrCreate(
-            [
-                'product_id' => $product->id,
-                'price_type_id' => 3,
-            ],
-            [
-                'product_id' => $product->id,
-                'price_type_id' => 3,
-                'price' => $request->get('price'),
-            ]
-        );
+        foreach ($request->get('price_types') as $item) {
+            ProductPriceType::updateOrCreate(
+                [
+                    'product_id' => $product->id,
+                    'price_type_id' => $item['price_type_id'],
+                ],
+                [
+                    'product_id' => $product->id,
+                    'price_type_id' => $item['price_type_id'],
+                    'price' => $item['price'],
+                ]
+            );
+        }
 
         return redirect()->route('admin.product.index');
     }
@@ -101,7 +103,7 @@ class ProductController extends Controller
         $product->measure = $request->get('measure');
         $product->barcode = $request->get('barcode');
         $product->remainder = $request->get('remainder');
-        $product->discount = $request->get('discount');
+        $product->discount = $request->get('discount') ?? 0;
         $product->hit = $request->has('hit');
         $product->new = $request->has('new');
         $product->action = $request->has('action');
@@ -114,17 +116,19 @@ class ProductController extends Controller
 
         $product->save();
 
-        ProductPriceType::updateOrCreate(
-            [
-                'product_id' => $product->id,
-                'price_type_id' => 3,
-            ],
-            [
-                'product_id' => $product->id,
-                'price_type_id' => 3,
-                'price' => $request->get('price'),
-            ]
-        );
+        foreach ($request->get('price_types') as $item) {
+            ProductPriceType::updateOrCreate(
+                [
+                    'product_id' => $product->id,
+                    'price_type_id' => $item['price_type_id'],
+                ],
+                [
+                    'product_id' => $product->id,
+                    'price_type_id' => $item['price_type_id'],
+                    'price' => $item['price'],
+                ]
+            );
+        }
 
 //        foreach ($request->get('price_types') as $item) {
 //            ProductPriceType::updateOrCreate(

@@ -28,11 +28,9 @@ class ReceiptUpdateRequest extends FormRequest
     public function messages()
     {
         return [
-            'counteragent_id' => ['exists:counteragents,id'],
             'payment_type' => ['numeric'],
 
             'products' => 'array|min:1',
-            'products.event' => 'in:update,create,delete',
             'products.*.product_id' => 'exists:products,id',
             'products.*.comment' => 'string',
             'products.*.count' => 'required',

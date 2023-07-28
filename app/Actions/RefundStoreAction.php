@@ -37,7 +37,11 @@ class RefundStoreAction
 
                     throw new Exception("неверный количество: $product->name");
                 }
+                if (!$orderProduct->price){
+                    dd($orderProduct);
+                }
                 $item['price'] = $orderProduct->price;
+
                 $item['all_price'] = $item['count'] * $item['price'];
 
                 $refund->products()->updateOrCreate([

@@ -144,7 +144,7 @@ class WebKassaService
 
             throw new Exception($data['Errors'][0]['Text']);
         }
-        throw new Exception('response data not found');
+        throw new Exception('Ошибка с стороны вепкассы');
     }
 
     /**

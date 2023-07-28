@@ -99,6 +99,7 @@ class InventoryController extends Controller
                 'orderProduct.product_id', '=', 'products.id'
             )
             ->groupBy('products.id')
+            ->orderBy('products.name')
             ->having('remains', '>', 0)
             ->get();
 
@@ -150,6 +151,19 @@ class InventoryController extends Controller
             $receiptData['inventory_id'] = $inventory->id;
             $receiptData['description'] = "На основании инвентаризации №$inventory->id от ".$inventory->created_at->format('d.m.Y');
             $rejectStoreAction->execute($receiptData);
+        }
+
+        return response()->json($inventory);
+    }
+
+    public function update(InventoryStoreRequest $request,Inventory $inventory)
+    {
+
+        foreach ($request->get('products') as $item) {
+
+            $inventory->products()->updateOrCreate([
+                'product_id' => $item['product_id']
+            ],$item);
         }
 
         return response()->json($inventory);

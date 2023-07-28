@@ -111,10 +111,16 @@
 
             </div>
             <div class="col-md-4">
-                <div>
-                    <label for="">цена А</label>
-                    <input class="form-control" type="number" name="price" required value="0">
-                </div>
+                @foreach($priceTypes as $k => $priceType)
+                    <div>
+                        <label for="">
+                            {{$priceType->name}}
+                            <small>{{$priceType->description}}</small>
+                        </label>
+                        <input type="hidden" name="price_types[{{$k}}][price_type_id]" value="{{$priceType->id}}">
+                        <input class="form-control" type="number" name="price_types[{{$k}}][price]" value="0">
+                    </div>
+                @endforeach
             </div>
 {{--            <div class="col-md-4">--}}
 {{--                @foreach($counteragents as $k => $counteragent)--}}

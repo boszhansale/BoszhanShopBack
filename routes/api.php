@@ -95,6 +95,7 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::get('/',[ReceiptController::class,'index']);
         Route::get('history',[ReceiptController::class,'history']);
         Route::post('/',[ReceiptController::class,'store']);
+        Route::post('update/{receipt}',[ReceiptController::class,'update']);
         Route::delete('{receipt}',[ReceiptController::class,'delete']);
         Route::post('check/{receipt}',[ReceiptController::class,'check']);
         Route::get('print-check/{receipt}',[ReceiptController::class,'printCheck']);
@@ -121,6 +122,7 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::prefix('inventory')->group(function (){
         Route::get('/',[InventoryController::class,'index']);
         Route::post('/',[InventoryController::class,'store']);
+        Route::post('update/{inventory}',[InventoryController::class,'update']);
         Route::post('add-receipt',[InventoryController::class,'addReceipt']);
         Route::get('history',[InventoryController::class,'history']);
     });

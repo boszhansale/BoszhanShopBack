@@ -62,7 +62,7 @@
 
                 <div class="form-group">
                     <label for="">Скидка %</label>
-                    <input type="number" class="form-control" name="discount" value="{{$product->discount}}">
+                    <input type="number" class="form-control" name="discount" value="{{$product->discount ?? 0}}">
                 </div>
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" name="purchase"
@@ -147,11 +147,21 @@
                 </button>
             </div>
             <div class="col-md-5">
-                <div>
-                    <label for="">цена А
-                    </label>
-                        <input class="form-control" type="number" required name="price" value="{{$product->prices()->where('price_type_id',3)->first()->price}}">
-                </div>
+                @foreach($priceTypes as $k => $priceType)
+                    <div>
+                        <label for="">
+                            {{$priceType->name}}
+                            <small>{{$priceType->description}}</small>
+                        </label>
+                        <input type="hidden" name="price_types[{{$k}}][price_type_id]" value="{{$priceType->id}}">
+                        @if($product->prices()->where('price_type_id',$priceType->id)->exists())
+                            <input class="form-control" type="number" name="price_types[{{$k}}][price]"
+                                   value="{{$product->prices()->where('price_type_id',$priceType->id)->first()->price}}">
+                        @else
+                            <input class="form-control" type="number" name="price_types[{{$k}}][price]" value="0">
+                        @endif
+                    </div>
+                @endforeach
                 <br>
 {{--                <div class="row">--}}
 {{--                    <h5>Цены для Контрагентов</h5>--}}

@@ -87,8 +87,14 @@ class RefundController extends Controller
         return response()->json($refund);
     }
 
-    public function check(Refund $refund,OrderCheckRequest $request)
+    public function check($refundId,OrderCheckRequest $request)
     {
+
+        $refund = Refund::find($refundId);
+        if (!$refund){
+            return response()->json(['message' =>'ошибка, попробуйте заново создать заявку'],400);
+        }
+
         try {
             $refund->payments = $request->get('payments');
             $refund->save();

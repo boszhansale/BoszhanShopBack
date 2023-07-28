@@ -90,6 +90,7 @@ class MovingController extends Controller
 
     public function update(MovingUpdateRequest $request,Moving $moving)
     {
+
         $data = [];
         $data['storage_id'] = $request->has('storage_id') ? $request->get('storage_id') : Auth::user()->storage_id;
         $data['store_id'] = Auth::user()->store_id;
