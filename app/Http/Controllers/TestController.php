@@ -12,6 +12,8 @@ class TestController extends Controller
 
     public function index()
     {
+
+        dd(round(1.535,2));
         $storeId = 4;
         //приход - расход
         // поступления +  перемешение с склада + возврат от клиента  - продажа  - возврат поставщику  - перемешеие на склад = остаток

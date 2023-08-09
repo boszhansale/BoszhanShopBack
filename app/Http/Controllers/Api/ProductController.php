@@ -61,7 +61,7 @@ class ProductController extends Controller
             })
             ->where('products.remainder', '>', 0)
 //            ->where('product_price_types.price_type_id',  3)
-            ->with(['images'])
+            ->with(['images','barcodes'])
 //            ->select('products.*', DB::raw('MAX(product_price_types.price) AS price'), 'product_price_types.price_type_id')
             ->select('products.*')
             ->groupBy('products.id')

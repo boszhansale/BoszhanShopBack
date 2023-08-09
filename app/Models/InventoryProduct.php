@@ -36,6 +36,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|InventoryProduct whereSale($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InventoryProduct whereShortage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|InventoryProduct whereUpdatedAt($value)
+ * @property string $moving_from перемещение
+ * @property string $moving_to
+ * @property string $overage_price
+ * @property string $shortage_price
+ * @property-read \App\Models\Product $product
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryProduct whereMovingFrom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryProduct whereMovingTo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryProduct whereOveragePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|InventoryProduct whereShortagePrice($value)
  * @mixin \Eloquent
  */
 class InventoryProduct extends Model

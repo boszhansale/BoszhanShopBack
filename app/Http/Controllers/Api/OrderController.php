@@ -32,6 +32,7 @@ class OrderController extends Controller
 
         $orders = Order::query()
             ->where('orders.user_id',Auth::id())
+            ->whereNotNull('check_number')
             ->when($request->has('date_from'),function ($q){
                 $q->whereDate('created_at','>=',request('date_from'));
             })
@@ -52,6 +53,7 @@ class OrderController extends Controller
     {
         $orders = Order::query()
             ->where('orders.user_id',Auth::id())
+            ->whereNotNull('check_number')
             ->when($request->has('date_from'),function ($q){
                 $q->whereDate('created_at','>=',request('date_from'));
             })
@@ -99,6 +101,9 @@ class OrderController extends Controller
 
                     $product->update(['remainder' => $product->remainder - $item['count']]);
 
+                    if ($product->measure == 2){
+                        $item['count'] = round( $item['count'] ,2 );
+                    }
 
                     $item['discount_price'] = 0;
                     if ($discount > 0){
@@ -126,20 +131,36 @@ class OrderController extends Controller
                 }
                 $totalPrice =  $order->products()->sum('all_price');
 
-                if ($totalPrice >= 3000 AND $request->get('online_sale') == 0){
-                    //скидка суп набор
+//                if ($totalPrice >= 3000 AND $request->get('online_sale') == 0){
+//                    //скидка суп набор
+//                    //2677
+//
+//                    $order->products()->updateOrCreate(['product_id' => 2677,'order_id' => $order->id],[
+//                        'product_id' => 2677,
+//                        'order_id' => $order->id,
+//                        'count' => 2,
+//                        'price' => 0.5,
+//                        'all_price' => 1,
+//                        'comment' => 'подарок'
+//                    ]);
+//                    $totalPrice += 1;
+//                }
+                if ($totalPrice >= 5000 AND $request->get('online_sale') == 0){
+                    //скидка Печень
                     //2677
 
-                    $order->products()->updateOrCreate(['product_id' => 2677,'order_id' => $order->id],[
-                        'product_id' => 2677,
+                    $order->products()->updateOrCreate(['product_id' => 2427,'order_id' => $order->id],[
+                        'product_id' => 2427,
                         'order_id' => $order->id,
-                        'count' => 2,
-                        'price' => 0.5,
+                        'count' => 5,
+                        'price' => 0.2,
                         'all_price' => 1,
                         'comment' => 'подарок'
                     ]);
                     $totalPrice += 1;
                 }
+
+
                 //кешбэк
                 if ($discountCard){
                     $discountCard->increment(
@@ -229,7 +250,13 @@ class OrderController extends Controller
             return response()->json(['message' =>'ошибка, попробуйте заново создать заявку'],400);
         }
         try {
+            $sum = 0;
+            foreach ($request->get('payments') as $item) {
+                $sum += $item['Sum'];
+            }
+
             $order->payments = $request->get('payments');
+            $order->give_price = $sum - $order->total_price;
             $order->save();
 
             $data =  WebKassaService::checkOrder($order,$request->get('payments'));

@@ -54,6 +54,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read \App\Models\Store|null $store
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|Refund whereOrderId($value)
+ * @property int $check_status
+ * @property string|null $ticket_print_url
+ * @property string|null $check_number
+ * @property array|null $payments
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\RefundProduct> $products
+ * @method static \Illuminate\Database\Eloquent\Builder|Refund onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Refund whereCheckNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Refund whereCheckStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Refund wherePayments($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Refund whereTicketPrintUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Refund withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Refund withoutTrashed()
  * @mixin \Eloquent
  */
 //Возврат от покупателя

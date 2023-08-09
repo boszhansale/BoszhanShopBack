@@ -39,6 +39,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Store whereUpdatedAt($value)
  * @property int $discount_position
  * @method static \Illuminate\Database\Eloquent\Builder|Store whereDiscountPosition($value)
+ * @property int|null $counteragent_id
+ * @property-read \App\Models\Counteragent|null $counteragent
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $orders
+ * @property-read int|null $orders_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Refund> $refunds
+ * @property-read int|null $refunds_count
+ * @method static \Illuminate\Database\Eloquent\Builder|Store whereCounteragentId($value)
  * @mixin \Eloquent
  */
 class Store extends Model

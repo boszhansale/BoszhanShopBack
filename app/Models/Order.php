@@ -65,6 +65,20 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property-read \App\Models\WebkassaCheck|null $webkassaCheck
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereDiscountCashback($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereDiscountPhone($value)
+ * @property int $check_status
+ * @property string|null $give_price сдача
+ * @property array|null $payments
+ * @property string|null $total_discount_price
+ * @property string|null $ticket_print_url
+ * @property string|null $check_number
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OrderProduct> $products
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereCheckNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereCheckStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereGivePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order wherePayments($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereTicketPrintUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Order whereTotalDiscountPrice($value)
  * @mixin \Eloquent
  */
 class Order extends Model implements Auditable
@@ -97,7 +111,8 @@ class Order extends Model implements Auditable
         'ticket_print_url',
         'check_status',
         'check_number',
-        'total_discount_price'
+        'total_discount_price',
+        'give_price'
     ];
 
 

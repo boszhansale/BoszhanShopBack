@@ -49,6 +49,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Reject whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Reject whereUserId($value)
  * @property-read \App\Models\Store|null $store
+ * @property int $source
+ * @property int|null $inventory_id
+ * @property int|null $moving_id
+ * @property string|null $description
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\RejectProduct> $products
+ * @method static \Illuminate\Database\Eloquent\Builder|Reject whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Reject whereInventoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Reject whereMovingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Reject whereSource($value)
  * @mixin \Eloquent
  */
 

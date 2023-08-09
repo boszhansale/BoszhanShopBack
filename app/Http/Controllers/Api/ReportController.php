@@ -109,6 +109,8 @@ class ReportController extends Controller
         FROM order_products
         JOIN orders ON orders.id  = order_products.order_id
         WHERE orders.store_id = $storeId
+        AND orders.check_number IS NOT NULL
+
         " . ($dateFrom ? "AND orders.created_at >= '$dateFrom' " : "") . ($dateTo ? "AND orders.created_at <= '$dateTo' " : "") .
                     "GROUP BY order_products.product_id) AS orderProduct"),
                 'orderProduct.product_id', '=', 'products.id'

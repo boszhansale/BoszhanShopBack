@@ -71,6 +71,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductPriceType> $prices
  * @property-read int|null $prices_count
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereEnabled($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductBarcode> $barcodes
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductCounteragentPrice> $counteragentPrices
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductImage> $images
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductPriceType> $prices
  * @mixin \Eloquent
  */
 class Product extends Model

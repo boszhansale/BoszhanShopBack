@@ -42,6 +42,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|WebkassaCheck whereReceiptId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|WebkassaCheck whereRefundId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|WebkassaCheck whereRefundProducerId($value)
+ * @property-read \App\Models\Order|null $order
+ * @property-read \App\Models\Receipt|null $receipt
+ * @property-read \App\Models\Refund|null $refund
+ * @property-read \App\Models\RefundProducer|null $refundProducer
  * @mixin \Eloquent
  */
 class WebkassaCheck extends Model

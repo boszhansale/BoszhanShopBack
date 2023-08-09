@@ -29,7 +29,8 @@ class InventoryStoreRequest extends FormRequest
             'products.*.receipt' => 'required',
             'products.*.sale' => 'required',
             'products.*.count' => 'required',
-            'products.*.moving' => 'required',
+            'products.*.moving_from' => 'required',
+            'products.*.moving_to' => 'required',
             'products.*.remains' => 'required',
 
 //            'products.*.overage' => 'required',

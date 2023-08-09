@@ -53,6 +53,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \App\Models\Store|null $store
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|Refund whereOrderId($value)
+ * @property int $check_status
+ * @property string|null $ticket_print_url
+ * @property string|null $check_number
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\RefundProducerProduct> $products
+ * @method static \Illuminate\Database\Eloquent\Builder|RefundProducer whereCheckNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RefundProducer whereCheckStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|RefundProducer whereTicketPrintUrl($value)
  * @mixin \Eloquent
  */
 class RefundProducer extends Model

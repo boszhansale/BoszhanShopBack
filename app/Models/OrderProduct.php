@@ -38,6 +38,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct withTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct withoutTrashed()
  * @property-read \App\Models\Product $product
+ * @property string $discount_price
+ * @method static \Illuminate\Database\Eloquent\Builder|OrderProduct whereDiscountPrice($value)
  * @mixin \Eloquent
  */
 class OrderProduct extends Model

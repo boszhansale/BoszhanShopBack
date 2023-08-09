@@ -23,6 +23,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Inventory whereStoreId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Inventory whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Inventory whereUserId($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\InventoryProduct> $products
+ * @property-read int|null $products_count
+ * @property-read \App\Models\Store $store
  * @mixin \Eloquent
  */
 class Inventory extends Model

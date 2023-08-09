@@ -47,6 +47,29 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property-read int|null $products_count
  * @property-read \App\Models\Storage|null $storage
  * @property-read \App\Models\Store|null $store
+ * @property int $check_status
+ * @property int|null $source
+ * @property int|null $inventory_id
+ * @property int|null $moving_id
+ * @property int|null $refund_id
+ * @property string|null $description
+ * @property int $nds
+ * @property string|null $ticket_print_url
+ * @property string|null $check_number
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ReceiptProduct> $products
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|Receipt onlyTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Receipt whereCheckNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Receipt whereCheckStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Receipt whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Receipt whereInventoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Receipt whereMovingId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Receipt whereNds($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Receipt whereRefundId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Receipt whereSource($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Receipt whereTicketPrintUrl($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Receipt withTrashed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Receipt withoutTrashed()
  * @mixin \Eloquent
  */
 class Receipt extends Model

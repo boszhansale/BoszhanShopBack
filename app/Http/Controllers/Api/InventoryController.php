@@ -95,6 +95,7 @@ class InventoryController extends Controller
             FROM order_products
             JOIN orders ON orders.id  = order_products.order_id
             WHERE orders.store_id = $storeId
+            AND orders.check_number IS NOT NULL
             GROUP BY order_products.product_id) AS orderProduct"),
                 'orderProduct.product_id', '=', 'products.id'
             )
@@ -132,6 +133,7 @@ class InventoryController extends Controller
             }
             $inventory->products()->create($item);
         }
+        //Излишки
         if (count($receiptData) > 0){
             $receiptData['storage_id'] = Auth::user()->storage_id;
             $receiptData['store_id'] = Auth::user()->store_id;
@@ -143,6 +145,7 @@ class InventoryController extends Controller
             $receiptStoreAction->execute($receiptData);
 
         }
+        //Недостачи
         if (count($rejectData) > 0)
         {
             $receiptData['storage_id'] = Auth::user()->storage_id;

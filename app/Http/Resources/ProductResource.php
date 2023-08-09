@@ -22,6 +22,7 @@ class ProductResource extends JsonResource
             'measure' => $this->measure,
             'name' => $this->name,
             'barcode' => $this->barcode,
+            'barcodes' => $this->barcodes,
             'remainder' => $this->remainder,
             'enabled' => $this->enabled,
             'purchase' => $this->purchase,
