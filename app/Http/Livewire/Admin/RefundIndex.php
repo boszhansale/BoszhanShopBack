@@ -27,6 +27,7 @@ class RefundIndex extends Component
     {
         $query = Refund::query()
             ->join('stores', 'stores.id', 'refunds.store_id')
+            ->whereNotNull('check_number')
             ->when($this->search, function ($q) {
                 return $q->where('refunds.id', 'LIKE', $this->search . '%');
             })

@@ -71,8 +71,6 @@ use OwenIt\Auditing\Contracts\Auditable;
  * @property string|null $total_discount_price
  * @property string|null $ticket_print_url
  * @property string|null $check_number
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \OwenIt\Auditing\Models\Audit> $audits
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OrderProduct> $products
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereCheckNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereCheckStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Order whereGivePrice($value)
@@ -151,13 +149,24 @@ class Order extends Model implements Auditable
     }
     public function paymentTypeInfo(): string
     {
-        return  match ($this->payment_type)
-        {
-            1  => '💵Наличный',
-            2  => '💳Без наличный',
-            3  => '📆Отсрочка',
-            4  => '🏦Каспи',
-            5  => 'излишка',
-        };
+        $payments = '';
+        if (!$this->payments) return '';
+        foreach ($this->payments as $payment) {
+            if ($payment['PaymentType'] == 0){
+                $payments.='💵Наличный '.'('.$payment['Sum'].') ';
+            }elseif($payment['PaymentType'] == 1){
+                $payments.='💳Безнал  '.'('.$payment['Sum'].') ';
+            }
+        }
+
+        return $payments;
+//        return  match ($this->payment_type)
+//        {
+//            1  => '💵Наличный',
+//            2  => '💳Без наличный',
+//            3  => '📆Отсрочка',
+//            4  => '🏦Каспи',
+//            5  => 'излишка',
+//        };
     }
 }

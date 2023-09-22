@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "barryvdh/laravel-dompdf": "^2.0",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",
@@ -14,7 +15,8 @@
         "livewire/livewire": "^2.12",
         "maatwebsite/excel": "^3.1",
         "owen-it/laravel-auditing": "^13.5",
-        "predis/predis": "^2.1"
+        "predis/predis": "^2.1",
+        "wapmorgan/morphos-blade": "^1.6"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.13",

@@ -41,7 +41,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|Moving whereUserId($value)
  * @property int|null $order_id
  * @property-read \App\Models\Order|null $order
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MovingProduct> $products
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|Moving whereOrderId($value)
  * @mixin \Eloquent

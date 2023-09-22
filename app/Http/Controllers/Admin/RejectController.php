@@ -24,9 +24,6 @@ class RejectController extends Controller
 
     public function edit(Reject $order): View
     {
-
-
-
         return view('admin.reject.edit', compact('order'));
     }
 
@@ -37,11 +34,9 @@ class RejectController extends Controller
         return redirect()->back();
     }
 
-    public function show($orderId)
+    public function show(Reject $reject)
     {
-        $order = Reject::withTrashed()->find($orderId);
-
-        return view('admin.reject.show', compact('order'));
+        return view('admin.reject.show', compact('reject'));
     }
 
     public function delete(Reject $order)

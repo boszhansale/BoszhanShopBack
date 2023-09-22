@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreStoreRequest;
 use App\Models\Counteragent;
+use App\Models\Report;
 use App\Models\Store;
+use App\Models\StoreProductDiscount;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -90,6 +92,16 @@ class StoreController extends Controller
         $store->save();
 
         return redirect()->back();
+    }
+
+    public function zReport(Store $store)
+    {
+
+        return view('admin.store.z-report', ['store' => $store]);
+    }
+    public function zReportShow(Report $report)
+    {
+        return view('admin.store.z-report-show', ['data' => $report->body]);
     }
 
 

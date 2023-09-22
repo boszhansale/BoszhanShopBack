@@ -5,6 +5,7 @@
     <DELIVERYDATE>{{ now()->format('Y-m-d') }}</DELIVERYDATE>
     <MANAGER>{{  config('app.driver_id_onec')  }}</MANAGER>
     <DRIVER>{{$moving->user->id_1c}}</DRIVER>
+    <STORE_IN>{{$moving->store_id}}</STORE_IN>
     <CURRENCY>KZT</CURRENCY>
     <HEAD>
         <SUPPLIER>9864232489962</SUPPLIER>

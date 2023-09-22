@@ -21,14 +21,7 @@
                                 <a href="{{route('admin.user.show',$order->user_id)}}">{{$order->user->name}}</a>
                             </td>
                         </tr>
-                        @if($order->store->counteragent)
-                            <tr>
-                                <th>Контрагент</th>
-                                <td>
-                                    <a href="{{route('admin.counteragent.show',$order->store->counteragent_id)}}">{{$order->store->counteragent->name}}</a>
-                                </td>
-                            </tr>
-                        @endif
+
                         <tr>
                             <th>Торговый точка</th>
                             <td><a href="{{route('admin.store.show',$order->store_id)}}">{{$order->store->name}}</a>
@@ -36,7 +29,7 @@
                         </tr>
                         <tr>
                             <th>Тип оплаты</th>
-                            <td>{{$order->payment_type}}</td>
+                            <td>{{$order->paymentTypeInfo()}}</td>
                         </tr>
 
                         <tr>
@@ -46,6 +39,18 @@
                         <tr>
                             <th>Сумма</th>
                             <td>{{$order->total_price}}</td>
+                        </tr>
+                        <tr>
+                            <th>Сдача</th>
+                            <td>{{$order->give_price}}</td>
+                        </tr>
+                        <tr>
+                            <th>сумма скидки</th>
+                            <td>{{$order->total_discount_price}}</td>
+                        </tr>
+                        <tr>
+                            <th>Дисконт карта</th>
+                            <td>{{$order->discount_phone}}</td>
                         </tr>
 
                         <tr>
@@ -76,6 +81,7 @@
                             <th>артикул</th>
                             <th>шт/кг</th>
                             <th>Цена</th>
+                            <th>скидка</th>
                             <th>Количество</th>
                             <th>итог</th>
 
@@ -89,6 +95,7 @@
                                 <td>{{$basket->product->article}}</td>
                                 <td>{{$basket->product->measureDescription()}}</td>
                                 <td>{{$basket->price}}</td>
+                                <td>{{$basket->discount_price}}</td>
                                 <td>{{$basket->count}}</td>
                                 <td>{{$basket->all_price}}</td>
                             </tr>

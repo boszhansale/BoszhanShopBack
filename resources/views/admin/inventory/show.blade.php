@@ -21,32 +21,28 @@
                                 <a href="{{route('admin.user.show',$inventory->user_id)}}">{{$inventory->user->name}}</a>
                             </td>
                         </tr>
-                        @if($inventory->store->counteragent)
-                            <tr>
-                                <th>Контрагент</th>
-                                <td>
-                                    <a href="{{route('admin.counteragent.show',$inventory->store->counteragent_id)}}">{{$inventory->store->counteragent->name}}</a>
-                                </td>
-                            </tr>
-                        @endif
                         <tr>
                             <th>Торговый точка</th>
                             <td><a href="{{route('admin.store.show',$inventory->store_id)}}">{{$inventory->store->name}}</a>
                             </td>
-                        </tr>
-                        <tr>
-                            <th>Тип оплаты</th>
-                            <td>{{$inventory->payment_type}}</td>
                         </tr>
 
                         <tr>
                             <th>Дата создании</th>
                             <td>{{$inventory->created_at}}</td>
                         </tr>
-                        <tr>
-                            <th>Сумма</th>
-                            <td>{{$inventory->total_price}}</td>
-                        </tr>
+                        @foreach($rejects as $reject)
+                            <tr>
+                                <th>Недостача</th>
+                                <td><a href="{{route('admin.reject.show',$reject->id)}}">#{{$reject->id}}</a></td>
+                            </tr>
+                        @endforeach
+                        @foreach($receipts as $receipt)
+                            <tr>
+                                <th>Излишки</th>
+                                <td><a href="{{route('admin.receipt.show',$receipt->id)}}">#{{$receipt->id}}</a></td>
+                            </tr>
+                        @endforeach
 
                     </table>
                 </div>
@@ -57,31 +53,43 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Покупки на сумму {{$inventory->products()->sum('all_price')}}</div>
                 <div class="card-body">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered table-responsive">
                         <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Продукт</th>
                             <th>артикул</th>
                             <th>шт/кг</th>
                             <th>Цена</th>
-                            <th>Количество</th>
-                            <th>итог</th>
+
+                            <th>факт кол</th>
+                            <th>поступления</th>
+                            <th>продажа</th>
+                            <th>Недостача</th>
+                            <th>излишки</th>
+                            <th>с склада</th>
+                            <th>на склада</th>
 
                         </tr>
                         </thead>
                         <tbody>
                         @foreach($inventory->products()->get() as $basket)
                             <tr>
-                                <td>{{$basket->product->id}}</td>
-                                <td>{{$basket->product->name}}</td>
+                                <td>
+                                    <a href="{{route('admin.product.show',$basket->product_id)}}">
+                                        {{$basket->product->name}}
+                                    </a>
+                                </td>
                                 <td>{{$basket->product->article}}</td>
                                 <td>{{$basket->product->measureDescription()}}</td>
                                 <td>{{$basket->price}}</td>
                                 <td>{{$basket->count}}</td>
-                                <td>{{$basket->all_price}}</td>
+                                <td>{{$basket->receipt}}</td>
+                                <td>{{$basket->sale}}</td>
+                                <td>{{$basket->shortage}}</td>
+                                <td>{{$basket->overage}}</td>
+                                <td>{{$basket->moving_from}}</td>
+                                <td>{{$basket->moving_to}}</td>
                             </tr>
                         @endforeach
                         </tbody>

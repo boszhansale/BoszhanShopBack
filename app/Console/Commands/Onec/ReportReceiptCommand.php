@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Onec;
 
 use App\Models\Order;
+use App\Models\Receipt;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
@@ -19,7 +20,7 @@ class ReportReceiptCommand extends Command
     {
         $receiptId = $this->argument('receipt_id');
 
-        $receipts = Order::query()
+        $receipts = Receipt::query()
             ->when($receiptId, function ($q) use ($receiptId) {
                 return $q->where('receipts.id', $receiptId);
             }, function ($q) {

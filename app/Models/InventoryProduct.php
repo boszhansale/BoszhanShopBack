@@ -52,15 +52,19 @@ class InventoryProduct extends Model
     use HasFactory;
 
     protected $fillable = [
-        'product_id',
-        'count',
-        'moving',
-        'overage',
-        'receipt',
         'inventory_id',
-        'remains',
+        'product_id',
+        'receipt',
         'sale',
-        'shortage'
+        'moving_from',
+        'moving_to',
+        'remains',
+        'count',
+        'overage',
+        'overage_price',
+        'shortage',
+        'shortage_price',
+        'price'
     ];
     protected $hidden = ['created_at','updated_at'];
 

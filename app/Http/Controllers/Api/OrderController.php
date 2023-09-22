@@ -131,34 +131,33 @@ class OrderController extends Controller
                 }
                 $totalPrice =  $order->products()->sum('all_price');
 
-//                if ($totalPrice >= 3000 AND $request->get('online_sale') == 0){
-//                    //скидка суп набор
-//                    //2677
-//
-//                    $order->products()->updateOrCreate(['product_id' => 2677,'order_id' => $order->id],[
-//                        'product_id' => 2677,
-//                        'order_id' => $order->id,
-//                        'count' => 2,
-//                        'price' => 0.5,
-//                        'all_price' => 1,
-//                        'comment' => 'подарок'
-//                    ]);
-//                    $totalPrice += 1;
-//                }
                 if ($totalPrice >= 5000 AND $request->get('online_sale') == 0){
-                    //скидка Печень
-                    //2677
+                    //акция суп набор id 2677
 
-                    $order->products()->updateOrCreate(['product_id' => 2427,'order_id' => $order->id],[
-                        'product_id' => 2427,
+                    $order->products()->updateOrCreate(['product_id' => 2677,'order_id' => $order->id],[
+                        'product_id' => 2677,
                         'order_id' => $order->id,
-                        'count' => 5,
-                        'price' => 0.2,
+                        'count' => 2,
+                        'price' => 0.5,
                         'all_price' => 1,
                         'comment' => 'подарок'
                     ]);
                     $totalPrice += 1;
                 }
+//                if ($totalPrice >= 5000 AND $request->get('online_sale') == 0){
+//                    //скидка Печень
+//                    //2677
+//
+//                    $order->products()->updateOrCreate(['product_id' => 2427,'order_id' => $order->id],[
+//                        'product_id' => 2427,
+//                        'order_id' => $order->id,
+//                        'count' => 5,
+//                        'price' => 0.2,
+//                        'all_price' => 1,
+//                        'comment' => 'подарок'
+//                    ]);
+//                    $totalPrice += 1;
+//                }
 
 
                 //кешбэк
@@ -290,6 +289,26 @@ class OrderController extends Controller
 
            $data =  WebKassaService::printFormat(Auth::user(),$check->number);
             return response()->json($data);
+        }catch (\Exception $exception){
+
+            return response()->json(['message' => $exception->getMessage()],400);
+        }
+    }
+
+    public function printCheckFormat(Order $order)
+    {
+        try {
+            $check = WebkassaCheck::where('order_id',$order->id)->latest()->first();
+
+
+            if (!$check)
+            {
+                throw new Exception('чек не найден');
+            }
+
+           $data =  WebKassaService::printFormat($order->user,$check->number);
+
+            return response()->view('pdf.check',compact('data'));
         }catch (\Exception $exception){
 
             return response()->json(['message' => $exception->getMessage()],400);

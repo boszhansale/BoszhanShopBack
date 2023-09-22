@@ -33,7 +33,7 @@
                     <th>#</th>
                     <th>артикул</th>
                     <th>name</th>
-                    @foreach(\App\Models\PriceType::all() as $priceType)
+                    @foreach(\App\Models\PriceType::where('id',3)->get() as $priceType)
                         <th>{{$priceType->name}}</th>
                     @endforeach
                     <th>шт/кг</th>
@@ -63,7 +63,7 @@
                             <a>{{$product->name}}</a>
                         </th>
 
-                        @foreach(\App\Models\PriceType::all() as $priceType)
+                        @foreach(\App\Models\PriceType::where('id',3)->get() as $priceType)
                             <th>{{$product->prices()->where('price_type_id',$priceType->id)->first()?->price}}</th>
                         @endforeach
                         <th>
@@ -81,6 +81,7 @@
                 @endforeach
                 </tbody>
             </table>
+            {{$products->links()}}
         </div>
     </div>
 

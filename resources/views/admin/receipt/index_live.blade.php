@@ -41,7 +41,6 @@
                     <th>Продавец</th>
                     <th>сумма</th>
                     <th>Дата создание</th>
-                    <th>тип оплаты</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -60,15 +59,12 @@
                                     <i class="fas fa-folder">
                                     </i>
                                 </a>
-                                {{--                                    <a class="btn btn-info btn-sm" href="{{route('admin.order.edit',$receipt->id)}}">--}}
-                                {{--                                        <i class="fas fa-pencil-alt">--}}
-                                {{--                                        </i>--}}
-                                {{--                                    </a>--}}
+
 
                             </td>
                             <td>
                                 @if($receipt->store?->counteragent_id)
-                                    <a href="{{route('admin.counteragent.show',$receipt->store->counteragent_id)}}">{{$receipt->store->counteragent->name}}</a>
+                                   {{$receipt->store->counteragent->name}}
                                 @endif
                             </td>
                             <td>
@@ -87,7 +83,6 @@
                             <td class="price">{{$receipt->total_price}}</td>
 
                             <td>{{$receipt->created_at}}</td>
-                            <td>{{$receipt->payment_type}}</td>
                         </tr>
                         @endforeach
                 </tbody>

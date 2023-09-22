@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ProductStoreRequest;
 use App\Http\Requests\Admin\ProductUpdateRequest;
-use App\Imports\ProductPriceImport;
 use App\Models\Category;
 use App\Models\Counteragent;
 use App\Models\PriceType;
@@ -30,7 +29,7 @@ class ProductController extends Controller
     public function create()
     {
         $categories = Category::orderBy('brand_id')->where('enabled', 1)->with('brand')->get();
-        $priceTypes = PriceType::all();
+        $priceTypes = PriceType::where('id',3)->get();
         $counteragents = Counteragent::orderBy('name')->get();
 
         return view('admin.product.create', compact('categories', 'priceTypes', 'counteragents'));
@@ -84,7 +83,7 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        $priceTypes = PriceType::all();
+        $priceTypes = PriceType::where('id',3)->get();
         $categories = Category::orderBy('brand_id')
             ->where('enabled', 1)
             ->with('brand')

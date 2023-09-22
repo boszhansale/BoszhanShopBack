@@ -9,7 +9,36 @@
             <a class="btn btn-info btn-sm" href="{{route('admin.store.edit',$store->id)}}">
                 изменить
             </a>
+            <a class="btn btn-info btn-sm" href="{{route('admin.storeProductDiscount.index',$store->id)}}">
+                скидки
+            </a>
+            <a class="btn btn-info btn-sm" href="{{route('admin.discountCard.index',$store->id)}}">
+                дисконт карты
+            </a>
 
+
+        </div>
+        <br>
+        <br>
+        <div class="col-md-12">
+            <a class="btn btn-warning btn-sm" href="{{route('admin.store.z-report',$store->id)}}">
+                Z отчеты
+            </a>
+            <a class="btn btn-warning btn-sm" href="{{route('admin.report.remain',$store->id)}}">
+                Остатки товаров
+            </a>
+            <a class="btn btn-warning btn-sm" href="{{route('admin.report.discount-card',$store->id)}}">
+                Продажи по дисконтным картам
+            </a>
+            <a class="btn btn-warning btn-sm" href="{{route('admin.report.order',$store->id)}}">
+                Продажи
+            </a>
+            <a class="btn btn-warning btn-sm" href="{{route('admin.report.product',$store->id)}}">
+                Товарный отчет в разрезе
+            </a>
+            <a class="btn btn-warning btn-sm" href="{{route('admin.report.inventory',$store->id)}}">
+                Инвентаризация
+            </a>
         </div>
     </div>
     <br>
@@ -30,7 +59,6 @@
                             <td>Телефон номер</td>
                             <td>{{$store->phone}}</td>
                         </tr>
-
                         <tr>
                             <td>БИН</td>
                             <td>{{$store->bin}}</td>
@@ -47,13 +75,13 @@
                             <td>Контрагент</td>
                             <td>{{$store->counteragent?->name}}</td>
                         </tr>
-
                     </table>
                 </div>
             </div>
         </div>
 
     </div>
+
 @endsection
 
 

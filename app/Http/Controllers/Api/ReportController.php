@@ -10,6 +10,7 @@ use App\Models\DiscountCard;
 use App\Models\Inventory;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Report;
 use DB;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -308,5 +309,28 @@ class ReportController extends Controller
         }
 
         return response()->json($data);
+    }
+
+    public function zReport(Request $request)
+    {
+
+        $reports = Report::query()
+//            ->where('store_id',Auth::user()->store_id)
+            ->where('name','z-report')
+            ->latest()
+            ->when($request->has('date_from'),function ($q){
+                $q->whereDate('created_at','>=',\request('date_from'));
+            })
+            ->when($request->has('date_to'),function ($q){
+                $q->whereDate('created_at','<=',\request('date_to'));
+            })
+            ->limit(100)
+            ->get();
+
+        return response()->json($reports);
+    }
+    public function zReportPrint(Report $report)
+    {
+        return view('pdf.z-report',['data' => $report->body]);
     }
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BasketController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CounteragentController;
+use App\Http\Controllers\Admin\DiscountCardController;
 use App\Http\Controllers\Admin\InventoryController;
 use App\Http\Controllers\Admin\MainController;
 use App\Http\Controllers\Admin\MovingController;
@@ -13,8 +14,11 @@ use App\Http\Controllers\Admin\ReceiptController;
 use App\Http\Controllers\Admin\RefundController;
 use App\Http\Controllers\Admin\RefundProducerController;
 use App\Http\Controllers\Admin\RejectController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\StoreController;
+use App\Http\Controllers\Admin\StoreProductDiscountController;
 use App\Http\Controllers\Admin\UserController;
+use App\Models\StoreProductDiscount;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,7 +40,22 @@ Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['admin.check','auth:sanctum'])->group(function (){
 
     Route::get('main', [MainController::class, 'index'])->name('main');
-
+    Route::prefix('brand')->name('brand.')->group(function () {
+        Route::get('/', [BrandController::class, 'index'])->name('index');
+        Route::get('create', [BrandController::class, 'create'])->name('create');
+        Route::post('store', [BrandController::class, 'store'])->name('store');
+        Route::get('edit/{brand}', [BrandController::class, 'edit'])->name('edit');
+        Route::put('update/{brand}', [BrandController::class, 'update'])->name('update');
+        Route::get('delete/{brand}', [BrandController::class, 'delete'])->name('delete');
+    });
+    Route::prefix('category')->name('category.')->group(function () {
+        Route::get('/{brand}', [CategoryController::class, 'index'])->name('index');
+        Route::get('create/{brand}', [CategoryController::class, 'create'])->name('create');
+        Route::post('store/{brand}', [CategoryController::class, 'store'])->name('store');
+        Route::get('edit/{category}', [CategoryController::class, 'edit'])->name('edit');
+        Route::put('update/{category}', [CategoryController::class, 'update'])->name('update');
+        Route::get('delete/{category}', [CategoryController::class, 'delete'])->name('delete');
+    });
     Route::prefix('product')->name('product.')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('index');
         Route::get('create', [ProductController::class, 'create'])->name('create');
@@ -78,6 +97,32 @@ Route::middleware(['admin.check','auth:sanctum'])->group(function (){
         Route::get('delete/{store}', [StoreController::class, 'delete'])->name('delete');
         Route::get('remove/{store}', [StoreController::class, 'remove'])->name('remove');
         Route::get('recover/{store}', [StoreController::class, 'recover'])->name('recover');
+        Route::get('z-report/{store}', [StoreController::class, 'zReport'])->name('z-report');
+        Route::get('z-report-show/{report}', [StoreController::class, 'zReportShow'])->name('z-report-show');
+    });
+    Route::prefix('report')->name('report.')->group(function () {
+        Route::get('remain/{store}', [ReportController::class, 'remain'])->name('remain');
+        Route::get('discount-card/{store}', [ReportController::class, 'discountCard'])->name('discount-card');
+        Route::get('order/{store}', [ReportController::class, 'order'])->name('order');
+        Route::get('product/{store}', [ReportController::class, 'product'])->name('product');
+        Route::get('inventory/{store}', [ReportController::class, 'inventor'])->name('inventory');
+
+    });
+    Route::prefix('discountCard')->name('discountCard.')->group(function () {
+        Route::get('{storeId}', [DiscountCardController::class, 'index'])->name('index');
+        Route::get('create/{storeId}', [DiscountCardController::class, 'create'])->name('create');
+        Route::post('store', [DiscountCardController::class, 'store'])->name('store');
+        Route::get('edit/{discountCard}', [DiscountCardController::class, 'edit'])->name('edit');
+        Route::put('update/{discountCard}', [DiscountCardController::class, 'update'])->name('update');
+        Route::get('delete/{discountCard}', [DiscountCardController::class, 'delete'])->name('delete');
+    });
+    Route::prefix('storeProductDiscount')->name('storeProductDiscount.')->group(function () {
+        Route::get('/{store}', [StoreProductDiscountController::class, 'index'])->name('index');
+        Route::get('create/{store}', [StoreProductDiscountController::class, 'create'])->name('create');
+        Route::post('store', [StoreProductDiscountController::class, 'store'])->name('store');
+        Route::get('edit/{storeProductDiscount}', [StoreProductDiscountController::class, 'edit'])->name('edit');
+        Route::put('update/{storeProductDiscount}', [StoreProductDiscountController::class, 'update'])->name('update');
+        Route::get('delete/{storeProductDiscount}', [StoreProductDiscountController::class, 'delete'])->name('delete');
     });
     Route::prefix('counteragent')->name('counteragent.')->group(function () {
         Route::get('/', [CounteragentController::class, 'index'])->name('index');
@@ -107,9 +152,6 @@ Route::middleware(['admin.check','auth:sanctum'])->group(function (){
         Route::get('recover/{order}', [OrderController::class, 'recover'])->name('recover');
         Route::get('history/{order}', [OrderController::class, 'history'])->name('history');
     });
-
-
-
     Route::prefix('refund')->name('refund.')->group(function () {
         Route::get('/', [RefundController::class, 'index'])->name('index');
         Route::get('create', [RefundController::class, 'create'])->name('create');
@@ -134,7 +176,6 @@ Route::middleware(['admin.check','auth:sanctum'])->group(function (){
         Route::get('recover/{refundProducer}', [RefundProducerController::class, 'recover'])->name('recover');
         Route::get('history/{refundProducer}', [RefundProducerController::class, 'history'])->name('history');
     });
-
     Route::prefix('receipt')->name('receipt.')->group(function () {
         Route::get('/', [ReceiptController::class, 'index'])->name('index');
         Route::get('create', [ReceiptController::class, 'create'])->name('create');
@@ -147,8 +188,6 @@ Route::middleware(['admin.check','auth:sanctum'])->group(function (){
         Route::get('recover/{receipt}', [ReceiptController::class, 'recover'])->name('recover');
         Route::get('history/{receipt}', [ReceiptController::class, 'history'])->name('history');
     });
-
-
     Route::prefix('moving')->name('moving.')->group(function () {
         Route::get('/', [MovingController::class, 'index'])->name('index');
         Route::get('create', [MovingController::class, 'create'])->name('create');
@@ -161,7 +200,6 @@ Route::middleware(['admin.check','auth:sanctum'])->group(function (){
         Route::get('recover/{moving}', [MovingController::class, 'recover'])->name('recover');
         Route::get('history/{moving}', [MovingController::class, 'history'])->name('history');
     });
-
     Route::prefix('reject')->name('reject.')->group(function () {
         Route::get('/', [RejectController::class, 'index'])->name('index');
         Route::get('create', [RejectController::class, 'create'])->name('create');

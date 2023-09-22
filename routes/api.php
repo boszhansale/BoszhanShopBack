@@ -51,6 +51,9 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::post('money-operation',[WebkassaController::class,'moneyOperation']);
         Route::post('z-report',[WebkassaController::class,'ZReport']);
         Route::post('x-report',[WebkassaController::class,'XReport']);
+
+        Route::get('z-report/print/{user}',[WebkassaController::class,'ZReportPrint'])->withoutMiddleware('auth:sanctum');
+        Route::get('x-report/print/{user}',[WebkassaController::class,'XReportPrint'])->withoutMiddleware('auth:sanctum');
     });
 
     Route::prefix('user')->group(function (){
@@ -71,6 +74,7 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::delete('{order}',[OrderController::class,'delete']);
         Route::post('check/{order}',[OrderController::class,'check']);
         Route::get('print-check/{order}',[OrderController::class,'printCheck']);
+        Route::get('html/{order}',[OrderController::class,'printCheckFormat'])->withoutMiddleware('auth:sanctum');
     });
     //Возврат от покупателя
     Route::prefix('refund')->group(function (){
@@ -80,6 +84,7 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::delete('{refund}',[RefundController::class,'delete']);
         Route::post('check/{refund}',[RefundController::class,'check']);
         Route::get('print-check/{refund}',[RefundController::class,'printCheck']);
+        Route::get('html/{refund}',[RefundController::class,'printCheckFormat'])->withoutMiddleware('auth:sanctum');
     });
     //Возврат товара поставщику
     Route::prefix('refund-producer')->group(function (){
@@ -111,6 +116,8 @@ Route::middleware('auth:sanctum')->group(function (){
 
         Route::delete('{moving}',[MovingController::class,'delete']);
         Route::post('check/{moving}',[MovingController::class,'check']);
+
+        Route::get('html/{moving}',[MovingController::class,'html'])->withoutMiddleware('auth:sanctum');
     });
     //Списание
     Route::prefix('reject')->group(function (){
@@ -122,9 +129,11 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::prefix('inventory')->group(function (){
         Route::get('/',[InventoryController::class,'index']);
         Route::post('/',[InventoryController::class,'store']);
-        Route::post('update/{inventory}',[InventoryController::class,'update']);
+        Route::post('active/{inventory}',[InventoryController::class,'active']);
+        Route::post('update-product/{inventory}',[InventoryController::class,'update']);
         Route::post('add-receipt',[InventoryController::class,'addReceipt']);
         Route::get('history',[InventoryController::class,'history']);
+        Route::get('html/{inventory}',[InventoryController::class,'html'])->withoutMiddleware('auth:sanctum');
     });
     Route::prefix('report')->group(function (){
         Route::get('remains',[ReportController::class,'remains']);
@@ -132,5 +141,8 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::get('order',[ReportController::class,'order']);
         Route::get('inventor',[ReportController::class,'inventor']);
         Route::get('product',[ReportController::class,'product']);
+
+        Route::get('z',[ReportController::class,'zReport']);
+        Route::get('z/{report}/print',[ReportController::class,'zReportPrint'])->withoutMiddleware('auth:sanctum');
     });
 });

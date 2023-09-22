@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\WebkassaMoneyOperationRequest;
+use App\Models\Report;
+use App\Models\User;
 use App\Services\WebKassa\WebKassaService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -26,6 +28,7 @@ class WebkassaController extends Controller
             ],400);
         }
     }
+
     public function moneyOperation(WebkassaMoneyOperationRequest $request)
     {
         $user= \Auth::user();
@@ -40,6 +43,7 @@ class WebkassaController extends Controller
             ],400);
         }
     }
+
     public function ZReport()
     {
         $user= \Auth::user();
@@ -52,11 +56,57 @@ class WebkassaController extends Controller
             ],400);
         }
     }
+
     public function XReport()
     {
         $user= \Auth::user();
         try {
-            return response()->json(WebKassaService::XReport($user));
+            $data = WebKassaService::XReport($user);
+            Report::create([
+                'user_id' => $user->id,
+                'store_id' => $user->store_id,
+                'name' => 'x-report',
+                'body' => $data
+            ]);
+            return response()->json($data);
+        } catch (\Exception $e) {
+            return  response()->json([
+                'message' => $e->getMessage()
+            ],400);
+        }
+    }
+
+    public function ZReportPrint(User $user)
+    {
+        try {
+            $data = WebKassaService::ZReport($user);
+            Report::create([
+                'user_id' => $user->id,
+                'store_id' => $user->store_id,
+                'name' => 'z-report',
+                'body' => $data
+            ]);
+            return view('pdf.z-report',compact('data'));
+        } catch (\Exception $e) {
+
+            return  response()->json([
+                'message' => $e->getMessage()
+            ],400);
+        }
+    }
+
+    public function XReportPrint(User $user)
+    {
+        try {
+            $data = WebKassaService::XReport($user);
+
+//            Report::create([
+//                'user_id' => $user->id,
+//                'store_id' => $user->store_id,
+//                'name' => 'x-report',
+//                'body' => $data
+//            ]);
+            return view('pdf.x-report',compact('data'));
         } catch (\Exception $e) {
             return  response()->json([
                 'message' => $e->getMessage()

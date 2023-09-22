@@ -2,6 +2,8 @@
 
 namespace App\Actions;
 
+use App\Models\Moving;
+use App\Models\MovingProduct;
 use App\Models\Product;
 use App\Models\ReceiptProduct;
 use App\Models\Reject;
@@ -16,8 +18,9 @@ class RejectStoreAction
      */
     public function execute($data): Reject
     {
+        $reject = Auth::user()->rejects()->create($data) ;
+
         if (isset($data['products'])) {
-            $reject = Auth::user()->rejects()->create($data) ;
 
             foreach ($data['products'] as $item) {
                 $product = Product::find($item['product_id']);
@@ -30,29 +33,37 @@ class RejectStoreAction
                         ->select('receipt_products.*')
                         ->latest()
                         ->first();
+                    $movingProduct = MovingProduct::query()->join('movings','movings.id','moving_products.moving_id')
+                        ->where('movings.user_id',Auth::id())
+                        ->where('moving_products.product_id',$item['product_id'])
+                        ->select('moving_products.*')
+                        ->latest()
+                        ->first();
                     if ($receiptProduct){
                         $item['price'] = $receiptProduct->price;
-                    }else{
-                        $priceType = $product->prices()->where('price_type_id',5)->first();
+                    }elseif ($movingProduct){
+                        $item['price'] = $movingProduct->price;
+                    }{
+                        $priceType = $product->prices()->where('price_type_id',3)->first();
                         if (!$priceType) throw new Exception("price not found");
                         $item['price'] = $priceType->price;
                     }
                 }
 
-                $receiptProduct = ReceiptProduct::query()
-                    ->join('receipts', 'receipts.id', 'receipt_products.receipt_id')
-                    ->where('receipts.user_id', Auth::id())
-                    ->where('product_id', $product->id)
-                    ->latest()
-                    ->select('receipt_products.*')
-                    ->first();
+//                $receiptProduct = ReceiptProduct::query()
+//                    ->join('receipts', 'receipts.id', 'receipt_products.receipt_id')
+//                    ->where('receipts.user_id', Auth::id())
+//                    ->where('product_id', $product->id)
+//                    ->latest()
+//                    ->select('receipt_products.*')
+//                    ->first();
+//
+//                if (!$receiptProduct) {
+//                    $reject->forceDelete();
+//                    throw  new Exception("продукт $product->name не найден");
+//                }
 
-                if (!$receiptProduct) {
-                    $reject->forceDelete();
-                    throw  new Exception("продукт $product->name не найден");
-                }
-
-                $item['price'] = $receiptProduct->price;
+//                $item['price'] = $receiptProduct->price;
                 $item['all_price'] = $item['count'] * $item['price'];
 
                 $reject->products()->updateOrCreate([ 'product_id' => $product->id,'reject_id' => $reject->id], $item);

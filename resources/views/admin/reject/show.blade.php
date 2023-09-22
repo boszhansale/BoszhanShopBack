@@ -35,8 +35,8 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>Тип оплаты</th>
-                            <td>{{$reject->payment_type}}</td>
+                            <th>Описания</th>
+                            <td>{{$reject->description}}</td>
                         </tr>
 
                         <tr>
@@ -69,6 +69,7 @@
                             <th>Цена</th>
                             <th>Количество</th>
                             <th>итог</th>
+                            <th>коммент</th>
 
                         </tr>
                         </thead>
@@ -82,6 +83,7 @@
                                 <td>{{$basket->price}}</td>
                                 <td>{{$basket->count}}</td>
                                 <td>{{$basket->all_price}}</td>
+                                <td>{{$basket->comment}}</td>
                             </tr>
                         @endforeach
                         </tbody>

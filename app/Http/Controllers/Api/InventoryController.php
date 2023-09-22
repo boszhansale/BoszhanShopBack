@@ -12,7 +12,9 @@ use App\Http\Resources\ProductResource;
 use App\Models\Counteragent;
 use App\Models\Inventory;
 use App\Models\Product;
+use App\Models\ProductPriceType;
 use App\Models\ReceiptProduct;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use DB;
 use Dflydev\DotAccessData\Data;
@@ -107,31 +109,56 @@ class InventoryController extends Controller
         return response()->json($result);
     }
 
-    public function store(InventoryStoreRequest $request, ReceiptStoreAction $receiptStoreAction, RejectStoreAction $rejectStoreAction)
+    public function store(InventoryStoreRequest $request)
     {
         $inventory =  Inventory::create(['user_id' => Auth::id(),'store_id' => Auth::user()->store_id]);
+
+        foreach ($request->get('products') as $item) {
+            $product = Product::findOrFail($item['product_id']);
+
+            $productPriceType = $product->prices()->where('price_type_id', 3)->first();
+            $item['price'] = $productPriceType ? $productPriceType->price : 0;
+
+            $inventory->products()->create($item);
+        }
+
+        return response()->json($inventory);
+    }
+
+    public function active(Inventory $inventory, ReceiptStoreAction $receiptStoreAction, RejectStoreAction $rejectStoreAction)
+    {
+        if ($inventory->status == 2){
+            return response()->json(['message' => 'документ уже активен'],400);
+        }
         $receiptData = [];
         $rejectData = [];
 
-        foreach ($request->get('products') as $item) {
-            if ($item['remains'] < $item['count']){
+        foreach ($inventory->products as $inventoryProduct) {
+            $product = $inventoryProduct->product;
+
+            if ($inventoryProduct->remains < $inventoryProduct->count){
                 //Излишки
-                $item['overage'] = $item['count'] - $item['remains'];
+                $inventoryProduct->overage = $inventoryProduct->count - $inventoryProduct->remains;
                 $receiptData['products'] [] = [
-                    'product_id' => $item['product_id'],
-                    'count' => $item['overage'],
+                    'product_id' => $inventoryProduct->product_id,
+                    'count' => $inventoryProduct->overage,
                 ];
 
             }
-            if ($item['remains'] > $item['count']){
+            if ($inventoryProduct->remains > $inventoryProduct->count){
                 //Недостачи
-                $item['shortage'] = $item['remains'] - $item['count'];
+                $inventoryProduct->shortage = $inventoryProduct->remains - $inventoryProduct->count;
                 $rejectData['products'] [] = [
-                    'product_id' => $item['product_id'],
-                    'count' => $item['shortage'],
+                    'product_id' => $inventoryProduct->product_id,
+                    'count' => $inventoryProduct->shortage,
                 ];
             }
-            $inventory->products()->create($item);
+
+            $productPriceType = $product->prices()->where('price_type_id', 3)->first();
+            $inventoryProduct->price = $productPriceType ? $productPriceType->price : 0;
+
+            $inventoryProduct->save();
+
         }
         //Излишки
         if (count($receiptData) > 0){
@@ -148,13 +175,17 @@ class InventoryController extends Controller
         //Недостачи
         if (count($rejectData) > 0)
         {
-            $receiptData['storage_id'] = Auth::user()->storage_id;
-            $receiptData['store_id'] = Auth::user()->store_id;
-            $receiptData['organization_id'] = Auth::user()->organization_id;
-            $receiptData['inventory_id'] = $inventory->id;
-            $receiptData['description'] = "На основании инвентаризации №$inventory->id от ".$inventory->created_at->format('d.m.Y');
-            $rejectStoreAction->execute($receiptData);
+            $rejectData['storage_id'] = Auth::user()->storage_id;
+            $rejectData['store_id'] = Auth::user()->store_id;
+            $rejectData['organization_id'] = Auth::user()->organization_id;
+            $rejectData['inventory_id'] = $inventory->id;
+            $rejectData['description'] = "На основании инвентаризации №$inventory->id от ".$inventory->created_at->format('d.m.Y');
+            $rejectStoreAction->execute($rejectData);
         }
+
+
+        $inventory->status = 2;
+        $inventory->save();
 
         return response()->json($inventory);
     }
@@ -200,7 +231,19 @@ class InventoryController extends Controller
             ->when($request->has('date_to'),function ($q){
                 $q->whereDate('created_at','<=',request('date_to'));
             })
+            ->latest()
             ->get();
         return response()->json($inventories);
+    }
+
+    public function html(Inventory $inventory)
+    {
+
+
+        return view('pdf.inventory',compact('inventory'));
+
+//        $pdf = Pdf::loadView('pdf.inventory',compact('inventory'));
+//
+//        return $pdf->download('inventory.pdf');
     }
 }

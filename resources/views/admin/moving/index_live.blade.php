@@ -41,7 +41,6 @@
                     <th>Продавец</th>
                     <th>сумма</th>
                     <th>Дата создание</th>
-                    <th>тип оплаты</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -60,15 +59,11 @@
                                     <i class="fas fa-folder">
                                     </i>
                                 </a>
-                                {{--                                    <a class="btn btn-info btn-sm" href="{{route('admin.moving.edit',$moving->id)}}">--}}
-                                {{--                                        <i class="fas fa-pencil-alt">--}}
-                                {{--                                        </i>--}}
-                                {{--                                    </a>--}}
 
                             </td>
                             <td>
                                 @if($moving->store?->counteragent_id)
-                                    <a href="{{route('admin.counteragent.show',$moving->store->counteragent_id)}}">{{$moving->store->counteragent->name}}</a>
+                                   {{$moving->store->counteragent->name}}
                                 @endif
                             </td>
                             <td>
@@ -87,7 +82,6 @@
                             <td class="price">{{$moving->total_price}}</td>
 
                             <td>{{$moving->created_at}}</td>
-                            <td>{{$moving->payment_type}}</td>
                         </tr>
                         @endforeach
                 </tbody>

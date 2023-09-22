@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Onec;
 
 use App\Models\Order;
+use App\Models\Refund;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
@@ -19,13 +20,12 @@ class ReportRefundCommand extends Command
     {
         $refundId = $this->argument('refund_id');
 
-        $refunds = Order::query()
+        $refunds = Refund::query()
             ->when($refundId, function ($q) use ($refundId) {
                 return $q->where('refunds.id', $refundId);
             }, function ($q) {
 //                return $q->whereDate('created_at', now());
             })
-            ->whereNull('orders.removed_at')
             ->get();
 
         if (count($refunds) == 0) {

@@ -3,6 +3,8 @@
 namespace App\Console\Commands\Onec;
 
 use App\Models\Order;
+use App\Models\OrderProduct;
+use App\Models\Store;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
@@ -19,43 +21,42 @@ class ReportOrderCommand extends Command
     {
         $order_id = $this->argument('order_id');
 
-        $orders = Order::query()
-            ->when($order_id, function ($q) use ($order_id) {
-                return $q->where('orders.id', $order_id);
-            }, function ($q) {
-//                return $q->whereDate('created_at', now());
-            })
-            ->whereNull('orders.removed_at')
-            ->get();
-
-        if (count($orders) == 0) {
-            $this->info('нет заказов');
-            return 0;
-        }
-        $todayDate = now()->format('Y-m-d');
+        $stores = Store::all();
 
 
-        foreach ($orders as $order) {
+        foreach ($stores as $store) {
 
-            ///////////////////////////////////////////////////////////////////
+            $orderProducts = OrderProduct::query()
+                ->join('orders','orders.id','order_products.order_id')
+                ->where('orders.store_id',$store->id)
+
+                ->whereDate('order_products.created_at','<=',now()->startOfWeek())
+                ->selectRaw('product_id,SUM(order_products.`count`) AS COUNT, SUM(order_products.all_price) AS all_price')
+                ->groupBy('product_id')
+                ->with('product')
+                ->get();
+
+
+            if (count($orderProducts) == 0){
+                continue;
+            }
+
+
+
             try {
 
-                if (!$order->store){
-                    throw new Exception('нет магазина');
-                }
-
-                $idOnec =$order->counteragent?->id_1c ?? $order->store->counteragent?->id_1c;
+                $idOnec  =$store->counteragent?->id_1c;
                 if (!$idOnec){
                     throw new Exception('нет контрагента');
                 }
-                $idSell = 300000000000000 + $order->store_id;
+                $idSell = 300000000000000 + $store->id;
 
-                $date = Carbon::parse($order->created_at)->addDay(); //->format('Y-m-d');
-//            $date = $dateObj->format('Y-m-d');
-                $name = "ORDER_{$date->clone()->format('YmdHis')}_{$idOnec}_9864232489962_{$order->id}.xml";;
+//                $date = Carbon::parse($order->created_at)->addDay(); //->format('Y-m-d');
+                $date = Carbon::now();
+                $name = "ORDER_{$date->clone()->format('YmdHis')}_{$idOnec}_9864232489962_{$store->id}.xml";;
                 $path = "reports/" . now()->format('Y-m-d') . "/$name";
 
-                $output = View::make('onec.report_order', compact('order', 'idOnec', 'idSell'))->render();
+                $output = View::make('onec.report_order', compact('orderProducts','store', 'idOnec', 'idSell'))->render();
                 $output = '<?xml version="1.0" encoding="utf-8"?>\n' . $output;
 
                 Storage::put($path, $output);
@@ -71,16 +72,22 @@ class ReportOrderCommand extends Command
 //                    }
 //                    File::put("/home/dev/index/$name", $output);
 //                }
-                $this->info("The report for order $order->id is saved here : $path, type is 0");
+                $this->info("The report   is saved here : $path, type is 0");
 
 
             } catch (Exception $exception) {
                 $this->error($exception->getMessage());
             }
+        }
+
+
+
 
             ///////////////////////////////////////////////////////////////////
 
 
-        }
+            ///////////////////////////////////////////////////////////////////
+
+
     }
 }

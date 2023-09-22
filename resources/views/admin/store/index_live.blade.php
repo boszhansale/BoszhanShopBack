@@ -44,14 +44,15 @@
                     <tr class="{{$store->removed_at != null ?'bg-red':''}}">
                         <th>{{$store->id}}</th>
                         <th>
-                            <b>{{$store->name}}</b><br>
-                            <small>{{$store->address}}</small>
+
+                            <a href="{{route('admin.store.show',$store->id)}}">
+                                <b>{{$store->name}}</b><br>
+                                <small>{{$store->address}}</small>
+                            </a>
                         </th>
                         <td>
                             @if($store->counteragent)
-                                <a href="{{route('admin.counteragent.show',$store->counteragent->id)}}">
-                                    <small style="font-size: 12px;">{{$store->counteragent->name}}</small>
-                                </a>
+                                {{$store->counteragent->name}}
 
                             @endif
                         </td>

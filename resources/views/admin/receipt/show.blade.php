@@ -25,7 +25,7 @@
                             <tr>
                                 <th>Контрагент</th>
                                 <td>
-                                    <a href="{{route('admin.counteragent.show',$receipt->store->counteragent_id)}}">{{$receipt->store->counteragent->name}}</a>
+                                    {{$receipt->store->counteragent->name}}
                                 </td>
                             </tr>
                         @endif
@@ -43,12 +43,8 @@
                             <td>{{$receipt->total_price}}</td>
                         </tr>
                         <tr>
-                            <th>чек</th>
-                            <td>
-                                @if($receipt->ticket_print_url)
-                                    <a target="_blank" href="{{$receipt->ticket_print_url}}">{{$refund->check_number}}</a>
-                                @endif
-                            </td>
+                            <th>описание</th>
+                            <td>{{$receipt->description}}</td>
                         </tr>
                     </table>
                 </div>

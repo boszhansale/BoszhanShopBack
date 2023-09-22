@@ -86,14 +86,6 @@ use Laravel\Sanctum\HasApiTokens;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Moving> $movings
  * @property-read int|null $movings_count
  * @method static \Illuminate\Database\Eloquent\Builder|User whereBalance($value)
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Moving> $movings
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Order> $orders
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Receipt> $receipts
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\RefundProducer> $refundProducer
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Refund> $refunds
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Reject> $rejects
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
  * @mixin \Eloquent
  */
 class User extends Authenticatable

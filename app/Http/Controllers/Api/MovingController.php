@@ -12,6 +12,7 @@ use App\Models\Moving;
 use App\Models\MovingProduct;
 use App\Models\Product;
 use App\Services\WebKassa\WebKassaService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 //Поступление товара
 class MovingController extends Controller
@@ -143,6 +144,14 @@ class MovingController extends Controller
         $movingProduct->delete();
         return response()->json(['message' => 'delete']);
     }
+    public function html(Moving $moving)
+    {
+//        $pdf = Pdf::setOption(['dpi' => 150, 'defaultFont' => 'sans-serif'])
+//            ->loadView('pdf.moving',compact('moving'));
+//
+//        return $pdf->download('moving.pdf');
 
+        return view('pdf.moving',compact('moving'));
+    }
 
 }

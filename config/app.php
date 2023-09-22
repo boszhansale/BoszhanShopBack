@@ -82,7 +82,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'ru',
     'driver_id_onec' => '6000000000162',
     /*
     |--------------------------------------------------------------------------
@@ -195,7 +195,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\TelescopeServiceProvider::class,
-
+        morphos\MorphosBladeProvider::class
     ],
 
     /*

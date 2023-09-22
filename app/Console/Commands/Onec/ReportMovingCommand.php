@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Onec;
 
+use App\Models\Moving;
 use App\Models\Order;
 use Carbon\Carbon;
 use Exception;
@@ -19,13 +20,12 @@ class ReportMovingCommand extends Command
     {
         $movingId = $this->argument('moving_id');
 
-        $movings = Order::query()
+        $movings = Moving::query()
             ->when($movingId, function ($q) use ($movingId) {
                 return $q->where('orders.id', $movingId);
             }, function ($q) {
 //                return $q->whereDate('created_at', now());
             })
-            ->whereNull('orders.removed_at')
             ->get();
 
         if (count($movings) == 0) {

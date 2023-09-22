@@ -54,6 +54,9 @@ class InventoryIndex extends Component
         return view('admin.inventory.index_live', [
             'users' => User::query()
                 ->where('users.status', 1)
+                ->when($this->storeId,function ($q){
+                    $q->where('store_id',$this->storeId);
+                })
                 ->orderBy('users.name')
                 ->get('users.*'),
 

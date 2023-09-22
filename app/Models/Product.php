@@ -71,10 +71,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductPriceType> $prices
  * @property-read int|null $prices_count
  * @method static \Illuminate\Database\Eloquent\Builder|Product whereEnabled($value)
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductBarcode> $barcodes
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductCounteragentPrice> $counteragentPrices
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductImage> $images
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ProductPriceType> $prices
+
  * @mixin \Eloquent
  */
 class Product extends Model
@@ -135,6 +132,20 @@ class Product extends Model
     public function measureDescription(): string
     {
         return $this->measure == 1 ? 'шт' : 'кг';
+    }
+    public function getDiscountPrice($storeId)
+    {
+        $discount = 0;
+
+        $productPriceType = $this->prices()->where('price_type_id', 3)->first();
+        $discount = $discount + $this->discount ;
+
+        if ($discount > 0){
+
+            return ($productPriceType->price / 100) * $discount ;
+        }else{
+            return 0;
+        }
     }
 
     //ostatki

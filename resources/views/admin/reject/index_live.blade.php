@@ -41,7 +41,6 @@
                     <th>Продавец</th>
                     <th>сумма</th>
                     <th>Дата создание</th>
-                    <th>тип оплаты</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -60,15 +59,11 @@
                                     <i class="fas fa-folder">
                                     </i>
                                 </a>
-                                {{--                                    <a class="btn btn-info btn-sm" href="{{route('admin.reject.edit',$reject->id)}}">--}}
-                                {{--                                        <i class="fas fa-pencil-alt">--}}
-                                {{--                                        </i>--}}
-                                {{--                                    </a>--}}
 
                             </td>
                             <td>
                                 @if($reject->store?->counteragent_id)
-                                    <a href="{{route('admin.counteragent.show',$reject->store->counteragent_id)}}">{{$reject->store->counteragent->name}}</a>
+                                   {{$reject->store->counteragent->name}}
                                 @endif
                             </td>
                             <td>
@@ -87,7 +82,6 @@
                             <td class="price">{{$reject->total_price}}</td>
 
                             <td>{{$reject->created_at}}</td>
-                            <td>{{$reject->payment_type}}</td>
                         </tr>
                         @endforeach
                 </tbody>

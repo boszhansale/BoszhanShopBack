@@ -125,5 +125,25 @@ class RefundController extends Controller
         }
     }
 
+    public function printCheckFormat(Refund $refund)
+    {
+        try {
+            $check = WebkassaCheck::where('refund_id',$refund->id)->latest()->first();
+
+
+            if (!$check)
+            {
+                throw new Exception('чек не найден');
+            }
+
+            $data =  WebKassaService::printFormat($refund->user,$check->number);
+
+            return response()->view('pdf.check',compact('data'));
+        }catch (\Exception $exception){
+
+            return response()->json(['message' => $exception->getMessage()],400);
+        }
+    }
+
 
 }

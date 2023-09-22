@@ -39,9 +39,7 @@
                     <th>ТТ</th>
                     <th>Статус</th>
                     <th>Продавец</th>
-                    <th>сумма</th>
                     <th>Дата создание</th>
-                    <th>тип оплаты</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -60,34 +58,36 @@
                                     <i class="fas fa-folder">
                                     </i>
                                 </a>
-                                {{--                                    <a class="btn btn-info btn-sm" href="{{route('admin.inventory.edit',$inventory->id)}}">--}}
-                                {{--                                        <i class="fas fa-pencil-alt">--}}
-                                {{--                                        </i>--}}
-                                {{--                                    </a>--}}
-
                             </td>
                             <td>
                                 @if($inventory->store?->counteragent_id)
-                                    <a href="{{route('admin.counteragent.show',$inventory->store->counteragent_id)}}">{{$inventory->store->counteragent->name}}</a>
+                                    {{$inventory->store->counteragent->name}}
                                 @endif
                             </td>
                             <td>
-                                @if($inventory->store?->counteragent_id)
-                                    {{$inventory->store?->counteragent?->bin}}
-                                @endif
-                            </td>
-                            <td>
-                                <a href="{{route('admin.store.show',$inventory->store_id)}}">{{$inventory->store?->name}}</a>
-                            </td>
-                            <td>{{$inventory->status}}</td>
-                            <td>
-                                <a href="{{route('admin.user.show',$inventory->user_id)}}">{{$inventory->user->name}}</a>
+                                {{$inventory->store?->counteragent?->bin}}
                             </td>
 
-                            <td class="price">{{$inventory->total_price}}</td>
+                            <td>
+                                <a href="{{route('admin.store.show',$inventory->store_id)}}">
+                                    {{$inventory->store?->name}}
+                                </a>
+                            </td>
+                            <td>
+                                @if($inventory->status == 2)
+                                    активен
+                                @else
+                                    сохранен
+                                @endif
+                            </td>
+                            <td>
+                                <a href="{{route('admin.user.show',$inventory->user_id)}}">
+                                    {{$inventory->user->name}}
+                                </a>
+                            </td>
+
 
                             <td>{{$inventory->created_at}}</td>
-                            <td>{{$inventory->payment_type}}</td>
                         </tr>
                         @endforeach
                 </tbody>

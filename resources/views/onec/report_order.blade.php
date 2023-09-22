@@ -1,10 +1,12 @@
 <ORDER>
     <DOCUMENTNAME>620</DOCUMENTNAME>
-    <NUMBER>{{ $order->id  }}-0800{{  now()->year  }}-{{  substr($order->user->id_1c,-4)  }}-{{  $order->payment_type  }}</NUMBER>
-    <DATE>{{ $order->created_at->format('Y-m-d')  }}</DATE>
+{{--    <NUMBER>{{ $order->id  }}-0800{{  now()->year  }}-{{  substr($order->user->id_1c,-4)  }}-{{  $order->payment_type  }}</NUMBER>--}}
+    <NUMBER>{{ $store->id  }}-0800{{  now()->year  }}</NUMBER>
+    <DATE>{{ now()->format('Y-m-d')  }}</DATE>
     <DELIVERYDATE>{{ now()->format('Y-m-d') }}</DELIVERYDATE>
     <MANAGER>{{  config('app.driver_id_onec')  }}</MANAGER>
-    <DRIVER>{{$order->user->id_1c}}</DRIVER>
+{{--    <DRIVER>{{$order->user->id_1c}}</DRIVER>--}}
+    <DRIVER></DRIVER>
     <CURRENCY>KZT</CURRENCY>
     <HEAD>
         <SUPPLIER>9864232489962</SUPPLIER>
@@ -15,7 +17,7 @@
         <RECIPIENT>9864232489962</RECIPIENT>
         <EDIINTERCHANGEID>0</EDIINTERCHANGEID>
         <FINALRECIPIENT>{{$idSell}}</FINALRECIPIENT>
-        @foreach($order->products()->get() as $orderProduct)
+        @foreach($orderProducts as $orderProduct)
             <POSITION>
                 <POSITIONNUMBER>{{$loop->iteration}}</POSITIONNUMBER>
                 <PRODUCT>{{$orderProduct->product_id+5000000000000}}</PRODUCT>

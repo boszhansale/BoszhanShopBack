@@ -35,11 +35,6 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>Тип оплаты</th>
-                            <td>{{$moving->payment_type}}</td>
-                        </tr>
-
-                        <tr>
                             <th>Дата создании</th>
                             <td>{{$moving->created_at}}</td>
                         </tr>

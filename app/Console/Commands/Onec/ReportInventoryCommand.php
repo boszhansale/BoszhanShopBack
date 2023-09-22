@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands\Onec;
 
+use App\Models\Inventory;
 use App\Models\Order;
 use Carbon\Carbon;
 use Exception;
@@ -19,13 +20,12 @@ class ReportInventoryCommand extends Command
     {
         $inventoryId = $this->argument('inventory_id');
 
-        $inventories = Order::query()
+        $inventories = Inventory::query()
             ->when($inventoryId, function ($q) use ($inventoryId) {
                 return $q->where('inventories.id', $inventoryId);
             }, function ($q) {
 //                return $q->whereDate('created_at', now());
             })
-            ->whereNull('orders.removed_at')
             ->get();
 
         if (count($inventories) == 0) {

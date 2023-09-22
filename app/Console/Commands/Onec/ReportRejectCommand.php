@@ -3,6 +3,7 @@
 namespace App\Console\Commands\Onec;
 
 use App\Models\Order;
+use App\Models\Reject;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Console\Command;
@@ -19,7 +20,7 @@ class ReportRejectCommand extends Command
     {
         $reject_id = $this->argument('reject_id');
 
-        $rejects = Order::query()
+        $rejects = Reject::query()
             ->when($reject_id, function ($q) use ($reject_id) {
                 return $q->where('rejects.id', $reject_id);
             }, function ($q) {

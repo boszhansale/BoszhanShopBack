@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\OrderManyUpdateRequest;
 use App\Http\Requests\Admin\OrderUpdateRequest;
 use App\Models\Inventory;
+use App\Models\Receipt;
+use App\Models\Reject;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -40,8 +42,10 @@ class InventoryController extends Controller
     public function show($inventoryId)
     {
         $inventory = Inventory::findOrFail($inventoryId);
+        $rejects = Reject::where('inventory_id',$inventoryId)->get();
+        $receipts = Receipt::where('inventory_id',$inventoryId)->get();
 
-        return view('admin.inventory.show', compact('inventory'));
+        return view('admin.inventory.show', compact('inventory','receipts','rejects'));
     }
 
     public function delete(Inventory $inventory)

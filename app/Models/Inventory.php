@@ -32,7 +32,7 @@ class Inventory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['store_id','id','created_at','user_id'];
+    protected $fillable = ['store_id','id','created_at','user_id','status'];
 
     public function products(): HasMany
     {
@@ -41,5 +41,10 @@ class Inventory extends Model
     public function store(): BelongsTo
     {
         return $this->belongsTo(Store::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

@@ -7,6 +7,14 @@
         </p>
     </a>
 </li>
+<li class="nav-item">
+    <a href="{{route('admin.brand.index')}}" class="nav-link">
+        <i class="nav-icon fas fa-building"></i>
+        <p>
+            Бренды
+        </p>
+    </a>
+</li>
     <li class="nav-item">
         <a href="{{route('admin.product.index')}}" class="nav-link">
             <i class="nav-icon fas fa-th"></i>
