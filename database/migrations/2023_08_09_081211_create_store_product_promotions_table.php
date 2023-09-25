@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        //акция на продукт
         Schema::create('store_product_promotions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('store_id')->constrained('stores')->cascadeOnDelete();
-            $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();
+            $table->foreignId('product_id')->constrained('products')->cascadeOnDelete();//какой продукты бесплатно
             $table->tinyInteger('type')->default(1);
 
             $table->decimal('min_total_price',20,2);
