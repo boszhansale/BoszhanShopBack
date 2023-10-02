@@ -1,4 +1,4 @@
-<ORDER>
+<INVENTORY>
     <DOCUMENTNAME>920</DOCUMENTNAME>
     <NUMBER>{{ $inventory->id  }}-0800{{  now()->year  }}-{{  substr($inventory->user->id_1c,-4)  }}-{{  $inventory->payment_type  }}</NUMBER>
     <DATE>{{ $inventory->created_at->format('Y-m-d')  }}</DATE>
@@ -40,4 +40,4 @@
             </POSITION>
         @endforeach
     </HEAD>
-</ORDER>
+</INVENTORY>

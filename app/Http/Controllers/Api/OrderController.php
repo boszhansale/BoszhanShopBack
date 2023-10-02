@@ -130,20 +130,23 @@ class OrderController extends Controller
 
                 }
                 $totalPrice =  $order->products()->sum('all_price');
+//
+//                if ($totalPrice >= 5000 AND $request->get('online_sale') == 0){
+//                //акция суп набор id 2678
+//
+//                    $order->products()->updateOrCreate(['product_id' => 2678,'order_id' => $order->id],[
+//                        'product_id' => 2678,
+//                        'order_id' => $order->id,
+//                        'count' => 2,
+//                        'price' => 0.5,
+//                        'all_price' => 1,
+//                        'comment' => 'подарок'
+//                    ]);
+//                    $totalPrice += 1;
+//                }
 
-                if ($totalPrice >= 5000 AND $request->get('online_sale') == 0){
-                    //акция суп набор id 2678
 
-                    $order->products()->updateOrCreate(['product_id' => 2678,'order_id' => $order->id],[
-                        'product_id' => 2678,
-                        'order_id' => $order->id,
-                        'count' => 2,
-                        'price' => 0.5,
-                        'all_price' => 1,
-                        'comment' => 'подарок'
-                    ]);
-                    $totalPrice += 1;
-                }
+
 //                if ($totalPrice >= 5000 AND $request->get('online_sale') == 0){
 //                    //скидка Печень
 //                    //2677

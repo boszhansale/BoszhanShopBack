@@ -38,4 +38,14 @@ use Illuminate\Database\Eloquent\Model;
 class StoreProductPromotion extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+      'store_id',
+      'product_id',
+      'type',
+      'price',
+      'count',
+      'date_from',
+      'date_to'
+    ];
 }

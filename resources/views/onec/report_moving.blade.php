@@ -1,4 +1,4 @@
-<ORDER>
+<MOVING>
     <DOCUMENTNAME>420</DOCUMENTNAME>
     <NUMBER>{{ $moving->id  }}-0800{{  now()->year  }}-{{  substr($moving->user->id_1c,-4)  }}-1</NUMBER>
     <DATE>{{ $moving->created_at->format('Y-m-d')  }}</DATE>
@@ -33,4 +33,4 @@
             </POSITION>
         @endforeach
     </HEAD>
-</ORDER>
+</MOVING>

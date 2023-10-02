@@ -1,4 +1,4 @@
-<ORDER>
+<REFUND>
     <DOCUMENTNAME>320</DOCUMENTNAME>
     <NUMBER>{{ $refund->id  }}-0800{{  now()->year  }}-{{  substr($refund->user->id_1c,-4)  }}-{{  $refund->payment_type  }}</NUMBER>
     <DATE>{{ $refund->created_at->format('Y-m-d')  }}</DATE>
@@ -32,4 +32,4 @@
             </POSITION>
         @endforeach
     </HEAD>
-</ORDER>
+</REFUND>

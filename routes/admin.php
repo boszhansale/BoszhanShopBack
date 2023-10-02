@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\RejectController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\StoreController;
 use App\Http\Controllers\Admin\StoreProductDiscountController;
+use App\Http\Controllers\Admin\StoreProductPromotionController;
 use App\Http\Controllers\Admin\UserController;
 use App\Models\StoreProductDiscount;
 use Illuminate\Support\Facades\Route;
@@ -123,6 +124,14 @@ Route::middleware(['admin.check','auth:sanctum'])->group(function (){
         Route::get('edit/{storeProductDiscount}', [StoreProductDiscountController::class, 'edit'])->name('edit');
         Route::put('update/{storeProductDiscount}', [StoreProductDiscountController::class, 'update'])->name('update');
         Route::get('delete/{storeProductDiscount}', [StoreProductDiscountController::class, 'delete'])->name('delete');
+    });
+    Route::prefix('storeProductPromotion')->name('storeProductPromotion.')->group(function () {
+        Route::get('/{store}', [StoreProductPromotionController::class, 'index'])->name('index');
+        Route::get('create/{store}', [StoreProductPromotionController::class, 'create'])->name('create');
+        Route::post('store', [StoreProductPromotionController::class, 'store'])->name('store');
+        Route::get('edit/{storeProductPromotion}', [StoreProductPromotionController::class, 'edit'])->name('edit');
+        Route::put('update/{storeProductPromotion}', [StoreProductPromotionController::class, 'update'])->name('update');
+        Route::get('delete/{storeProductPromotion}', [StoreProductPromotionController::class, 'delete'])->name('delete');
     });
     Route::prefix('counteragent')->name('counteragent.')->group(function () {
         Route::get('/', [CounteragentController::class, 'index'])->name('index');

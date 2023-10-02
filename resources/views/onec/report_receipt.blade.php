@@ -1,4 +1,4 @@
-<ORDER>
+<RECEIPT>
     <DOCUMENTNAME>520</DOCUMENTNAME>
     <NUMBER>{{ $receipt->id  }}-0800{{  now()->year  }}-{{  substr($receipt->user->id_1c,-4)  }}-{{  $receipt->payment_type  }}</NUMBER>
     <DATE>{{ $receipt->created_at->format('Y-m-d')  }}</DATE>
@@ -28,4 +28,4 @@
             </POSITION>
         @endforeach
     </HEAD>
-</ORDER>
+</RECEIPT>
