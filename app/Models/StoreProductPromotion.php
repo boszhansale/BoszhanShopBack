@@ -44,8 +44,10 @@ class StoreProductPromotion extends Model
       'product_id',
       'type',
       'price',
+      'price_condition',
       'count',
       'date_from',
-      'date_to'
+      'date_to',
+        'online_sale'
     ];
 }

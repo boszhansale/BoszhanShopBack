@@ -20,7 +20,6 @@ class StoreProductPromotionController extends Controller
     public function index(Store $store)
     {
 
-
         $productPromotions = StoreProductPromotion::query()
             ->join('products','products.id','store_product_promotions.product_id')
             ->select(['store_product_promotions.*','products.article','products.name'])
@@ -37,6 +36,7 @@ class StoreProductPromotionController extends Controller
 
         $products = Product::query()
             ->orderBy('article')
+            ->where('name','LIKE','%акция%')
             ->orderBy('name')
             ->get();
 
@@ -45,39 +45,50 @@ class StoreProductPromotionController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $productPrice = ProductPriceType::where('product_id',$request->get('product_id'))->where('price_type_id',3)->firstOrFail();
-        $discount = $request->get('discount');
-        $price = $discount ? ($productPrice->price / 100) * $discount : $request->get('price');
 
-
-        $spd = new StoreProductDiscount();
+        $spd = new StoreProductPromotion();
         $spd->store_id = $request->get('store_id');
         $spd->date_from = $request->get('date_from');
         $spd->date_to = $request->get('date_to');
         $spd->product_id = $request->get('product_id');
-        $spd->discount = $discount;
-        $spd->price = $price;
+        $spd->count = $request->get('count');
+        $spd->price = $request->get('price');
+        $spd->price_condition = $request->get('price_condition');
+        $spd->online_sale = $request->has('online_sale');
         $spd->save();
 
 
-        return redirect()->route('admin.storeProductDiscount.index',$request->get('store_id'));
+        return redirect()->route('admin.storeProductPromotion.index',$request->get('store_id'));
     }
 
-    public function edit()
+    public function edit(StoreProductPromotion $storeProductPromotion)
     {
+        $products = Product::query()
+            ->orderBy('article')
+            ->where('name','LIKE','%акция%')
+            ->orderBy('name')
+            ->get();
 
+        return \view('admin.storeProductPromotion.edit',compact('storeProductPromotion','products'));
     }
 
     public function update(Request $request,StoreProductPromotion $storeProductPromotion)
     {
 
-
-        return redirect()->back();
+        $storeProductPromotion->date_from = $request->get('date_from');
+        $storeProductPromotion->date_to = $request->get('date_to');
+        $storeProductPromotion->product_id = $request->get('product_id');
+        $storeProductPromotion->count = $request->get('count');
+        $storeProductPromotion->price = $request->get('price');
+        $storeProductPromotion->price_condition = $request->get('price_condition');
+        $storeProductPromotion->online_sale = $request->has('online_sale');
+        $storeProductPromotion->save();
+        return redirect()->route('admin.storeProductPromotion.index',$storeProductPromotion->store_id);
     }
 
-    public function delete(StoreProductDiscount $storeProductDiscount)
+    public function delete(StoreProductPromotion $storeProductPromotion)
     {
-        $storeProductDiscount->delete();
+        $storeProductPromotion->delete();
         return redirect()->back();
     }
 

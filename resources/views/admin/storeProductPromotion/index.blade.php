@@ -32,7 +32,7 @@
                                 <td>{{$productPromotion->count}}</td>
                                 <td class="price">{{$productPromotion->price}}</td>
                                 <td>
-{{--                                    <a class="btn btn-info btn-sm" href=""><i class="fas fa-pencil-alt"></i></a>--}}
+                                    <a class="btn btn-info btn-sm" href="{{route('admin.storeProductPromotion.edit',$productPromotion->id)}}"><i class="fas fa-pencil-alt"></i></a>
                                     <a class="btn btn-danger btn-sm" href="{{route('admin.storeProductPromotion.delete',$productPromotion->id)}}" onclick="return confirm('Are you sure?')"><i class="fas fa-trash"></i></a>
                                 </td>
                             </tr>

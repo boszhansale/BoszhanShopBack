@@ -13,25 +13,35 @@
                     <label for="">дата до</label>
                     <input type="date" class="form-control" name="date_to" required>
                 </div>
-
-                <div class="form-group">
-                    <label for="">Скидка %</label>
-                    <input type="number" min="0" max="99" class="form-control" name="discount" value="0">
+                <hr>
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" name="online_sale" value="1" id="online_sale" >
+                    <label class="form-check-label" for="online_sale">для Онлайн продаж</label>
                 </div>
-
-                <div class="form-group">
-                    <label for="">новая цена</label>
-                    <input type="text" class="form-control" name="price" value="0">
-                </div>
-
-
                 <br>
                 <div class="form-group">
-                    <label for="">продукты</label>
+                    <label for="">сумма условия</label>
+                    <input type="text" class="form-control" name="price_condition" value="5000" required>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="">количество</label>
+                    <input type="number" class="form-control" name="count" value="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="">цена за единицу</label>
+                    <input type="text" class="form-control" name="price" value="1" required>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="">Подарочный продукт</label>
                     <select name="product_id" class="form-control" required>
                         <option value="null"></option>
 
-                    @foreach($products as $product)
+                        @foreach($products as $product)
                             <option  value="{{$product->id}}">{{$product->article}}  {{$product->name}}</option>
                         @endforeach
                     </select>

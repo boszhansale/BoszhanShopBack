@@ -54,6 +54,7 @@ class StoreProductDiscountController extends Controller
         $spd->date_from = $request->get('date_from');
         $spd->date_to = $request->get('date_to');
         $spd->product_id = $request->get('product_id');
+        $spd->online_sale = $request->has('online_sale');
         $spd->discount = $discount;
         $spd->price = $price;
         $spd->save();

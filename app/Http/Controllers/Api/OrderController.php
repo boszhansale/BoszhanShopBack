@@ -16,6 +16,7 @@ use App\Models\OrderProduct;
 use App\Models\PriceType;
 use App\Models\Product;
 use App\Models\Store;
+use App\Models\StoreProductPromotion;
 use App\Models\User;
 use App\Models\WebkassaCheck;
 use App\Services\WebKassa\WebKassaService;
@@ -88,8 +89,6 @@ class OrderController extends Controller
             $order = Auth::user()->orders()->create(array_merge($request->validated(),$data));
             if ($request->has('products'))
             {
-
-
                 foreach ($request->get('products') as $item) {
                     $discount = 0;
 
@@ -98,20 +97,36 @@ class OrderController extends Controller
                     $productPriceType = $product->prices()->where('price_type_id', 3)->first();
                     $discount = $discount + $product->discount ;
                     if (!$productPriceType) continue;
-
                     $product->update(['remainder' => $product->remainder - $item['count']]);
-
                     if ($product->measure == 2){
                         $item['count'] = round( $item['count'] ,2 );
                     }
+                    //временный скидка
+                    $dateDiscount = StoreProductPromotion::query()
+                        ->whereDate('date_from','<=',now())
+                        ->whereDate('date_to','>=',now())
+                        ->where('store_id',$store->id)
+                        ->where('online_sale',$request->get('online_sale'))
+                        ->where('product_id',$product->id)
+                        ->first();
 
-                    $item['discount_price'] = 0;
-                    if ($discount > 0){
-                        $item['discount_price'] = ($productPriceType->price / 100) * $discount ;
-                        $item['price'] = $productPriceType->price -  $item['discount_price'] ;
+                    if ($dateDiscount){
+                        if ($dateDiscount->discount > 0){
+                            $item['discount_price'] = ($productPriceType->price / 100) * $dateDiscount->discount ;
+                            $item['price'] = $productPriceType->price -  $item['discount_price'] ;
+                        }else{
+                            $item['price'] = $dateDiscount->price;
+                        }
                     }else{
-                        $item['price'] = $productPriceType->price ;
+                        $item['discount_price'] = 0;
+                        if ($discount > 0){
+                            $item['discount_price'] = ($productPriceType->price / 100) * $discount ;
+                            $item['price'] = $productPriceType->price -  $item['discount_price'] ;
+                        }else{
+                            $item['price'] = $productPriceType->price ;
+                        }
                     }
+
                     //скидка дисконта
                     if ($discountCard){
                         $discountPrice = ( $item['price'] / 100) * $discountCard->discount;
@@ -130,21 +145,28 @@ class OrderController extends Controller
 
                 }
                 $totalPrice =  $order->products()->sum('all_price');
-//
-//                if ($totalPrice >= 5000 AND $request->get('online_sale') == 0){
-//                //акция суп набор id 2678
-//
-//                    $order->products()->updateOrCreate(['product_id' => 2678,'order_id' => $order->id],[
-//                        'product_id' => 2678,
-//                        'order_id' => $order->id,
-//                        'count' => 2,
-//                        'price' => 0.5,
-//                        'all_price' => 1,
-//                        'comment' => 'подарок'
-//                    ]);
-//                    $totalPrice += 1;
-//                }
 
+
+                $promotions = StoreProductPromotion::query()
+                    ->whereDate('date_from','<=',now())
+                    ->whereDate('date_to','>=',now())
+                    ->where('online_sale',$request->get('online_sale'))
+                    ->where('store_id',$store->id)
+                    ->where('price_condition','<=',$totalPrice)
+                    ->get();
+
+                foreach ($promotions as $promotion) {
+                    $all_price = $promotion->count * $promotion->price;
+                    $order->products()->updateOrCreate(['product_id' => $promotion->product_id,'order_id' => $order->id],[
+                        'product_id' => $promotion->product_id,
+                        'order_id' => $order->id,
+                        'count' => $promotion->count,
+                        'price' => $promotion->price,
+                        'all_price' => $all_price,
+                        'comment' => 'подарок'
+                    ]);
+                    $totalPrice += $all_price;
+                }
 
 
 //                if ($totalPrice >= 5000 AND $request->get('online_sale') == 0){
