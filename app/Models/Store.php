@@ -66,7 +66,8 @@ class Store extends Model
         'deleted_at',
         'created_at',
         'updated_at',
-        'removed_at'
+        'removed_at',
+        'id_1c'
     ];
 
     public function counteragent(): BelongsTo

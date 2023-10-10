@@ -61,8 +61,8 @@ class Moving extends Model
     ];
 
     const OPERATION = [
-        1 => 'с склада',
-        2 => 'на склад'
+        1 => 'с склада',//in shop out storage
+        2 => 'на склад'// in storage out shop
     ];
 
 

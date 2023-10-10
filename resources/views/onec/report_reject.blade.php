@@ -1,3 +1,4 @@
+
 <REJECT>
     <DOCUMENTNAME>720</DOCUMENTNAME>
     <NUMBER>{{ $reject->id  }}-0800{{  now()->year  }}-{{  substr($reject->user->id_1c,-4)  }}-{{  $reject->payment_type  }}</NUMBER>

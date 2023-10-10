@@ -6,6 +6,7 @@ use App\Models\Inventory;
 use App\Models\Order;
 use Carbon\Carbon;
 use Exception;
+use File;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
@@ -51,20 +52,14 @@ class ReportInventoryCommand extends Command
                 $path = "reports/" . now()->format('Y-m-d') . "/$name";
 
                 $output = View::make('onec.report_inventory', compact('inventory', 'idOnec', 'idSell'))->render();
-                $output = '<?xml version="1.0" encoding="utf-8"?>\n' . $output;
+                $output = '<?xml version="1.0" encoding="utf-8"?>'."\n". $output;
                 Storage::put($path, $output);
 //
-//                if ($order->number) {
-//                    if (File::exists("/home/dev/index/edi/$name")) {
-//                        File::delete("/home/dev/index/edi/$name");
-//                    }
-//                    File::put("/home/dev/index/edi/$name", $output);
-//                } else {
-//                    if (File::exists("/home/dev/index/$name")) {
-//                        File::delete("/home/dev/index/$name");
-//                    }
-//                    File::put("/home/dev/index/$name", $output);
-//                }
+                if (File::exists("/home/dev/index/test/$name")) {
+                    File::delete("/home/dev/index/test/$name");
+                }
+                File::put("/home/dev/index/test/$name", $output);
+
                 $this->info("The inventory $inventory->id is saved here : $path");
             } catch (Exception $exception) {
                 $this->error($exception->getMessage());

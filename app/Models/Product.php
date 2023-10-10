@@ -133,19 +133,37 @@ class Product extends Model
     {
         return $this->measure == 1 ? 'шт' : 'кг';
     }
-    public function getDiscountPrice($storeId)
+    public function getDiscountPrice($storeId,$onlineSale)
     {
         $discount = 0;
 
         $productPriceType = $this->prices()->where('price_type_id', 3)->first();
         $discount = $discount + $this->discount ;
 
-        if ($discount > 0){
 
-            return ($productPriceType->price / 100) * $discount ;
+        $dateDiscount = StoreProductPromotion::query()
+            ->whereDate('date_from','<=',now())
+            ->whereDate('date_to','>=',now())
+            ->where('store_id',$storeId)
+            ->where('online_sale',$onlineSale)
+            ->where('product_id',$this->id)
+            ->first();
+
+        if ($dateDiscount){
+            if ($dateDiscount->discount > 0){
+               return ($productPriceType->price / 100) * $dateDiscount->discount ;
+            }else{
+               return $productPriceType->price - $dateDiscount->price;
+            }
         }else{
-            return 0;
+            if ($discount > 0){
+                return ($productPriceType->price / 100) * $discount ;
+            }else{
+                return 0;
+            }
         }
+
+
     }
 
     //ostatki

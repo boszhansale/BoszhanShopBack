@@ -6,12 +6,14 @@ use App\Models\Order;
 use App\Models\Reject;
 use Carbon\Carbon;
 use Exception;
+use File;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 
 class ReportRejectCommand extends Command
 {
+    //home/dev/index/test
     protected $signature = 'onec:reject {reject_id?}';
 
     protected $description = 'Generate reject report by rejects to xml';
@@ -47,21 +49,14 @@ class ReportRejectCommand extends Command
                 $path = "reports/" . now()->format('Y-m-d') . "/$name";
 
                 $output = View::make('onec.report_reject', compact('reject', 'idOnec', 'idSell'))->render();
-                $output = '<?xml version="1.0" encoding="utf-8"?>\n' . $output;
+                $output = '<?xml version="1.0" encoding="utf-8"?>'."\n". $output;
 
                 Storage::put($path, $output);
-//
-//                if ($reject->number) {
-//                    if (File::exists("/home/dev/index/edi/$name")) {
-//                        File::delete("/home/dev/index/edi/$name");
-//                    }
-//                    File::put("/home/dev/index/edi/$name", $output);
-//                } else {
-//                    if (File::exists("/home/dev/index/$name")) {
-//                        File::delete("/home/dev/index/$name");
-//                    }
-//                    File::put("/home/dev/index/$name", $output);
-//                }
+                if (File::exists("/home/dev/index/test/$name")) {
+                    File::delete("/home/dev/index/test/$name");
+                }
+                File::put("/home/dev/index/test/$name", $output);
+
                 $this->info("The report for reject $reject->id is saved here : $path");
             } catch (Exception $exception) {
                 $this->error($exception->getMessage());
