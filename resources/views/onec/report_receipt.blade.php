@@ -1,7 +1,7 @@
 <RECEIPT>
     <DOCUMENTNAME>520</DOCUMENTNAME>
     <NUMBER>{{ $receipt->id  }}-0800{{  now()->year  }}-{{  substr($receipt->user->id_1c,-4)  }}-{{  $receipt->payment_type  }}</NUMBER>
-    <DATE>{{ $receipt->created_at->format('Y-m-d')  }}</DATE>
+    <DATE>{{ $startDate->clone()->format('Y-m-d')  }}</DATE>
     <CURRENCY>KZT</CURRENCY>
     <HEAD>
         <SUPPLIER>9864232489962</SUPPLIER>

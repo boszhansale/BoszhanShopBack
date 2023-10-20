@@ -1,13 +1,14 @@
 <ORDER>
     <DOCUMENTNAME>620</DOCUMENTNAME>
 {{--    <NUMBER>{{ $order->id  }}-0800{{  now()->year  }}-{{  substr($order->user->id_1c,-4)  }}-{{  $order->payment_type  }}</NUMBER>--}}
-    <NUMBER>{{ $store->id  }}-0800{{  now()->year  }}</NUMBER>
-    <DATE>{{ now()->format('Y-m-d')  }}</DATE>
-    <DELIVERYDATE>{{ now()->format('Y-m-d') }}</DELIVERYDATE>
+    <NUMBER>{{ $store->id  }}-0800{{  now()->format('Ymd')}}</NUMBER>
+    <DATE>{{ $startDate->clone()->format('Y-m-d')  }}</DATE>
+    <DELIVERYDATE>{{ $startDate->clone()->format('Y-m-d') }}</DELIVERYDATE>
     <MANAGER>{{  config('app.driver_id_onec')  }}</MANAGER>
 {{--    <DRIVER>{{$order->user->id_1c}}</DRIVER>--}}
     <DRIVER></DRIVER>
     <CURRENCY>KZT</CURRENCY>
+    <STOREIN>000-005840</STOREIN>
     <HEAD>
         <SUPPLIER>9864232489962</SUPPLIER>
         <BUYER>{{$idOnec}}</BUYER>

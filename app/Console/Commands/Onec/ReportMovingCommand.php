@@ -21,47 +21,54 @@ class ReportMovingCommand extends Command
     {
         $movingId = $this->argument('moving_id');
 
-        $movings = Moving::query()
-            ->when($movingId, function ($q) use ($movingId) {
-                return $q->where('orders.id', $movingId);
-            }, function ($q) {
+        $startDate = now()->startOfWeek()->subDay();
+        while ($startDate->lte( now() )) {
+            $startDate->addDay();
+            $movings = Moving::query()
+                ->when($movingId, function ($q) use ($movingId) {
+                    return $q->where('orders.id', $movingId);
+                }, function ($q) {
 //                return $q->whereDate('created_at', now());
-            })
-            ->get();
+                })
+                ->whereDate('created_at',$startDate)
+                ->get();
 
-        if (count($movings) == 0) {
-            $this->info('нет заказов');
-            return 0;
-        }
-        foreach ($movings as $moving) {
-            try {
+            if (count($movings) == 0) {
+                $this->info('нет заказов');
+                return 0;
+            }
+            foreach ($movings as $moving) {
+                try {
 
-                if (!$moving->store){
-                    throw new Exception('нет магазина');
+                    if (!$moving->store){
+                        throw new Exception('нет магазина');
+                    }
+
+                    $idOnec =  $moving->store->counteragent?->id_1c;
+                    if (!$idOnec){
+                        throw new Exception('нет контрагента');
+                    }
+                    $idSell = 300000000000000 + $moving->store_id;
+                    //$date = Carbon::parse($moving->created_at)->addDay();
+                    $name = "MOVING_{$startDate->clone()->format('YmdHis')}_{$idOnec}_9864232489962_{$moving->id}.xml";;
+                    $path = "reports/" . $startDate->clone()->format('Y-m-d') . "/$name";
+
+                    $output = View::make('onec.report_moving', compact('moving', 'idOnec', 'idSell','startDate'))->render();
+                    $output = '<?xml version="1.0" encoding="utf-8"?>'."\n". $output;
+
+                    Storage::put($path, $output);
+                    if (File::exists("/home/dev/index/test/$name")) {
+                        File::delete("/home/dev/index/test/$name");
+                    }
+                    File::put("/home/dev/index/test/$name", $output);
+
+                    $this->info("The report for moving $moving->id is saved here : $path");
+                } catch (Exception $exception) {
+                    $this->error($exception->getMessage());
                 }
-
-                $idOnec =  $moving->store->counteragent?->id_1c;
-                if (!$idOnec){
-                    throw new Exception('нет контрагента');
-                }
-                $idSell = 300000000000000 + $moving->store_id;
-                $date = Carbon::parse($moving->created_at)->addDay();
-                $name = "MOVING_{$date->clone()->format('YmdHis')}_{$idOnec}_9864232489962_{$moving->id}.xml";;
-                $path = "reports/" . now()->format('Y-m-d') . "/$name";
-
-                $output = View::make('onec.report_moving', compact('moving', 'idOnec', 'idSell'))->render();
-                $output = '<?xml version="1.0" encoding="utf-8"?>'."\n". $output;
-
-                Storage::put($path, $output);
-                if (File::exists("/home/dev/index/test/$name")) {
-                    File::delete("/home/dev/index/test/$name");
-                }
-                File::put("/home/dev/index/test/$name", $output);
-
-                $this->info("The report for moving $moving->id is saved here : $path");
-            } catch (Exception $exception) {
-                $this->error($exception->getMessage());
             }
         }
+
+
     }
 }

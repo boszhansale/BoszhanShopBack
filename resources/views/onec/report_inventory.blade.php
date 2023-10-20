@@ -1,8 +1,8 @@
 <INVENTORY>
     <DOCUMENTNAME>920</DOCUMENTNAME>
     <NUMBER>{{ $inventory->id  }}-0800{{  now()->year  }}-{{  substr($inventory->user->id_1c,-4)  }}-{{  $inventory->payment_type  }}</NUMBER>
-    <DATE>{{ $inventory->created_at->format('Y-m-d')  }}</DATE>
-    <DELIVERYDATE>{{ now()->format('Y-m-d') }}</DELIVERYDATE>
+    <DATE>{{ $startDate->clone()->format('Y-m-d')  }}</DATE>
+    <DELIVERYDATE>{{ $startDate->clone()->format('Y-m-d') }}</DELIVERYDATE>
     <MANAGER>{{  config('app.driver_id_onec')  }}</MANAGER>
     <DRIVER>{{$inventory->user->id_1c}}</DRIVER>
     <CURRENCY>KZT</CURRENCY>

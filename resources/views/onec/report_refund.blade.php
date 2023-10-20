@@ -1,8 +1,8 @@
 <REFUND>
     <DOCUMENTNAME>320</DOCUMENTNAME>
     <NUMBER>{{ $refund->id  }}-0800{{  now()->year  }}-{{  substr($refund->user->id_1c,-4)  }}-{{  $refund->payment_type  }}</NUMBER>
-    <DATE>{{ $refund->created_at->format('Y-m-d')  }}</DATE>
-    <DELIVERYDATE>{{ now()->format('Y-m-d') }}</DELIVERYDATE>
+    <DATE>{{ $startDate->clone()->format('Y-m-d')  }}</DATE>
+    <DELIVERYDATE>{{ $startDate->clone()->format('Y-m-d') }}</DELIVERYDATE>
     <MANAGER>{{  config('app.driver_id_onec')  }}</MANAGER>
     <DRIVER>{{$refund->user->id_1c}}</DRIVER>
     <CURRENCY>KZT</CURRENCY>

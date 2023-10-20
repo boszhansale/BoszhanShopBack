@@ -169,20 +169,20 @@ class OrderController extends Controller
                 }
 
 
-//                if ($totalPrice >= 5000 AND $request->get('online_sale') == 0){
-//                    //скидка Печень
-//                    //2677
-//
-//                    $order->products()->updateOrCreate(['product_id' => 2427,'order_id' => $order->id],[
-//                        'product_id' => 2427,
-//                        'order_id' => $order->id,
-//                        'count' => 5,
-//                        'price' => 0.2,
-//                        'all_price' => 1,
-//                        'comment' => 'подарок'
-//                    ]);
-//                    $totalPrice += 1;
-//                }
+                if ($totalPrice >= 5000 AND $request->get('online_sale') == 0){
+
+                    //2679
+
+                    $order->products()->updateOrCreate(['product_id' => 2679,'order_id' => $order->id],[
+                        'product_id' => 2679,
+                        'order_id' => $order->id,
+                        'count' => 1,
+                        'price' => 1,
+                        'all_price' => 1,
+                        'comment' => 'подарок'
+                    ]);
+                    $totalPrice += 1;
+                }
 
 
                 //кешбэк

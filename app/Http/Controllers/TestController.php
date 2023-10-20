@@ -23,10 +23,10 @@ class TestController extends Controller
 //        $data = WebKassaService::XReport(User::find(2503));
 //        \Cache::put('2503',$data);
 
-        $data= \Cache::get('2503');
+//        $data= \Cache::get('2503');
 //        dd($data);
 //        $inventory = Inventory::latest()->first();
-        return view('pdf.x-report',compact('data'));
+        return view('microBank.new');
 
 //        $moving = Moving::findOrFail(10);
 //        return view('pdf.moving',compact('moving'));

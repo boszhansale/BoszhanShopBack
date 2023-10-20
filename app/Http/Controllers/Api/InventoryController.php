@@ -160,28 +160,28 @@ class InventoryController extends Controller
             $inventoryProduct->save();
 
         }
-        //Излишки
-        if (count($receiptData) > 0){
-            $receiptData['storage_id'] = Auth::user()->storage_id;
-            $receiptData['store_id'] = Auth::user()->store_id;
-            $receiptData['organization_id'] = Auth::user()->organization_id;
-            $receiptData['operation'] = 2;
-            $receiptData['inventory_id'] = $inventory->id;
-            $receiptData['description'] = "На основании инвентаризации №$inventory->id от ".$inventory->created_at->format('d.m.Y');
-
-            $receiptStoreAction->execute($receiptData);
-
-        }
-        //Недостачи
-        if (count($rejectData) > 0)
-        {
-            $rejectData['storage_id'] = Auth::user()->storage_id;
-            $rejectData['store_id'] = Auth::user()->store_id;
-            $rejectData['organization_id'] = Auth::user()->organization_id;
-            $rejectData['inventory_id'] = $inventory->id;
-            $rejectData['description'] = "На основании инвентаризации №$inventory->id от ".$inventory->created_at->format('d.m.Y');
-            $rejectStoreAction->execute($rejectData);
-        }
+//        //Излишки
+//        if (count($receiptData) > 0){
+//            $receiptData['storage_id'] = Auth::user()->storage_id;
+//            $receiptData['store_id'] = Auth::user()->store_id;
+//            $receiptData['organization_id'] = Auth::user()->organization_id;
+//            $receiptData['operation'] = 2;
+//            $receiptData['inventory_id'] = $inventory->id;
+//            $receiptData['description'] = "На основании инвентаризации №$inventory->id от ".$inventory->created_at->format('d.m.Y');
+//
+//            $receiptStoreAction->execute($receiptData);
+//
+//        }
+//        //Недостачи
+//        if (count($rejectData) > 0)
+//        {
+//            $rejectData['storage_id'] = Auth::user()->storage_id;
+//            $rejectData['store_id'] = Auth::user()->store_id;
+//            $rejectData['organization_id'] = Auth::user()->organization_id;
+//            $rejectData['inventory_id'] = $inventory->id;
+//            $rejectData['description'] = "На основании инвентаризации №$inventory->id от ".$inventory->created_at->format('d.m.Y');
+//            $rejectStoreAction->execute($rejectData);
+//        }
 
 
         $inventory->status = 2;

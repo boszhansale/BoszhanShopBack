@@ -55,7 +55,7 @@ class ReportController extends Controller
             INNER JOIN movings ON movings.id = moving_products.moving_id
             WHERE movings.operation = 1
             AND movings.store_id = $storeId
-            " . ($dateFrom ? "AND movings.created_at >= '$dateFrom' " : "") . ($dateTo ? "AND movings.created_at <= '$dateTo' " : "") .
+            " . ($dateTo ? "AND movings.created_at <= '$dateTo' " : "") .
                     "GROUP BY moving_products.product_id) AS moving_from"),
                 'moving_from.product_id', '=', 'products.id'
             )
@@ -65,7 +65,7 @@ class ReportController extends Controller
             INNER JOIN movings ON movings.id = moving_products.moving_id
             WHERE movings.operation = 2
             AND movings.store_id = $storeId
-            " . ($dateFrom ? "AND movings.created_at >= '$dateFrom' " : "") . ($dateTo ? "AND movings.created_at <= '$dateTo' " : "") .
+            " .  ($dateTo ? "AND movings.created_at <= '$dateTo' " : "") .
                     "GROUP BY moving_products.product_id) AS moving_to"),
                 'moving_to.product_id', '=', 'products.id'
             )
@@ -74,7 +74,7 @@ class ReportController extends Controller
             FROM refund_products
             INNER JOIN refunds ON refunds.id = refund_products.refund_id
             WHERE refunds.store_id = $storeId
-            " . ($dateFrom ? "AND refunds.created_at >= '$dateFrom' " : "") . ($dateTo ? "AND refunds.created_at <= '$dateTo' " : "") .
+            " . ($dateTo ? "AND refunds.created_at <= '$dateTo' " : "") .
                     "GROUP BY refund_products.product_id) AS refund"),
                 'refund.product_id', '=', 'products.id'
             )
@@ -83,7 +83,7 @@ class ReportController extends Controller
             FROM reject_products
             INNER JOIN rejects ON rejects.id = reject_products.reject_id
             WHERE rejects.store_id = $storeId
-            " . ($dateFrom ? "AND rejects.created_at >= '$dateFrom' " : "") . ($dateTo ? "AND rejects.created_at <= '$dateTo' " : "") .
+            " . ($dateTo ? "AND rejects.created_at <= '$dateTo' " : "") .
                     "GROUP BY reject_products.product_id) AS reject"),
                 'reject.product_id', '=', 'products.id'
             )
@@ -92,7 +92,7 @@ class ReportController extends Controller
             FROM refund_producer_products
             INNER JOIN refund_producers ON refund_producers.id = refund_producer_products.refund_producer_id
             WHERE refund_producers.store_id = $storeId
-            " . ($dateFrom ? "AND refund_producers.created_at >= '$dateFrom' " : "") . ($dateTo ? "AND refund_producers.created_at <= '$dateTo' " : "") .
+            " .  ($dateTo ? "AND refund_producers.created_at <= '$dateTo' " : "") .
                     "GROUP BY refund_producer_products.product_id) AS refund_producer"),
                 'refund_producer.product_id', '=', 'products.id'
             )
@@ -101,7 +101,7 @@ class ReportController extends Controller
         FROM receipt_products
         JOIN receipts ON receipts.id = receipt_products.receipt_id
         WHERE receipts.store_id = $storeId
-        " . ($dateFrom ? "AND receipts.created_at >= '$dateFrom' " : "") . ($dateTo ? "AND receipts.created_at <= '$dateTo' " : "") .
+        " .  ($dateTo ? "AND receipts.created_at <= '$dateTo' " : "") .
                     "GROUP BY receipt_products.product_id) AS receipt"),
                 'receipt.product_id', '=', 'products.id'
             )
@@ -112,7 +112,7 @@ class ReportController extends Controller
         WHERE orders.store_id = $storeId
         AND orders.check_number IS NOT NULL
 
-        " . ($dateFrom ? "AND orders.created_at >= '$dateFrom' " : "") . ($dateTo ? "AND orders.created_at <= '$dateTo' " : "") .
+        " .  ($dateTo ? "AND orders.created_at <= '$dateTo' " : "") .
                     "GROUP BY order_products.product_id) AS orderProduct"),
                 'orderProduct.product_id', '=', 'products.id'
             )

@@ -24,54 +24,51 @@ class ReportOrderCommand extends Command
 
         $stores = Store::all();
 
-
         foreach ($stores as $store) {
+            $startDate = now()->startOfWeek()->subDay();
+            while ($startDate->lte( now() )){
+                $startDate->addDay();
+                $date = $startDate->clone();
+                $orderProducts = OrderProduct::query()
+                    ->join('orders','orders.id','order_products.order_id')
+                    ->where('orders.store_id',$store->id)
 
-            $orderProducts = OrderProduct::query()
-                ->join('orders','orders.id','order_products.order_id')
-                ->where('orders.store_id',$store->id)
-
-                ->whereDate('order_products.created_at','<=',now()->startOfWeek())
-                ->selectRaw('product_id,SUM(order_products.`count`) AS COUNT, SUM(order_products.all_price) AS all_price')
-                ->groupBy('product_id')
-                ->with('product')
-                ->get();
+                    ->whereDate('order_products.created_at',$startDate)
+                    ->selectRaw('product_id,SUM(order_products.`count`) AS COUNT, SUM(order_products.all_price) AS all_price,ROUND(MAX(order_products.price)) AS price')
+                    ->groupBy('product_id')
+                    ->with('product')
+                    ->get();
 
 
-            if (count($orderProducts) == 0){
-                continue;
+                    if (count($orderProducts) == 0){
+                        continue;
+                    }
+
+                    $idOnec  = $store->counteragent?->id_1c;
+                    if (!$idOnec){
+                        continue;
+                    }
+                    $idSell = 300000000000000 + $store->id;
+
+
+                    $name = "ORDER_{$date->clone()->format('YmdHis')}_{$idOnec}_9864232489962_{$store->id}.xml";;
+                    $path = "reports/" . $date->format('Y-m-d') . "/$name";
+
+                    $output = View::make('onec.report_order', compact('orderProducts','store', 'idOnec', 'idSell','startDate'))->render();
+                    $output = '<?xml version="1.0" encoding="utf-8"?>'."\n". $output;
+
+                    Storage::put($path, $output);
+                    if (File::exists("/home/dev/index/test/$name")) {
+                        File::delete("/home/dev/index/test/$name");
+                    }
+                    File::put("/home/dev/index/test/$name", $output);
+
+                    $this->info("The report   is saved here : $path, type is 0");
+
+
+
             }
 
-
-
-            try {
-
-                $idOnec  =$store->counteragent?->id_1c;
-                if (!$idOnec){
-                    throw new Exception('нет контрагента');
-                }
-                $idSell = 300000000000000 + $store->id;
-
-//                $date = Carbon::parse($order->created_at)->addDay(); //->format('Y-m-d');
-                $date = Carbon::now();
-                $name = "ORDER_{$date->clone()->format('YmdHis')}_{$idOnec}_9864232489962_{$store->id}.xml";;
-                $path = "reports/" . now()->format('Y-m-d') . "/$name";
-
-                $output = View::make('onec.report_order', compact('orderProducts','store', 'idOnec', 'idSell'))->render();
-                $output = '<?xml version="1.0" encoding="utf-8"?>'."\n". $output;
-
-                Storage::put($path, $output);
-                if (File::exists("/home/dev/index/test/$name")) {
-                    File::delete("/home/dev/index/test/$name");
-                }
-                File::put("/home/dev/index/test/$name", $output);
-
-                $this->info("The report   is saved here : $path, type is 0");
-
-
-            } catch (Exception $exception) {
-                $this->error($exception->getMessage());
-            }
         }
 
 
