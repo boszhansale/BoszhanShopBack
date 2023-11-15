@@ -227,7 +227,7 @@ class WebKassaService
                 'check_status' => 3
             ]);
             if ($data['Errors'][0]['Code'] == 2){
-                return self::checkRefund($refund,false);
+                return self::checkRefund($refund,$payments,false);
             }
 
             throw new Exception($data['Errors'][0]['Text']);

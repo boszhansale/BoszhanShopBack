@@ -30,7 +30,7 @@ class RefundController extends Controller
     public function index(RefundIndexRequest $request)
     {
         $refunds = Refund::query()
-            ->where('refunds.user_id',Auth::id())
+            ->where('refunds.store_id',Auth::user()->store_id)
             ->with(['products','products.product','products.reasonRefund','store'])
             ->latest()
             ->when($request->has('date_from'),function ($q){
@@ -46,7 +46,7 @@ class RefundController extends Controller
     public function history(RefundIndexRequest $request)
     {
         $refunds = Refund::query()
-            ->where('refunds.user_id',Auth::id())
+            ->where('refunds.store_id',Auth::user()->store_id)
             ->with(['products','products.product','products.reasonRefund','store'])
             ->latest()
             ->when($request->has('date_from'),function ($q){
@@ -111,7 +111,7 @@ class RefundController extends Controller
         try {
 
 
-            $check = WebkassaCheck::where('refund_id',$refund->id)->latest()->first();
+            $check = WebkassaCheck::where('refund_id',$refund->id)->whereNotNull('check_number')->latest()->first();
             if (!$check)
             {
                 throw new Exception('чек не найден');
@@ -128,7 +128,7 @@ class RefundController extends Controller
     public function printCheckFormat(Refund $refund)
     {
         try {
-            $check = WebkassaCheck::where('refund_id',$refund->id)->latest()->first();
+            $check = WebkassaCheck::where('refund_id',$refund->id)->whereNotNull('check_number')->latest()->first();
 
 
             if (!$check)
