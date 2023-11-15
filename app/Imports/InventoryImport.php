@@ -9,21 +9,21 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class MovingImport implements ToCollection, WithStartRow
+class InventoryImport implements ToCollection, WithStartRow
 {
     /**
     * @param Collection $collection
     */
     public function collection(Collection $collection)
     {
-        $movingId = 88;
+        $movingId = 12;
         foreach ($collection as $item) {
             if (!$item[3]) continue;
+
             $product = Product::where('article',$item[3])->first();
             if (!$product)
             {
-                dump($item[5]);
-                continue;
+                dd('product not found: '.$item[3]);
             }
 
 

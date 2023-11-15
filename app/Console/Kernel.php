@@ -12,7 +12,15 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+
          $schedule->command('telescope:clear')->dailyAt("03:00");
+
+         $schedule->command('onec:inventory')->dailyAt("21:00");
+         $schedule->command('onec:order')->dailyAt("21:05");
+         $schedule->command('onec:receipt')->dailyAt("21:10");
+         $schedule->command('onec:refund')->dailyAt("21:15");
+         $schedule->command('onec:reject')->dailyAt("21:20");
+         $schedule->command('onec:moving')->dailyAt("21:25");
     }
 
     /**

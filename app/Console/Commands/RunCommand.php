@@ -30,24 +30,25 @@ class RunCommand extends Command
      */
     public function handle()
     {
-//        Excel::import(new MovingImport(), 'moving.xls');
+        Excel::import(new MovingImport(), 'movings.xlsx');
 
 
-        $orders = Order::all();
 
-        foreach ($orders as $order) {
-            $sum = 0;
-            if ($order->payments){
-                foreach ($order->payments as $item) {
-                    $sum += $item['Sum'];
-                }
-                $order->give_price = $sum - $order->total_price;
-            }else{
-                $order->give_price = 0;
-            }
-
-            $order->save();
-        }
+//        $orders = Order::all();
+//
+//        foreach ($orders as $order) {
+//            $sum = 0;
+//            if ($order->payments){
+//                foreach ($order->payments as $item) {
+//                    $sum += $item['Sum'];
+//                }
+//                $order->give_price = $sum - $order->total_price;
+//            }else{
+//                $order->give_price = 0;
+//            }
+//
+//            $order->save();
+//        }
 //        dd(WebKassaService::authorize(User::find(2503)));
     }
 }

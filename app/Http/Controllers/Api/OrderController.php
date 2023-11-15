@@ -32,7 +32,7 @@ class OrderController extends Controller
     {
 
         $orders = Order::query()
-            ->where('orders.user_id',Auth::id())
+            ->where('orders.store_id',Auth::user()->store_id)
             ->whereNotNull('check_number')
             ->when($request->has('date_from'),function ($q){
                 $q->whereDate('created_at','>=',request('date_from'));
@@ -53,7 +53,7 @@ class OrderController extends Controller
     public function history(OrderIndexRequest $request)
     {
         $orders = Order::query()
-            ->where('orders.user_id',Auth::id())
+            ->where('orders.store_id',Auth::user()->store_id)
             ->whereNotNull('check_number')
             ->when($request->has('date_from'),function ($q){
                 $q->whereDate('created_at','>=',request('date_from'));
@@ -99,7 +99,7 @@ class OrderController extends Controller
                     if (!$productPriceType) continue;
                     $product->update(['remainder' => $product->remainder - $item['count']]);
                     if ($product->measure == 2){
-                        $item['count'] = round( $item['count'] ,2 );
+                        $item['count'] = round( $item['count'] ,3 );
                     }
                     //временный скидка
                     $dateDiscount = StoreProductPromotion::query()
@@ -140,7 +140,7 @@ class OrderController extends Controller
                         $item['count'] += floor( $item['count'] / 4);
                     }
 
-                    $order->products()->updateOrCreate(['product_id' => $product->id,'order_id' => $order->id],$item);
+                    $order->products()->create($item);
                     unset($item);
 
                 }
@@ -168,21 +168,21 @@ class OrderController extends Controller
                     $totalPrice += $all_price;
                 }
 
-
-                if ($totalPrice >= 5000 AND $request->get('online_sale') == 0){
-
-                    //2679
-
-                    $order->products()->updateOrCreate(['product_id' => 2679,'order_id' => $order->id],[
-                        'product_id' => 2679,
-                        'order_id' => $order->id,
-                        'count' => 1,
-                        'price' => 1,
-                        'all_price' => 1,
-                        'comment' => 'подарок'
-                    ]);
-                    $totalPrice += 1;
-                }
+//
+//                if ($totalPrice >= 5000 AND $request->get('online_sale') == 0){
+//
+//                    //2679
+//
+//                    $order->products()->updateOrCreate(['product_id' => 2679,'order_id' => $order->id],[
+//                        'product_id' => 2679,
+//                        'order_id' => $order->id,
+//                        'count' => 1,
+//                        'price' => 1,
+//                        'all_price' => 1,
+//                        'comment' => 'подарок'
+//                    ]);
+//                    $totalPrice += 1;
+//                }
 
 
                 //кешбэк
@@ -304,7 +304,7 @@ class OrderController extends Controller
     public function printCheck(Order $order)
     {
         try {
-            $check = WebkassaCheck::where('order_id',$order->id)->latest()->first();
+            $check = WebkassaCheck::where('order_id',$order->id)->whereNotNull('check_number')->latest()->first();
 
 
             if (!$check)
@@ -323,7 +323,7 @@ class OrderController extends Controller
     public function printCheckFormat(Order $order)
     {
         try {
-            $check = WebkassaCheck::where('order_id',$order->id)->latest()->first();
+            $check = WebkassaCheck::where('order_id',$order->id)->whereNotNull('check_number')->latest()->first();
 
 
             if (!$check)

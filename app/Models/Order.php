@@ -145,7 +145,7 @@ class Order extends Model implements Auditable
     }
     public function webkassaCheck(): HasOne
     {
-        return $this->hasOne(WebkassaCheck::class);
+        return $this->hasOne(WebkassaCheck::class)->whereNotNull('check_number')->latest();
     }
     public function paymentTypeInfo(): string
     {
