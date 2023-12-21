@@ -21,7 +21,7 @@ class ReportInventoryCommand extends Command
     {
         $inventoryId = $this->argument('inventory_id');
 
-        $startDate = now()->startOfWeek()->subDay();
+        $startDate = now()->subWeeks(2)->startOfWeek()->subDay();
         while ($startDate->lte( now() )){
             $startDate->addDay();
             $inventories = Inventory::query()

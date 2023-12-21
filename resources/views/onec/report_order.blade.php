@@ -1,23 +1,14 @@
 <ORDER>
     <DOCUMENTNAME>620</DOCUMENTNAME>
-{{--    <NUMBER>{{ $order->id  }}-0800{{  now()->year  }}-{{  substr($order->user->id_1c,-4)  }}-{{  $order->payment_type  }}</NUMBER>--}}
     <NUMBER>{{ $store->id  }}-0800{{  now()->format('Ymd')}}</NUMBER>
     <DATE>{{ $startDate->clone()->format('Y-m-d')  }}</DATE>
-    <DELIVERYDATE>{{ $startDate->clone()->format('Y-m-d') }}</DELIVERYDATE>
-    <MANAGER>{{  config('app.driver_id_onec')  }}</MANAGER>
-{{--    <DRIVER>{{$order->user->id_1c}}</DRIVER>--}}
-    <DRIVER></DRIVER>
+    <STOREIN>{{$store->warehouse_in}}</STOREIN>
     <CURRENCY>KZT</CURRENCY>
-    <STOREIN>000-005840</STOREIN>
     <HEAD>
+        <STOREIN>{{$store->warehouse_in}}</STOREIN>
         <SUPPLIER>9864232489962</SUPPLIER>
-        <BUYER>{{$idOnec}}</BUYER>
-        <DELIVERYPLACE>{{$idSell}}</DELIVERYPLACE>
-        <INVOICEPARTNER>{{$idOnec}}</INVOICEPARTNER>
-        <SENDER>{{$idSell}}</SENDER>
-        <RECIPIENT>9864232489962</RECIPIENT>
-        <EDIINTERCHANGEID>0</EDIINTERCHANGEID>
-        <FINALRECIPIENT>{{$idSell}}</FINALRECIPIENT>
+        <SENDER>300000000000004</SENDER>
+        <BUYER>000-007034</BUYER>
         @foreach($orderProducts as $orderProduct)
             <POSITION>
                 <POSITIONNUMBER>{{$loop->iteration}}</POSITIONNUMBER>

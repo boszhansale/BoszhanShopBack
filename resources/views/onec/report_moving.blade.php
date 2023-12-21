@@ -2,8 +2,8 @@
     <DOCUMENTNAME>420</DOCUMENTNAME>
     <NUMBER>{{ $moving->id  }}-0800{{  now()->year  }}-{{  substr($moving->user->id_1c,-4)  }}-1</NUMBER>
     <DATE>{{ $startDate->clone()->format('Y-m-d')  }}</DATE>
-    <WAREHOUSE_IN>{{$moving->operation == 1 ? $moving->store->id_1c : $moving->storage->id_1c}}</WAREHOUSE_IN>
-    <WAREHOUSE_OUT>{{$moving->operation == 2 ? $moving->store->id_1c : $moving->storage->id_1c}}</WAREHOUSE_OUT>
+    <WAREHOUSE_IN>{{$moving->operation == 1 ? $moving->store->warehouse_in : '073-01373'}}</WAREHOUSE_IN>
+    <WAREHOUSE_OUT>{{$moving->operation == 2 ? $moving->store->warehouse_in : '073-01373'}}</WAREHOUSE_OUT>
     <CURRENCY>KZT</CURRENCY>
     <HEAD>
         <SUPPLIER>9864232489962</SUPPLIER>

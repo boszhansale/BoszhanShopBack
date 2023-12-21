@@ -60,9 +60,9 @@
                             <th>ID</th>
                             <th>Продукт</th>
                             <th>артикул</th>
+                            <th>Количество</th>
                             <th>шт/кг</th>
                             <th>Цена</th>
-                            <th>Количество</th>
                             <th>итог</th>
 
                         </tr>
@@ -73,9 +73,9 @@
                                 <td>{{$basket->product->id}}</td>
                                 <td>{{$basket->product->name}}</td>
                                 <td>{{$basket->product->article}}</td>
+                                <td>{{$basket->count}}</td>
                                 <td>{{$basket->product->measureDescription()}}</td>
                                 <td>{{$basket->price}}</td>
-                                <td>{{$basket->count}}</td>
                                 <td>{{$basket->all_price}}</td>
                             </tr>
                         @endforeach

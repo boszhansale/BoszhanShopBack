@@ -4,23 +4,25 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-12">
+        @if(Auth::id() == 1)
+            <div class="col-md-12">
 
-            <a class="btn btn-info btn-sm" href="{{route('admin.store.edit',$store->id)}}">
-                изменить
-            </a>
+                <a class="btn btn-info btn-sm" href="{{route('admin.store.edit',$store->id)}}">
+                    изменить
+                </a>
 
-            <a class="btn btn-info btn-sm" href="{{route('admin.discountCard.index',$store->id)}}">
-                дисконт карты
-            </a>
+                <a class="btn btn-info btn-sm" href="{{route('admin.discountCard.index',$store->id)}}">
+                    дисконт карты
+                </a>
 
-            <a class="btn btn-info btn-sm" href="{{route('admin.storeProductDiscount.index',$store->id)}}">
-                скидки
-            </a>
-            <a class="btn btn-info btn-sm" href="{{route('admin.storeProductPromotion.index',$store->id)}}">
-                акции
-            </a>
-        </div>
+                <a class="btn btn-info btn-sm" href="{{route('admin.storeProductDiscount.index',$store->id)}}">
+                    скидки
+                </a>
+                <a class="btn btn-info btn-sm" href="{{route('admin.storeProductPromotion.index',$store->id)}}">
+                    акции
+                </a>
+            </div>
+        @endif
         <br>
         <br>
         <div class="col-md-12">

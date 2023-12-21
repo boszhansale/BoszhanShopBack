@@ -171,10 +171,10 @@ class OrderController extends Controller
 //
 //                if ($totalPrice >= 5000 AND $request->get('online_sale') == 0){
 //
-//                    //2679
+//                    //2556
 //
-//                    $order->products()->updateOrCreate(['product_id' => 2679,'order_id' => $order->id],[
-//                        'product_id' => 2679,
+//                    $order->products()->create([
+//                        'product_id' => 2556,
 //                        'order_id' => $order->id,
 //                        'count' => 1,
 //                        'price' => 1,

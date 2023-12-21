@@ -108,6 +108,7 @@ class ReceiptController extends Controller
             return response()->json(['message' => $exception->getMessage()],400);
         }
     }
+
     public function printCheck(Receipt $receipt)
     {
         try {

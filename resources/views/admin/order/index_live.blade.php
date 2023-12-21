@@ -38,6 +38,9 @@
                     <br>
                     <input wire:model="discountPhoneBool" type="checkbox" id="discount_phone_bool"  class="">
                     <label for="discount_phone_bool">Дисконт карты</label>
+                    <br>
+                    <input wire:model="onlineBool" type="checkbox" id="onlineBool"  class="">
+                    <label for="onlineBool">онлайн продажа</label>
                 </div>
             </div>
         </div>

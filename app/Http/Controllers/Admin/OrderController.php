@@ -28,6 +28,42 @@ class OrderController extends Controller
 
         return view('admin.order.index', compact( 'storeId', 'userId','counteragentId'));
     }
+    public function productIndex(Request $request)
+    {
+        $storeId = $request->get('store_id');
+        $counteragentId = $request->get('counteragent_id');
+        $userId = $request->get('user_id');
+
+        return view('admin.order.product_index', compact( 'storeId', 'userId','counteragentId'));
+    }
+    public function productExcel(Request $request)
+    {
+
+        $orders = Order::query()
+//            ->join('stores', 'stores.id', 'orders.store_id')
+            ->join('order_products','order_products.order_id','orders.id')
+            ->join('products','products.id','order_products.product_id')
+            ->whereNotNull('check_number')
+            ->when($request->get('search'), function ($q) {
+                return $q->where('orders.id', 'LIKE', \request('search') . '%');
+            })
+            ->when($request->get('userId'), function ($q) {
+                return $q->where('orders.user_id', \request('userId'));
+            })
+            ->when($request->get('storeId'), function ($q) {
+                return $q->where('orders.store_id', \request('storeId'));
+            })
+            ->when($request->get('start_created_at'), function ($q) {
+                return $q->whereDate('orders.created_at', '>=', \request('start_created_at'));
+            })
+            ->when($request->get('end_created_at'), function ($q) {
+                return $q->whereDate('orders.created_at', '<=', \request('end_created_at'));
+            })
+            ->latest()
+            ->select(['orders.*','products.name','order_products.price','order_products.count','order_products.all_price'])
+            ->with(['store'])
+            ->get();
+    }
 
     public function edit(Order $order): View
     {

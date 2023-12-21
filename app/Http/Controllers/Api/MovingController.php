@@ -139,11 +139,13 @@ class MovingController extends Controller
         $moving->delete();
         return response()->json(['message' => 'delete']);
     }
+
     public function deleteProduct(MovingProduct $movingProduct)
     {
         $movingProduct->delete();
         return response()->json(['message' => 'delete']);
     }
+
     public function html(Moving $moving)
     {
 //        $pdf = Pdf::setOption(['dpi' => 150, 'defaultFont' => 'sans-serif'])

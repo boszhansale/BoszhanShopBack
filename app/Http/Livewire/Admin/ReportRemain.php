@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Admin;
 
+use App\Exports\Admin\ReceiptExcelExport;
 use App\Models\Counteragent;
 use App\Models\Report;
 use App\Models\Store;
@@ -9,6 +10,7 @@ use App\Models\User;
 use DB;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportRemain extends Component
 {
@@ -20,11 +22,13 @@ class ReportRemain extends Component
 
     public $start_date;
 
+    public $reports;
+
     public $end_date;
 
     public function render()
     {
-        $reports  = DB::table('products')
+        $this->reports  = DB::table('products')
             ->select('products.name', 'products.id AS product_id', 'id_1c', 'measure', 'article',
                 DB::raw('COALESCE(moving_from.sum_count, 0) AS moving_from'),
                 DB::raw('COALESCE(moving_to.sum_count, 0) AS moving_to'),
@@ -108,7 +112,7 @@ class ReportRemain extends Component
             ->get();
 
         return view('admin.report.remain_live', [
-            'reports' => $reports,
+            'reports' => $this->reports,
         ]);
     }
 
@@ -119,6 +123,11 @@ class ReportRemain extends Component
         $this->storeId =$storeId;
 //        $this->start_date = now()->format('Y-m-d');
         $this->end_date = now()->format('Y-m-d');
+    }
+
+    public function excel()
+    {
+
     }
 
 }

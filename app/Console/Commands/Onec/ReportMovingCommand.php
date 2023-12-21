@@ -21,16 +21,19 @@ class ReportMovingCommand extends Command
     {
         $movingId = $this->argument('moving_id');
 
-        $startDate = now()->startOfWeek()->subDay();
+        $startDate = now()->subWeeks(2)->startOfWeek()->subDay();
         while ($startDate->lte( now() )) {
             $startDate->addDay();
             $movings = Moving::query()
-                ->when($movingId, function ($q) use ($movingId) {
-                    return $q->where('orders.id', $movingId);
-                }, function ($q) {
-//                return $q->whereDate('created_at', now());
-                })
-                ->whereDate('created_at',$startDate)
+//                ->when($movingId, function ($q) use ($movingId) {
+//                    return $q->where('orders.id', $movingId);
+//                }, function ($q) {
+////                return $q->whereDate('created_at', now());
+//                })
+                ->join('stores','movings.store_id','stores.id')
+                ->whereNotNull('stores.warehouse_in')
+                ->whereDate('movings.created_at',$startDate)
+                ->select('movings.*')
                 ->get();
 
             if (count($movings) == 0) {

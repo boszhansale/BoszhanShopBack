@@ -52,7 +52,10 @@ class StoreController extends Controller
     public function update(Request $request, Store $store)
     {
 
-
+        if (\Auth::id() != 1)
+        {
+            return back();
+        }
         return redirect()->back();
     }
 
@@ -74,12 +77,20 @@ class StoreController extends Controller
 
     public function delete(Store $store)
     {
+        if (\Auth::id() != 1)
+        {
+            return back();
+        }
         $store->delete();
         return redirect()->back();
     }
 
     public function remove(Store $store)
     {
+        if (\Auth::id() != 1)
+        {
+            return back();
+        }
         $store->removed_at = now();
         $store->save();
         return redirect()->back();
@@ -87,6 +98,10 @@ class StoreController extends Controller
 
     public function recover($id)
     {
+        if (\Auth::id() != 1)
+        {
+            return back();
+        }
         $store = Store::findOrFail($id);
         $store->removed_at = null;
         $store->save();

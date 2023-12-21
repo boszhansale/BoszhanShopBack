@@ -10,7 +10,7 @@
                 <div class="col-md-2">
                     <small>продавец</small>
 
-                    <select wire:model="salesrepId" class="form-control">
+                    <select wire:model="userId" class="form-control">
                         <option value="">все</option>
                         @foreach($users as $user)
                             <option value="{{$user->id}}">{{$user->name}}</option>

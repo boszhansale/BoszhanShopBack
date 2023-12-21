@@ -6,6 +6,9 @@
 {{--                    <input wire:model="start_date"   type="date" class="form-control">--}}
                     <input wire:model="end_date"  type="date" class="form-control">
                 </div>
+                <div class="col-md-2">
+                    <a class="btn btn-warning" href="{{route('admin.report.remainExcel',['store_id' => $storeId,'end_date' => $end_date ])}}">excel</a>
+                </div>
             </div>
         </div>
     </div>

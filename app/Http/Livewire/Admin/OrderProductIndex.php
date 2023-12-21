@@ -8,7 +8,7 @@ use Illuminate\Database\Query\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class OrderIndex extends Component
+class OrderProductIndex extends Component
 {
     use WithPagination;
 
@@ -18,10 +18,6 @@ class OrderIndex extends Component
     public $userId;
     public $storeId;
     public $statusId;
-
-    public $discountPhoneBool;
-    public $discountBool;
-    public $onlineBool;
     public $users;
 
     public $counteragentId;
@@ -33,17 +29,12 @@ class OrderIndex extends Component
     public function render()
     {
         $query = Order::query()
-            ->join('stores', 'stores.id', 'orders.store_id')
+//            ->join('stores', 'stores.id', 'orders.store_id')
+            ->join('order_products','order_products.order_id','orders.id')
+            ->join('products','products.id','order_products.product_id')
             ->whereNotNull('check_number')
             ->when($this->search, function ($q) {
                 return $q->where('orders.id', 'LIKE', $this->search . '%');
-            })
-
-            ->when($this->statusId, function ($q) {
-                return $q->where('orders.status_id', $this->statusId);
-            })
-            ->when($this->paymentType != 'null', function ($q) {
-                return $q->whereJsonContains('payments', ['PaymentType' => (int)$this->paymentType]);
             })
             ->when($this->userId, function ($q) {
                 return $q->where('orders.user_id', $this->userId);
@@ -51,42 +42,31 @@ class OrderIndex extends Component
             ->when($this->storeId, function ($q) {
                 return $q->where('orders.store_id', $this->storeId);
             })
-            ->when($this->counteragentId, function ($q) {
-                return $q->where('stores.counteragent_id', $this->counteragentId);
-            })
             ->when($this->start_created_at, function ($q) {
                 return $q->whereDate('orders.created_at', '>=', $this->start_created_at);
             })
             ->when($this->end_created_at, function ($q) {
                 return $q->whereDate('orders.created_at', '<=', $this->end_created_at);
             })
-            ->when($this->discountBool == 1, function ($q) {
-                return $q->where('orders.total_discount_price', '>', 0);
-            })
-            ->when($this->discountPhoneBool == 1, function ($q) {
-                return $q->whereNotNull('orders.discount_phone');
-            })
-            ->when($this->onlineBool == 1, function ($q) {
-                return $q->where('orders.online_sale', 1);
-            })
-            ->latest()
-            ->select('orders.*');
 
-        return view('admin.order.index_live', [
+            ->latest()
+            ->select(['orders.*','products.name','order_products.price','order_products.count','order_products.all_price']);
+
+        return view('admin.order.product_index_live', [
             'users' => $this->users,
 
             'orders' => $query->clone()
                 ->with(['store'])
-                ->withTrashed()
                 ->paginate(25),
-
             'query' => $query,
         ]);
     }
 
     public function mount()
     {
-        $this->users =  User::query()
+        $this->start_created_at = now()->format('Y-m-d');
+        $this->end_created_at = now()->format('Y-m-d');
+        $this->users = User::query()
             ->where('users.status', 1)
             ->when($this->storeId, function ( $query) {
                 $query->where('store_id',$this->storeId);

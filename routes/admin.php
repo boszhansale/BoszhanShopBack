@@ -103,6 +103,7 @@ Route::middleware(['admin.check','auth:sanctum'])->group(function (){
     });
     Route::prefix('report')->name('report.')->group(function () {
         Route::get('remain/{store}', [ReportController::class, 'remain'])->name('remain');
+        Route::get('remain-excel', [ReportController::class, 'remainExcel'])->name('remainExcel')->withoutMiddleware('auth:sanctum');
         Route::get('discount-card/{store}', [ReportController::class, 'discountCard'])->name('discount-card');
         Route::get('order/{store}', [ReportController::class, 'order'])->name('order');
         Route::get('product/{store}', [ReportController::class, 'product'])->name('product');
@@ -151,6 +152,7 @@ Route::middleware(['admin.check','auth:sanctum'])->group(function (){
 
     Route::prefix('order')->name('order.')->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('index');
+        Route::get('product', [OrderController::class, 'productIndex'])->name('productIndex');
         Route::get('create', [OrderController::class, 'create'])->name('create');
         Route::post('store', [OrderController::class, 'store'])->name('store');
         Route::get('edit/{order}', [OrderController::class, 'edit'])->name('edit');

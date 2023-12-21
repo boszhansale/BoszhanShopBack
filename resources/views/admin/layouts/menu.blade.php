@@ -7,14 +7,15 @@
         </p>
     </a>
 </li>
-<li class="nav-item">
-    <a href="{{route('admin.brand.index')}}" class="nav-link">
-        <i class="nav-icon fas fa-building"></i>
-        <p>
-            Бренды
-        </p>
-    </a>
-</li>
+@if(Auth::user()->id == 1)
+    <li class="nav-item">
+        <a href="{{route('admin.brand.index')}}" class="nav-link">
+            <i class="nav-icon fas fa-building"></i>
+            <p>
+                Бренды
+            </p>
+        </a>
+    </li>
     <li class="nav-item">
         <a href="{{route('admin.product.index')}}" class="nav-link">
             <i class="nav-icon fas fa-th"></i>
@@ -27,20 +28,12 @@
         <a href="{{route('admin.user.index')}}" class="nav-link">
             <i class="nav-icon fas fa-user"></i>
             <p>
-                 Пользователи
+                Пользователи
             </p>
         </a>
     </li>
+@endif
 
-
-{{--    <li class="nav-item">--}}
-{{--        <a href="{{route('admin.counteragent.index')}}" class="nav-link">--}}
-{{--            <i class="nav-icon fas fa-shopping-bag"></i>--}}
-{{--            <p>--}}
-{{--                Контрагенты--}}
-{{--            </p>--}}
-{{--        </a>--}}
-{{--    </li>--}}
     <li class="nav-item">
         <a href="{{route('admin.store.index')}}" class="nav-link">
             <i class="nav-icon fas fa-shopping-basket"></i>
@@ -55,6 +48,14 @@
             <i class="nav-icon fas fa-tasks"></i>
             <p>
                 Продажа
+            </p>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="{{route('admin.order.productIndex')}}" class="nav-link">
+            <i class="nav-icon fas fa-tasks"></i>
+            <p>
+                Продажа 2
             </p>
         </a>
     </li>

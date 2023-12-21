@@ -6,11 +6,32 @@
                     <small>поиск</small>
                     <input wire:model="search" type="search" name="search" placeholder="поиск" class="form-control">
                 </div>
+                <div class="col-md-2">
+                    <small>операция</small>
+
+                    <select wire:model="operation" class="form-control">
+                        <option value="">все</option>
+                        <option value="1">с склада</option>
+                        <option value="2">на склад</option>
+                    </select>
+                </div>
+
+                <div class="col-md-2">
+                    <small>торговый точка</small>
+
+                    <select wire:model="storeId" class="form-control">
+                        <option value="">все</option>
+                        @foreach($stores as $store)
+                            <option value="{{$store->id}}">{{$store->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+
 
                 <div class="col-md-2">
                     <small>продавец</small>
 
-                    <select wire:model="salesrepId" class="form-control">
+                    <select wire:model="userId" class="form-control">
                         <option value="">все</option>
                         @foreach($users as $user)
                             <option value="{{$user->id}}">{{$user->name}}</option>
@@ -33,6 +54,7 @@
                 <thead>
                 <tr>
                     <th>ID</th>
+                    <th></th>
                     <th></th>
                     <th>Контрагент</th>
                     <th>Контрагент(BIN)</th>
@@ -60,6 +82,9 @@
                                     </i>
                                 </a>
 
+                            </td>
+                            <td>
+                                {{$moving->operation == 1 ? 'с склада':'на склад'}}
                             </td>
                             <td>
                                 @if($moving->store?->counteragent_id)

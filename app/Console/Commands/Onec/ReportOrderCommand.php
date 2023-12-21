@@ -22,10 +22,10 @@ class ReportOrderCommand extends Command
     {
         $order_id = $this->argument('order_id');
 
-        $stores = Store::all();
+        $stores = Store::whereNotNull('warehouse_in')->get();
 
         foreach ($stores as $store) {
-            $startDate = now()->startOfWeek()->subDay();
+            $startDate = now()->subWeeks(2)->startOfWeek()->subDay();
             while ($startDate->lte( now() )){
                 $startDate->addDay();
                 $date = $startDate->clone();

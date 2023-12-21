@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Admin;
 
 use App\Models\Moving;
+use App\Models\Store;
 use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -18,6 +19,9 @@ class MovingIndex extends Component
     public $storeId;
     public $statusId;
     public $storageId;
+    public $stores;
+    public $users;
+    public $operation;
 
     public $start_created_at;
     public $end_created_at;
@@ -32,6 +36,9 @@ class MovingIndex extends Component
 
             ->when($this->statusId, function ($q) {
                 return $q->where('movings.status_id', $this->statusId);
+            })
+            ->when($this->operation, function ($q) {
+                return $q->where('movings.operation', $this->operation);
             })
             ->when($this->userId, function ($q) {
                 return $q->where('movings.user_id', $this->userId);
@@ -52,10 +59,8 @@ class MovingIndex extends Component
             ->select('movings.*');
 
         return view('admin.moving.index_live', [
-            'users' => User::query()
-                ->where('users.status', 1)
-                ->orderBy('users.name')
-                ->get('users.*'),
+            'users' => $this->users,
+            'stores' => $this->stores,
 
             'movings' => $query->clone()
                 ->with(['store'])
@@ -66,6 +71,10 @@ class MovingIndex extends Component
 
     public function mount()
     {
-
+        $this->stores = Store::whereNotNull('warehouse_in')->get();
+        $this->users = User::query()
+            ->where('users.status', 1)
+            ->orderBy('users.name')
+            ->get('users.*');
     }
 }

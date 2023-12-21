@@ -56,7 +56,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $nds
  * @property string|null $ticket_print_url
  * @property string|null $check_number
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ReceiptProduct> $products
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|Receipt onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Receipt whereCheckNumber($value)
