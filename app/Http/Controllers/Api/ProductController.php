@@ -13,7 +13,6 @@ class ProductController extends Controller
 {
     public function index(ProductIndexRequest $request)
     {
-
 //        $priceTypeId = 3;
         if ($request->has('counteragent_id')){
             $counteragent = Counteragent::find($request->get('counteragent_id'));
@@ -59,7 +58,13 @@ class ProductController extends Controller
                         ->orWhere('product_barcodes.barcode', 'LIKE', $searchTerm);
                 });
             })
-            ->where('products.remainder', '>', 0)
+            ->when($request->get('remainder') == 'false', function ($query) {
+            },function ($query) {
+                return $query->where('products.remainder', '>', 0);
+            })
+            ->when($request->has('id'), function ($query) {
+                return $query->where('products.id', request('id'));
+            })
 //            ->where('product_price_types.price_type_id',  3)
             ->with(['images','barcodes'])
 //            ->select('products.*', DB::raw('MAX(product_price_types.price) AS price'), 'product_price_types.price_type_id')
