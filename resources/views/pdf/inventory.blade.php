@@ -51,7 +51,7 @@
                 </tr>
                 <tr>
                     <td>{{$inventory->id}}</td>
-                    <td>{{$inventory->created_at->format('d.m.Y')}}</td>
+                    <td>{{\Carbon\Carbon::parse($inventory->created_at)->format('d.m.Y')}}</td>
                 </tr>
             </table>
         </div>
@@ -98,8 +98,8 @@
     </p>
     <p>числящихся на балансовых счетах № ___________________________ по состоянию на "______"_________________________20_____года
     </p>
-    <p>Инвентаризация начата "{{$inventory->created_at->format('d')}}"  {{\App\Services\NumWord::month($inventory->created_at->format('m'))}} {{$inventory->created_at->format('Y')}} года</p>
-    <p>Инвентаризация окончена "{{$inventory->created_at->format('d')}}"  {{\App\Services\NumWord::month($inventory->created_at->format('m'))}} {{$inventory->created_at->format('Y')}} года</p>
+    <p>Инвентаризация начата "{{\Carbon\Carbon::parse($inventory->created_at)->format('d')}}"  {{\App\Services\NumWord::month(\Carbon\Carbon::parse($inventory->created_at)->format('m'))}} {{\Carbon\Carbon::parse($inventory->created_at)->format('Y')}} года</p>
+    <p>Инвентаризация окончена "{{\Carbon\Carbon::parse($inventory->created_at)->format('d')}}"  {{\App\Services\NumWord::month(\Carbon\Carbon::parse($inventory->created_at)->format('m'))}} {{\Carbon\Carbon::parse($inventory->created_at)->format('Y')}} года</p>
 </section>
 
 <section class="seven">

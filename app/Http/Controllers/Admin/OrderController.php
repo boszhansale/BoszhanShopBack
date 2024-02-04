@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Actions\OrderPriceAction;
+use App\Exports\Admin\OrderProductExcelExport;
 use App\Exports\Excel\OrderExcelExport;
 use App\Http\Controllers\Controller;
+use App\Http\Livewire\Admin\OrderProductIndex;
 use App\Http\Requests\Admin\OrderManyUpdateRequest;
 use App\Http\Requests\Admin\OrderUpdateRequest;
 use App\Models\Order;
@@ -28,14 +30,15 @@ class OrderController extends Controller
 
         return view('admin.order.index', compact( 'storeId', 'userId','counteragentId'));
     }
+
     public function productIndex(Request $request)
     {
         $storeId = $request->get('store_id');
-        $counteragentId = $request->get('counteragent_id');
         $userId = $request->get('user_id');
 
-        return view('admin.order.product_index', compact( 'storeId', 'userId','counteragentId'));
+        return view('admin.order.product_index', compact( 'storeId', 'userId'));
     }
+
     public function productExcel(Request $request)
     {
 
@@ -50,8 +53,8 @@ class OrderController extends Controller
             ->when($request->get('userId'), function ($q) {
                 return $q->where('orders.user_id', \request('userId'));
             })
-            ->when($request->get('storeId'), function ($q) {
-                return $q->where('orders.store_id', \request('storeId'));
+            ->when($request->get('store_id'), function ($q) {
+                return $q->where('orders.store_id', \request('store_id'));
             })
             ->when($request->get('start_created_at'), function ($q) {
                 return $q->whereDate('orders.created_at', '>=', \request('start_created_at'));
@@ -59,10 +62,14 @@ class OrderController extends Controller
             ->when($request->get('end_created_at'), function ($q) {
                 return $q->whereDate('orders.created_at', '<=', \request('end_created_at'));
             })
-            ->latest()
-            ->select(['orders.*','products.name','order_products.price','order_products.count','order_products.all_price'])
-            ->with(['store'])
+            ->selectRaw('store_id,product_id,products.name,price,SUM(count) as count,SUM(all_price) as all_price')
+            ->orderBy('products.name')
+            ->groupBy('store_id','product_id','price')
             ->get();
+
+        return Excel::download(new OrderProductExcelExport($orders), 'order_products.xlsx');
+
+
     }
 
     public function edit(Order $order): View

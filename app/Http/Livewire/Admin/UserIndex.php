@@ -31,6 +31,7 @@ class UserIndex extends Component
                             ->orWhere('users.id', 'LIKE', '%'.$this->search.'%');
                     });
                 })
+                ->with(['store'])
                 ->when($this->roleId, function ($q) {
                     return $q->where('users.role_id', $this->roleId);
                 })

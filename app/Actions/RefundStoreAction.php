@@ -21,6 +21,7 @@ class RefundStoreAction
 
         if (!isset($data['order_id'])) throw  new Exception("order_id not found");
         $refund = Auth::user()->refunds()->create($data);
+        $products = [];
         if (isset($data['products']))
         {
             foreach ($data['products'] as $item) {
@@ -29,12 +30,10 @@ class RefundStoreAction
                 $orderProduct = $order->products()->where('product_id',$item['product_id'])->latest()->first();
                 if (!$orderProduct){
                     $refund->forceDelete();
-
                     throw new Exception("продукт $product->name не найден");
                 };
                 if ($item['count'] > $orderProduct->count ){
                     $refund->forceDelete();
-
                     throw new Exception("неверный количество: $product->name");
                 }
                 if (!$orderProduct->price){
@@ -48,6 +47,7 @@ class RefundStoreAction
                     'product_id' => $product->id,
                     'refund_id' => $refund->id
                 ],$item);
+                $products[] = $item;
             }
             $refund->update([
                 'product_history' => $refund->products()->select('product_id','count','price','all_price','comment')->get()->toArray(),
@@ -59,7 +59,7 @@ class RefundStoreAction
                 'source' => 4,
                 'operation' => 1,
                 'refund_id' => $refund->id,
-                'products' => $data['products'],
+                'products' => $products,
                 'storage_id' => Auth::user()->storage_id,
                 'store_id' => Auth::user()->store_id,
                 'organization_id' => Auth::user()->organization_id,

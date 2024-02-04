@@ -55,7 +55,7 @@
         <a href="{{route('admin.order.productIndex')}}" class="nav-link">
             <i class="nav-icon fas fa-tasks"></i>
             <p>
-                Продажа 2
+                Общая продажа
             </p>
         </a>
     </li>
@@ -106,6 +106,16 @@
             <i class="nav-icon fas fa-tasks"></i>
             <p>
                 Инвентаризация
+            </p>
+        </a>
+    </li>
+
+
+    <li class="nav-item">
+        <a href="{{route('admin.promo-code.index')}}" class="nav-link">
+            <i class="nav-icon fas fa-tasks"></i>
+            <p>
+                Промокоды
             </p>
         </a>
     </li>

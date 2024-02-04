@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * App\Models\RefundProduct
@@ -69,5 +71,11 @@ class RefundProduct extends Model
     public function reasonRefund(): BelongsTo
     {
         return $this->belongsTo(ReasonRefund::class);
+    }
+    protected function createdAt(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => Carbon::parse($value)->addHours(6)->format('d.m.Y H:i'),
+        );
     }
 }

@@ -25,7 +25,8 @@ class ReportOrderCommand extends Command
         $stores = Store::whereNotNull('warehouse_in')->get();
 
         foreach ($stores as $store) {
-            $startDate = now()->subWeeks(2)->startOfWeek()->subDay();
+//            $startDate = now()->subWeeks(2)->startOfWeek()->subDay();
+            $startDate = Carbon::parse('2023-07-21');
             while ($startDate->lte( now() )){
                 $startDate->addDay();
                 $date = $startDate->clone();
@@ -58,15 +59,13 @@ class ReportOrderCommand extends Command
                     $output = '<?xml version="1.0" encoding="utf-8"?>'."\n". $output;
 
                     Storage::put($path, $output);
-                    if (File::exists("/home/dev/index/test/$name")) {
-                        File::delete("/home/dev/index/test/$name");
+                    if (File::exists("/home/dev/ftt/$store->id/$name")) {
+                        File::delete("/home/dev/ftt/$store->id/$name");
                     }
-                    File::put("/home/dev/index/test/$name", $output);
+
+                    File::put("/home/dev/ftt/$store->id/$name", $output);
 
                     $this->info("The report   is saved here : $path, type is 0");
-
-
-
             }
 
         }

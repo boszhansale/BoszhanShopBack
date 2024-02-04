@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 
 /**
@@ -53,7 +55,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int|null $inventory_id
  * @property int|null $moving_id
  * @property string|null $description
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\RejectProduct> $products
  * @method static \Illuminate\Database\Eloquent\Builder|Reject whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Reject whereInventoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Reject whereMovingId($value)
@@ -113,5 +114,11 @@ class Reject extends Model
     public function products(): HasMany
     {
         return $this->hasMany(RejectProduct::class);
+    }
+    protected function createdAt(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => Carbon::parse($value)->addHours(6)->format('d.m.Y H:i'),
+        );
     }
 }

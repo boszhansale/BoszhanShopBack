@@ -28,10 +28,11 @@ class ReportController extends Controller
                 DB::raw('COALESCE(moving_to.sum_count, 0) AS moving_to'),
                 DB::raw('COALESCE(receipt.sum_count, 0) AS receipt'),
                 DB::raw('COALESCE(orderProduct.sum_count, 0) AS sale'),
-                DB::raw('COALESCE(refund.sum_count, 0) AS refund'),
+//                DB::raw('COALESCE(refund.sum_count, 0) AS refund'),
                 DB::raw('COALESCE(refund_producer.sum_count, 0) AS refund_producer'),
                 DB::raw('COALESCE(reject.sum_count, 0) AS reject'),
-                DB::raw('COALESCE(receipt.sum_count, 0) + COALESCE(moving_from.sum_count, 0) + COALESCE(refund.sum_count, 0) - COALESCE(orderProduct.sum_count, 0) - COALESCE(refund_producer.sum_count, 0) - COALESCE(moving_to.sum_count, 0)  - COALESCE(reject.sum_count, 0) AS remains')
+//                DB::raw('COALESCE(receipt.sum_count, 0) + COALESCE(moving_from.sum_count, 0) + COALESCE(refund.sum_count, 0) - COALESCE(orderProduct.sum_count, 0) - COALESCE(refund_producer.sum_count, 0) - COALESCE(moving_to.sum_count, 0)  - COALESCE(reject.sum_count, 0) AS remains')
+                DB::raw('COALESCE(receipt.sum_count, 0) + COALESCE(moving_from.sum_count, 0) - COALESCE(orderProduct.sum_count, 0) - COALESCE(refund_producer.sum_count, 0) - COALESCE(moving_to.sum_count, 0)  - COALESCE(reject.sum_count, 0) AS remains')
             )
             ->leftJoin(
                 DB::raw("(SELECT moving_products.product_id, SUM(moving_products.count) AS sum_count
@@ -53,15 +54,15 @@ class ReportController extends Controller
                     "GROUP BY moving_products.product_id) AS moving_to"),
                 'moving_to.product_id', '=', 'products.id'
             )
-            ->leftJoin(
-                DB::raw("(SELECT refund_products.product_id, SUM(refund_products.count) AS sum_count
-                FROM refund_products
-                INNER JOIN refunds ON refunds.id = refund_products.refund_id
-                WHERE refunds.store_id = $storeId
-            " . ($endDate ? "AND refunds.created_at <= '$endDate' " : "") .
-                    "GROUP BY refund_products.product_id) AS refund"),
-                'refund.product_id', '=', 'products.id'
-            )
+//            ->leftJoin(
+//                DB::raw("(SELECT refund_products.product_id, SUM(refund_products.count) AS sum_count
+//                FROM refund_products
+//                INNER JOIN refunds ON refunds.id = refund_products.refund_id
+//                WHERE refunds.store_id = $storeId
+//            " . ($endDate ? "AND refunds.created_at <= '$endDate' " : "") .
+//                    "GROUP BY refund_products.product_id) AS refund"),
+//                'refund.product_id', '=', 'products.id'
+//            )
             ->leftJoin(
                 DB::raw("(SELECT reject_products.product_id, SUM(reject_products.count) AS sum_count
             FROM reject_products

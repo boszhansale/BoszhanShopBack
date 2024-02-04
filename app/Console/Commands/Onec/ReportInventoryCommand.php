@@ -62,7 +62,7 @@ class ReportInventoryCommand extends Command
                     if (File::exists("/home/dev/index/test/$name")) {
                         File::delete("/home/dev/index/test/$name");
                     }
-                    File::put("/home/dev/index/test/$name", $output);
+                    File::put("/home/dev/ftt/$inventory->store_id/$name", $output);
 
                     $this->info("The inventory $inventory->id is saved here : $path");
                 } catch (Exception $exception) {

@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\MainController;
 use App\Http\Controllers\Admin\MovingController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\PromoCodeController;
 use App\Http\Controllers\Admin\ReceiptController;
 use App\Http\Controllers\Admin\RefundController;
 use App\Http\Controllers\Admin\RefundProducerController;
@@ -153,6 +154,7 @@ Route::middleware(['admin.check','auth:sanctum'])->group(function (){
     Route::prefix('order')->name('order.')->group(function () {
         Route::get('/', [OrderController::class, 'index'])->name('index');
         Route::get('product', [OrderController::class, 'productIndex'])->name('productIndex');
+        Route::get('product-excel', [OrderController::class, 'productExcel'])->name('productExcel');
         Route::get('create', [OrderController::class, 'create'])->name('create');
         Route::post('store', [OrderController::class, 'store'])->name('store');
         Route::get('edit/{order}', [OrderController::class, 'edit'])->name('edit');
@@ -234,6 +236,18 @@ Route::middleware(['admin.check','auth:sanctum'])->group(function (){
         Route::get('remove/{inventory}', [InventoryController::class, 'remove'])->name('remove');
         Route::get('recover/{inventory}', [InventoryController::class, 'recover'])->name('recover');
         Route::get('history/{inventory}', [InventoryController::class, 'history'])->name('history');
+    });
+
+    Route::prefix('promo-code')->name('promo-code.')->group(function () {
+        Route::get('/', [PromoCodeController::class, 'index'])->name('index');
+        Route::get('create', [PromoCodeController::class, 'create'])->name('create');
+        Route::post('store', [PromoCodeController::class, 'store'])->name('store');
+        Route::get('edit/{promoCode}', [PromoCodeController::class, 'edit'])->name('edit');
+        Route::put('update/{promoCode}', [PromoCodeController::class, 'update'])->name('update');
+        Route::get('delete/{promoCode}', [PromoCodeController::class, 'delete'])->name('delete');
+
+        Route::get('import', [PromoCodeController::class, 'import'])->name('import');
+        Route::post('import', [PromoCodeController::class, 'importStore'])->name('importStore');
     });
 
 

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -168,5 +170,18 @@ class Order extends Model implements Auditable
 //            4  => '🏦Каспи',
 //            5  => 'излишка',
 //        };
+    }
+
+    protected function createdAt(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => Carbon::parse($value)->addHours(6)->format('d.m.Y H:i'),
+        );
+    }
+    protected function deletedAt(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => \Illuminate\Support\Carbon::parse($value)->addHours(6)->format('d.m.Y H:i'),
+        );
     }
 }

@@ -39,7 +39,7 @@ class ProductResource extends JsonResource
             'rating' => $this->rating,
             'price_type_id' => 3,
             'price' => $this->prices()->wherePriceTypeId(3)->first()->price,
-            'discount_price' => $this->getDiscountPrice(0,0),
+            'discount_price' => ceil($this->getDiscountPrice(0,0)),
             'images' => $this->images,
         ];
     }

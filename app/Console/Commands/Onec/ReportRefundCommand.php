@@ -64,10 +64,10 @@ class ReportRefundCommand extends Command
                     $output = '<?xml version="1.0" encoding="utf-8"?>'."\n". $output;
 
                     Storage::put($path, $output);
-                    if (File::exists("/home/dev/index/test/$name")) {
-                        File::delete("/home/dev/index/test/$name");
+                    if (File::exists("/home/dev/ftt/$refund->store_id/$name")) {
+                        File::delete("/home/dev/ftt/$refund->store_id/$name");
                     }
-                    File::put("/home/dev/index/test/$name", $output);
+                    File::put("/home/dev/ftt/$refund->store_id/$name", $output);
 
                     $this->info("The report for order $refund->id is saved here : $path, type is 0");
 

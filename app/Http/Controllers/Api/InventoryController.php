@@ -35,12 +35,13 @@ class InventoryController extends Controller
                 DB::raw('COALESCE(moving_to.sum_count, 0) AS moving_to'),
                 DB::raw('COALESCE(receipt.sum_count, 0) AS receipt'),
                 DB::raw('COALESCE(orderProduct.sum_count, 0) AS sale'),
-                DB::raw('COALESCE(refund.sum_count, 0) AS refund'),
+//                DB::raw('COALESCE(refund.sum_count, 0) AS refund'),
                 DB::raw('COALESCE(refund_producer.sum_count, 0) AS refund_producer'),
                 DB::raw('COALESCE(reject.sum_count, 0) AS reject'),
 
 
-                DB::raw('COALESCE(receipt.sum_count, 0) + COALESCE(moving_from.sum_count, 0) +  COALESCE(refund.sum_count, 0) - COALESCE(orderProduct.sum_count, 0) - COALESCE(refund_producer.sum_count, 0) - COALESCE(moving_to.sum_count, 0)  - COALESCE(reject.sum_count, 0) AS remains' )
+//                DB::raw('COALESCE(receipt.sum_count, 0) + COALESCE(moving_from.sum_count, 0) +  COALESCE(refund.sum_count, 0) - COALESCE(orderProduct.sum_count, 0) - COALESCE(refund_producer.sum_count, 0) - COALESCE(moving_to.sum_count, 0)  - COALESCE(reject.sum_count, 0) AS remains' )
+                DB::raw('COALESCE(receipt.sum_count, 0) + COALESCE(moving_from.sum_count, 0)  - COALESCE(orderProduct.sum_count, 0) - COALESCE(refund_producer.sum_count, 0) - COALESCE(moving_to.sum_count, 0)  - COALESCE(reject.sum_count, 0) AS remains' )
             )
             ->leftJoin(
                 DB::raw("(SELECT moving_products.product_id, SUM(moving_products.count) AS sum_count
@@ -60,14 +61,14 @@ class InventoryController extends Controller
                     GROUP BY moving_products.product_id) AS moving_to"),
                 'moving_to.product_id', '=', 'products.id'
             )
-            ->leftJoin(
-                DB::raw("(SELECT refund_products.product_id, SUM(refund_products.count) AS sum_count
-                    FROM refund_products
-                    INNER JOIN refunds ON refunds.id = refund_products.refund_id
-                    WHERE refunds.store_id = $storeId
-                    GROUP BY refund_products.product_id) AS refund"),
-                'refund.product_id', '=', 'products.id'
-            )
+//            ->leftJoin(
+//                DB::raw("(SELECT refund_products.product_id, SUM(refund_products.count) AS sum_count
+//                    FROM refund_products
+//                    INNER JOIN refunds ON refunds.id = refund_products.refund_id
+//                    WHERE refunds.store_id = $storeId
+//                    GROUP BY refund_products.product_id) AS refund"),
+//                'refund.product_id', '=', 'products.id'
+//            )
             ->leftJoin(
                 DB::raw("(SELECT reject_products.product_id, SUM(reject_products.count) AS sum_count
                     FROM reject_products
@@ -130,64 +131,72 @@ class InventoryController extends Controller
         if ($inventory->status == 2){
             return response()->json(['message' => 'документ уже активен'],400);
         }
-        $receiptData = [];
-        $rejectData = [];
+        try {
+            DB::beginTransaction();
+            $receiptData = [];
+            $rejectData = [];
 
-        foreach ($inventory->products as $inventoryProduct) {
-            $product = $inventoryProduct->product;
+            foreach ($inventory->products as $inventoryProduct) {
+                $product = $inventoryProduct->product;
 
-            if ($inventoryProduct->remains < $inventoryProduct->count){
-                //Излишки
-                $inventoryProduct->overage = $inventoryProduct->count - $inventoryProduct->remains;
-                $receiptData['products'] [] = [
-                    'product_id' => $inventoryProduct->product_id,
-                    'count' => $inventoryProduct->overage,
-                ];
+                if ($inventoryProduct->remains < $inventoryProduct->count){
+                    //Излишки
+                    $inventoryProduct->overage = $inventoryProduct->count - $inventoryProduct->remains;
+                    $receiptData['products'] [] = [
+                        'product_id' => $inventoryProduct->product_id,
+                        'count' => $inventoryProduct->overage,
+                    ];
+
+                }
+                if ($inventoryProduct->remains > $inventoryProduct->count){
+                    //Недостачи
+                    $inventoryProduct->shortage = $inventoryProduct->remains - $inventoryProduct->count;
+                    $rejectData['products'] [] = [
+                        'product_id' => $inventoryProduct->product_id,
+                        'count' => $inventoryProduct->shortage,
+                    ];
+                }
+
+                $productPriceType = $product->prices()->where('price_type_id', 3)->first();
+                $inventoryProduct->price = $productPriceType ? $productPriceType->price : 0;
+
+                $inventoryProduct->save();
 
             }
-            if ($inventoryProduct->remains > $inventoryProduct->count){
-                //Недостачи
-                $inventoryProduct->shortage = $inventoryProduct->remains - $inventoryProduct->count;
-                $rejectData['products'] [] = [
-                    'product_id' => $inventoryProduct->product_id,
-                    'count' => $inventoryProduct->shortage,
-                ];
-            }
-
-            $productPriceType = $product->prices()->where('price_type_id', 3)->first();
-            $inventoryProduct->price = $productPriceType ? $productPriceType->price : 0;
-
-            $inventoryProduct->save();
-
-        }
 //        //Излишки
-        if (count($receiptData) > 0){
-            $receiptData['storage_id'] = Auth::user()->storage_id;
-            $receiptData['store_id'] = Auth::user()->store_id;
-            $receiptData['organization_id'] = Auth::user()->organization_id;
-            $receiptData['operation'] = 2;
-            $receiptData['inventory_id'] = $inventory->id;
-            $receiptData['description'] = "На основании инвентаризации №$inventory->id от ".$inventory->created_at->format('d.m.Y');
+            if (count($receiptData) > 0){
+                $receiptData['storage_id'] = Auth::user()->storage_id;
+                $receiptData['store_id'] = Auth::user()->store_id;
+                $receiptData['organization_id'] = Auth::user()->organization_id;
+                $receiptData['operation'] = 2;
+                $receiptData['inventory_id'] = $inventory->id;
+                $receiptData['description'] = "На основании инвентаризации №$inventory->id от ".$inventory->created_at;
 
-            $receiptStoreAction->execute($receiptData);
+                $receiptStoreAction->execute($receiptData);
 
-        }
+            }
 //        //Недостачи
-        if (count($rejectData) > 0)
-        {
-            $rejectData['storage_id'] = Auth::user()->storage_id;
-            $rejectData['store_id'] = Auth::user()->store_id;
-            $rejectData['organization_id'] = Auth::user()->organization_id;
-            $rejectData['inventory_id'] = $inventory->id;
-            $rejectData['description'] = "На основании инвентаризации №$inventory->id от ".$inventory->created_at->format('d.m.Y');
-            $rejectStoreAction->execute($rejectData);
+            if (count($rejectData) > 0)
+            {
+                $rejectData['storage_id'] = Auth::user()->storage_id;
+                $rejectData['store_id'] = Auth::user()->store_id;
+                $rejectData['organization_id'] = Auth::user()->organization_id;
+                $rejectData['inventory_id'] = $inventory->id;
+                $rejectData['description'] = "На основании инвентаризации №$inventory->id от ".$inventory->created_at;
+                $rejectStoreAction->execute($rejectData);
+            }
+
+
+            $inventory->status = 2;
+            $inventory->save();
+            DB::commit();
+            return response()->json($inventory);
+        }catch (\Exception $exception){
+            DB::rollBack();
+            return response()->json(['message' => $exception->getMessage()],400);
         }
 
 
-        $inventory->status = 2;
-        $inventory->save();
-
-        return response()->json($inventory);
     }
 
     public function update(InventoryStoreRequest $request,Inventory $inventory)
