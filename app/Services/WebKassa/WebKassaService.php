@@ -92,7 +92,7 @@ class WebKassaService
                 "TaxType"=> 100,
                 "PositionName"=> $product->product->name,
                 "PositionCode"=> $product->product_id,
-                "UnitCode"=>  $product->measure == 1 ? '896' : '166',
+                "UnitCode"=>  $product->product->measure == 1 ? '896' : '166',
             ];
 
         }
@@ -184,7 +184,7 @@ class WebKassaService
                 "TaxType"=> 100,
                 "PositionName"=> $product->product->name,
                 "PositionCode"=> $product->product_id,
-                "UnitCode"=>  $product->measure == 1 ? '896' : '166',
+                "UnitCode"=>  $product->product->measure == 1 ? '896' : '166',
             ];
         }
         $webkassaCheck = WebkassaCheck::create([

@@ -45,7 +45,7 @@ class RejectStoreAction
                         $item['price'] = $movingProduct->price;
                     }{
                         $priceType = $product->prices()->where('price_type_id',3)->first();
-                        if (!$priceType) throw new Exception("price not found");
+                        if (!$priceType) throw new Exception("price not found: $product->id");
                         $item['price'] = $priceType->price;
                     }
                 }

@@ -55,6 +55,11 @@ return [
             'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
             'throw' => false,
         ],
+        'ftpBackup' => [
+            'driver' => 'local',
+            'root' => '/home/dev/index/backups/sql',
+            'throw' => false,
+        ],
 
     ],
 

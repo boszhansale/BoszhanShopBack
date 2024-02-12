@@ -33,13 +33,15 @@ class ReceiptStoreAction
                     if ($receiptProduct){
                         $item['price'] = $receiptProduct->price;
                     }else{
-                        $priceType = $product->prices()->where('price_type_id',5)->first();
-                        if (!$priceType) throw new Exception("price not found");
+                        $priceType = $product->prices()->where('price_type_id',3)->first();
+                        if (!$priceType) throw new Exception("price not found: $product->id");
                         $item['price'] = $priceType->price;
                     }
                 }else{
-                   if ($data['nds'] == 1){
-                       $item['price'] = $item['price'] -  (($item['price'] / 112) * 12);
+                   if (isset($data['nds'])){
+                       if ($data['nds'] == 1){
+                           $item['price'] = $item['price'] -  (($item['price'] / 112) * 12);
+                       }
                    }
                 }
                 $receiptProduct = ReceiptProduct::query()->join('receipts','receipts.id','receipt_products.receipt_id')

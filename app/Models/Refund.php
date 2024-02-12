@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -58,7 +60,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string|null $ticket_print_url
  * @property string|null $check_number
  * @property array|null $payments
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\RefundProduct> $products
  * @method static \Illuminate\Database\Eloquent\Builder|Refund onlyTrashed()
  * @method static \Illuminate\Database\Eloquent\Builder|Refund whereCheckNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Refund whereCheckStatus($value)
@@ -129,5 +130,11 @@ class Refund extends Model
             1 => 'День в день',
             2 => 'Не день в день'
         };
+    }
+    protected function createdAt(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => Carbon::parse($value)->format('d.m.Y H:i'),
+        );
     }
 }

@@ -50,7 +50,7 @@ class ProductIndex extends Component
                 })
                 ->with('category')
                 ->orderBy('products.article')
-                ->paginate(10),
+                ->paginate(50),
         ]);
     }
 

@@ -26,7 +26,7 @@ class ProductUpdateRequest extends FormRequest
         return [
             'images' => 'array',
             'images.*' => 'image|max:1024',
-            'discount' => ''
+            'discount' => '',
         ];
     }
 

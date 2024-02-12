@@ -19,6 +19,7 @@ use App\Models\Storage;
 use App\Models\Store;
 use App\Models\SupervisorSalesrep;
 use App\Models\User;
+use App\Models\WebkassaCashBox;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
@@ -63,8 +64,9 @@ class UserController extends Controller
 
         $stores = Store::orderBy('name')->get();
         $storages = Storage::orderBy('name')->get();
+        $cashboxes = WebkassaCashBox::latest()->get();
 
-        return view('admin.user.create', compact( 'stores','storages' ));
+        return view('admin.user.create', compact( 'stores','storages' , 'cashboxes'));
     }
 
     public function store(UserStoreRequest $request)

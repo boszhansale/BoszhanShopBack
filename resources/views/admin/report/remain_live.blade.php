@@ -22,7 +22,7 @@
                     <th>на склад</th>
                     <th>поступление</th>
                     <th>продажа</th>
-                    <th>возврат</th>
+{{--                    <th>возврат</th>--}}
                     <th>возврат поставщику</th>
                     <th>списание</th>
                     <th>остаток</th>
@@ -42,7 +42,7 @@
                         <td>{{$report->moving_to}}</td>
                         <td>{{$report->receipt}}</td>
                         <td>{{$report->sale}}</td>
-                        <td>{{$report->refund}}</td>
+{{--                        <td>{{$report->refund}}</td>--}}
                         <td>{{$report->refund_producer}}</td>
                         <td>{{$report->reject}}</td>
                         <td>{{$report->remains}}</td>

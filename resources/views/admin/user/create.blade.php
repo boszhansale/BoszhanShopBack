@@ -68,7 +68,11 @@
 
                 <div class="form-group">
                     <label for="">webkassa_cash_box_id</label>
-                    <input type="text" class="form-control" name="webkassa_cash_box_id" >
+                    <select name="webkassa_cash_box_id" class="form-control">
+                        @foreach($cashboxes as $cashbox)
+                            <option value="{{$cashbox->id}}">{{$cashbox->unique_number}}</option>
+                        @endforeach
+                    </select>
                 </div>
 
             </div>

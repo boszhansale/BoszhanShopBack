@@ -29,6 +29,7 @@ class OrderIndex extends Component
 
     public $start_created_at;
     public $end_created_at;
+    public $discountPhone;
 
     public function render()
     {
@@ -41,6 +42,9 @@ class OrderIndex extends Component
 
             ->when($this->statusId, function ($q) {
                 return $q->where('orders.status_id', $this->statusId);
+            })
+            ->when($this->discountPhone, function ($q) {
+                return $q->where('orders.discount_phone', $this->discountPhone);
             })
             ->when($this->paymentType != 'null', function ($q) {
                 return $q->whereJsonContains('payments', ['PaymentType' => (int)$this->paymentType]);

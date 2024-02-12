@@ -63,7 +63,7 @@ class ReportMovingCommand extends Command
                     if (File::exists("/home/dev/index/test/$name")) {
                         File::delete("/home/dev/index/test/$name");
                     }
-                    File::put("/home/dev/index/test/$name", $output);
+                    File::put("/home/dev/ftt/$moving->store_id/$name", $output);
 
                     $this->info("The report for moving $moving->id is saved here : $path");
                 } catch (Exception $exception) {

@@ -29,17 +29,24 @@ class ProductPriceTypeImport extends Command
      */
     public function handle()
     {
-        foreach (\DB::connection('boszhan')->table('product_price_types')->get() as $price) {
-            ProductPriceType::updateOrCreate(
-                ['id' => $price->id],
-                [
-                    'id' => $price->id,
-                    'product_id' => $price->product_id,
-                    'price_type_id' => $price->price_type_id,
-                    'price' => $price->price,
-                    'deleted_at' => $price->deleted_at,
-                ]
-        );
+        $prices = \DB::connection('boszhan')->table('product_price_types')->where('price_type_id',3)->get();
+        foreach ($prices as $price) {
+            if (ProductPriceType::find($price->id)){
+                continue;
+            }
+            try {
+                ProductPriceType::updateOrCreate(
+                    ['id' => $price->id],
+                    [
+                        'id' => $price->id,
+                        'product_id' => $price->product_id,
+                        'price_type_id' => $price->price_type_id,
+                        'price' => $price->price,
+                    ]
+                );
+            }catch (\Exception $e){
+                dd($price);
+            }
         }
     }
 }

@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
     {
 
          $schedule->command('telescope:clear')->dailyAt("03:00");
-
+         $schedule->command('db:backup')->dailyAt('02:30');
          $schedule->command('onec:inventory')->dailyAt("21:00");
          $schedule->command('onec:order')->dailyAt("21:05");
          $schedule->command('onec:receipt')->dailyAt("21:10");

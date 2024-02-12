@@ -92,6 +92,7 @@ class Product extends Model
         'return',
         'presale_id',
         'discount',
+        'discount_price',
         'hit',
         'new',
         'action',
@@ -151,13 +152,13 @@ class Product extends Model
 
         if ($dateDiscount){
             if ($dateDiscount->discount > 0){
-               return ($productPriceType->price / 100) * $dateDiscount->discount ;
+               return($productPriceType->price / 100) * $dateDiscount->discount ;
             }else{
                return $productPriceType->price - $dateDiscount->price;
             }
         }else{
             if ($discount > 0){
-                return ($productPriceType->price / 100) * $discount ;
+                return ($productPriceType->price / 100) * $discount  ;
             }else{
                 return 0;
             }

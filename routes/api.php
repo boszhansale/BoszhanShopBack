@@ -137,6 +137,7 @@ Route::middleware('auth:sanctum')->group(function (){
     });
     Route::prefix('report')->group(function (){
         Route::get('remains',[ReportController::class,'remains']);
+        Route::get('remains/print',[ReportController::class,'remainsPrint'])->withoutMiddleware('auth:sanctum');
         Route::get('discount-card',[ReportController::class,'discountCard']);
         Route::get('order',[ReportController::class,'order']);
         Route::get('inventor',[ReportController::class,'inventor']);

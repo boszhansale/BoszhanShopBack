@@ -15,6 +15,7 @@ use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\PriceType;
 use App\Models\Product;
+use App\Models\PromoCode;
 use App\Models\Store;
 use App\Models\StoreProductPromotion;
 use App\Models\User;
@@ -30,10 +31,10 @@ class OrderController extends Controller
 {
     public function index(OrderIndexRequest $request)
     {
-
+        //set time zone
         $orders = Order::query()
             ->where('orders.store_id',Auth::user()->store_id)
-            ->whereNotNull('check_number')
+//            ->whereNotNull('check_number')
             ->when($request->has('date_from'),function ($q){
                 $q->whereDate('created_at','>=',request('date_from'));
             })
@@ -43,10 +44,10 @@ class OrderController extends Controller
             ->when($request->has('search'),function ($q){
                 $q->where('orders.id','LIKE',request('search').'%');
             })
-            ->whereNotNull('check_number')
+//            ->whereNotNull('check_number')
             ->with(['products','products.product','store','organization','storage','counteragent','webkassaCheck'])
             ->latest()
-            ->get();
+            ->first();
         return response()->json($orders);
     }
 
@@ -66,6 +67,7 @@ class OrderController extends Controller
             })
             ->with(['products','products.product','store','organization','storage','counteragent','webkassaCheck'])
             ->whereNotNull('check_number')
+//            ->where('id',7545)
             ->latest()
             ->get();
         return response()->json($orders);
@@ -73,24 +75,30 @@ class OrderController extends Controller
 
     public function store(OrderStoreRequest $request)
     {
+        try {
         $data = [];
         $data['storage_id'] = Auth::user()->storage_id;
         $data['store_id'] = Auth::user()->store_id;
         $data['organization_id'] = Auth::user()->organization_id;
+        $data['discount_phone'] = $request->get('phone');
+        $data['params'] = array_merge($request->validated(),$data);
+
         $discountCard = null;
+        $promoCode = $request->has('phone') ? PromoCode::where('phone',$request->get('phone'))->whereDate('start','<=',now())->whereDate('end','>=',now())->first() : null;
         $store = Store::find($data['store_id']);
 
-        try {
+
             if (!$store) throw new("магазин не найден");
             if ($request->has('phone')){
                 $discountCard = DiscountCard::where('store_id',$data['store_id'])->where('phone',$request->get('phone'))->first();
-                if (!$discountCard) throw new Exception('Пользователь не найден');
+//                if (!$discountCard) throw new Exception('Пользователь не найден');
             }
             $order = Auth::user()->orders()->create(array_merge($request->validated(),$data));
             if ($request->has('products'))
             {
                 foreach ($request->get('products') as $item) {
                     $discount = 0;
+                    if ($promoCode) $discount = $promoCode->discount;
 
                     $product = Product::find($item['product_id']);
                     if (!$product) continue;
@@ -101,40 +109,44 @@ class OrderController extends Controller
                     if ($product->measure == 2){
                         $item['count'] = round( $item['count'] ,3 );
                     }
-                    //временный скидка
-                    $dateDiscount = StoreProductPromotion::query()
-                        ->whereDate('date_from','<=',now())
-                        ->whereDate('date_to','>=',now())
-                        ->where('store_id',$store->id)
-                        ->where('online_sale',$request->get('online_sale'))
-                        ->where('product_id',$product->id)
-                        ->first();
+//                    //временный скидка
+//                    $dateDiscount = StoreProductPromotion::query()
+//                        ->whereDate('date_from','<=',now())
+//                        ->whereDate('date_to','>=',now())
+//                        ->where('store_id',$store->id)
+//                        ->where('online_sale',$request->get('online_sale'))
+//                        ->where('product_id',$product->id)
+//                        ->first();
 
-                    if ($dateDiscount){
-                        if ($dateDiscount->discount > 0){
-                            $item['discount_price'] = ($productPriceType->price / 100) * $dateDiscount->discount ;
-                            $item['price'] = $productPriceType->price -  $item['discount_price'] ;
-                        }else{
-                            $item['price'] = $dateDiscount->price;
-                        }
-                    }else{
+//                    if ($dateDiscount){
+//                        if ($dateDiscount->discount > 0){
+//                            $item['discount_price'] = ($productPriceType->price / 100) * $dateDiscount->discount ;
+//                            $item['price'] = $productPriceType->price -  $item['discount_price'] ;
+//                        }else{
+//                            $item['price'] = $dateDiscount->price;
+//                        }
+//                    }else{
                         $item['discount_price'] = 0;
                         if ($discount > 0){
-                            $item['discount_price'] = ($productPriceType->price / 100) * $discount ;
-                            $item['price'] = $productPriceType->price -  $item['discount_price'] ;
+                            $item['discount_price'] = ceil(($productPriceType->price / 100) * $discount) ;
+                            $item['price'] = ceil( $productPriceType->price -  $item['discount_price']) ;
                         }else{
                             $item['price'] = $productPriceType->price ;
                         }
-                    }
+//                    }
 
                     //скидка дисконта
                     if ($discountCard){
-                        $discountPrice = ( $item['price'] / 100) * $discountCard->discount;
+                        $discountPrice = ceil( ( $item['price'] / 100) * $discountCard->discount);
 
                         $item['price'] = $item['price'] - $discountPrice;
                         $item['discount_price'] = $item['discount_price'] + $discountPrice;
                     }
                     $item['all_price'] = $item['count'] * $item['price'];
+
+
+
+
                     //скидка на 5тую позицию
                     if ($store->discount_position AND $product->measure == 1){
                         $item['count'] += floor( $item['count'] / 4);

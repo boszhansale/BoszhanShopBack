@@ -58,10 +58,10 @@ class ProductController extends Controller
                         ->orWhere('product_barcodes.barcode', 'LIKE', $searchTerm);
                 });
             })
-            ->when($request->get('remainder') == 'false', function ($query) {
-            },function ($query) {
-                return $query->where('products.remainder', '>', 0);
-            })
+//            ->when($request->get('remainder') == 'false', function ($query) {
+//            },function ($query) {
+//                return $query->where('products.remainder', '>', 0);
+//            })
             ->when($request->has('id'), function ($query) {
                 return $query->where('products.id', request('id'));
             })

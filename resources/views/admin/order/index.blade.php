@@ -4,5 +4,5 @@
 @section('content-header-right')
 @endsection
 @section('content')
-    @livewire('admin.order-index',['userId' => $userId,'storeId' => $storeId,'counteragentId'=> $counteragentId])
+    @livewire('admin.order-index',['userId' => $userId,'storeId' => $storeId,'counteragentId'=> $counteragentId,'discountPhone' => $discountPhone,'start_created_at' => $startCreatedAt,'end_created_at' => $endCreatedAt])
 @endsection

@@ -24,7 +24,7 @@ class ProductStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'article' => 'unique:products',
+            'article' => 'unique:products,article',
             'category_id' => '',
             'id_1c' => '',
             'measure' => '',

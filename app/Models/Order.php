@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -83,7 +85,6 @@ class Order extends Model implements Auditable
 {
     use HasFactory,SoftDeletes,\OwenIt\Auditing\Auditable;
 
-
     protected $fillable = [
         'id',
         'counteragent_id',
@@ -110,13 +111,16 @@ class Order extends Model implements Auditable
         'check_status',
         'check_number',
         'total_discount_price',
-        'give_price'
+        'give_price',
+        'params'
     ];
 
 
     protected $casts = [
         'product_history' => 'array',
-        'payments' => 'array'
+        'payments' => 'array',
+        'created_at' => 'datetime:d.m.Y H:i',
+        'params' => 'object'
     ];
 
     public function user(): BelongsTo
@@ -169,4 +173,17 @@ class Order extends Model implements Auditable
 //            5  => 'излишка',
 //        };
     }
+
+//    protected function createdAt(): Attribute
+//    {
+//        return Attribute::make(
+//            get: fn($value) => Carbon::parse($value)->format('d.m.Y H:i'),
+//        );
+//    }
+//    protected function deletedAt(): Attribute
+//    {
+//        return Attribute::make(
+//            get: fn($value) => \Illuminate\Support\Carbon::parse($value)->format('d.m.Y H:i'),
+//        );
+//    }
 }

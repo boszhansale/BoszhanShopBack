@@ -27,9 +27,10 @@ class ProductImport extends Command
      */
     public function handle()
     {
-        foreach (\DB::connection('boszhan')->table('products')->get() as $product) {
+        $products = \DB::connection('boszhan')->table('products')->whereBetween('id',[2717,2743])->get();
+        foreach ($products as $product) {
             Product::updateOrCreate(
-                ['id' => $product->id],
+                ['article' => $product->article],
                 [
                     'id' => $product->id,
                     'name' => $product->name,
@@ -38,7 +39,7 @@ class ProductImport extends Command
                     'article' => $product->article,
                     'measure' => $product->measure,
                     'barcode' => $product->barcode,
-                    'remainder' => $product->remainder,
+                    'remainder' => 0,
                     'enabled' => $product->enabled,
                     'purchase' => $product->purchase,
                     'return' => $product->return,

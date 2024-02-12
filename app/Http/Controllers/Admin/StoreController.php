@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreStoreRequest;
+use App\Http\Requests\Admin\StoreUpdateRequest;
 use App\Models\Counteragent;
 use App\Models\Report;
 use App\Models\Store;
@@ -49,13 +50,16 @@ class StoreController extends Controller
         return view('admin.store.edit', compact('users','store', 'counteragents'));
     }
 
-    public function update(Request $request, Store $store)
+    public function update(StoreUpdateRequest $request, Store $store)
     {
 
         if (\Auth::id() != 1)
         {
             return back();
         }
+        $store->update($request->validated());
+
+
         return redirect()->back();
     }
 

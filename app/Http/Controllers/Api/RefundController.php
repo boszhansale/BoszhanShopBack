@@ -24,6 +24,8 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 //Возврат от покупателя
 class RefundController extends Controller
 {
@@ -39,7 +41,7 @@ class RefundController extends Controller
             ->when($request->has('date_to'),function ($q){
                 $q->whereDate('created_at','<=',request('date_to'));
             })
-            ->get();
+             ->get();
         return response()->json($refunds);
     }
 
@@ -68,14 +70,16 @@ class RefundController extends Controller
         $data['store_id'] = Auth::user()->store_id;
         $data['organization_id'] = Auth::user()->organization_id;
         $data['ticket_print_url'] = null;
-
+        DB::beginTransaction();
         try {
 
            $refund =  $refundStoreAction->execute(array_merge($request->validated(),$data),$order);
 //            WebKassaService::checkRefund($refund);
+            DB::commit();
             return response()->json($refund);
         }catch (\Exception $exception)
         {
+            DB::rollBack();
             return response()->json(['message' => $exception->getMessage()],400);
         }
 

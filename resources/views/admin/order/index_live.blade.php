@@ -90,13 +90,8 @@
                 </thead>
                 <tbody>
                 @foreach($orders as $order)
-                    @if($order->deleted_at)
-                        <tr class="bg-red">
-                    @elseif($order->removed_at)
-                        <tr class="bg-black">
-                    @else
+
                         <tr>
-                            @endif
                             <td>{{$order->id}}
                             </td>
                             <td class="project-actions text-left">
