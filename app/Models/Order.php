@@ -114,7 +114,7 @@ class Order extends Model implements Auditable
         'give_price',
         'params'
     ];
-
+    public $timestamps = false;
 
     protected $casts = [
         'product_history' => 'array',

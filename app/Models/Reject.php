@@ -67,6 +67,10 @@ class Reject extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+    protected $casts = [
+        'created_at' => 'datetime:d.m.Y H:i',
+    ];
 
     protected $fillable = [
         'id',
@@ -121,5 +125,9 @@ class Reject extends Model
         return Attribute::make(
             get: fn($value) => Carbon::parse($value)->format('d.m.Y H:i'),
         );
+    }
+    public function getDate():string
+    {
+        return Carbon::parse($this->created_at)->format('Y-m-d');
     }
 }

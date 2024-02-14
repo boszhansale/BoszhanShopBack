@@ -46,7 +46,7 @@ class InventoryStoreAction
             $receiptData['organization_id'] = Auth::user()->organization_id;
             $receiptData['operation'] = 2;
             $receiptData['inventory_id'] = $inventory->id;
-            $receiptData['description'] = "На основании инвентаризации №$inventory->id от ".$inventory->created_at->format('d.m.Y');
+            $receiptData['description'] = "На основании инвентаризации №$inventory->id от ".$inventory->created_at;
 
 //            $receiptStoreAction->execute($receiptData);
 
@@ -57,7 +57,7 @@ class InventoryStoreAction
             $receiptData['store_id'] = Auth::user()->store_id;
             $receiptData['organization_id'] = Auth::user()->organization_id;
             $receiptData['inventory_id'] = $inventory->id;
-            $receiptData['description'] = "На основании инвентаризации №$inventory->id от ".$inventory->created_at->format('d.m.Y');
+            $receiptData['description'] = "На основании инвентаризации №$inventory->id от ".$inventory->created_at;
 //            $rejectStoreAction->execute($receiptData);
         }
     }

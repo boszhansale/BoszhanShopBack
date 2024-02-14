@@ -66,7 +66,11 @@ class Moving extends Model
         1 => 'с склада',//in shop out storage
         2 => 'на склад'// in storage out shop
     ];
+    public $timestamps = false;
 
+    protected $casts = [
+        'created_at' => 'datetime:d.m.Y H:i',
+    ];
 
     public function products(): HasMany
     {
@@ -87,11 +91,5 @@ class Moving extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-    protected function createdAt(): Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => Carbon::parse($value)->format('d.m.Y H:i'),
-        );
     }
 }

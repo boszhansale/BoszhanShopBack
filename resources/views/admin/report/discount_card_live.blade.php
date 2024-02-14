@@ -28,7 +28,7 @@
                                 {{ $report->id}}
                             </a>
                         </td>
-                        <td>{{$report->created_at->format('d.m.Y')}}</td>
+                        <td>{{$report->getDate()}}</td>
                         <td>{{$report->total_price}}</td>
                         <td>{{$report->total_discount_price}}</td>
 

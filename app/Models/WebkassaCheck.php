@@ -69,9 +69,11 @@ class WebkassaCheck extends Model
         'refund_producer_id'
     ];
 
+    public $timestamps = false;
     protected $casts = [
         'params' => 'object',
-        'data' => 'object'
+        'data' => 'object',
+        'created_at' => 'datetime:d.m.Y H:i',
     ];
     public const  PAYMENT_TYPES = [
        0 => 'нал',
@@ -100,12 +102,6 @@ class WebkassaCheck extends Model
     public function receipt(): BelongsTo
     {
         return $this->belongsTo(Receipt::class);
-    }
-    protected function createdAt(): Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => Carbon::parse($value)->format('d.m.Y H:i'),
-        );
     }
 
 }

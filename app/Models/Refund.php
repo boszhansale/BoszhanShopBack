@@ -73,6 +73,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Refund extends Model
 {
     use HasFactory,SoftDeletes;
+    public $timestamps = false;
 
     protected $fillable = [
         'id',
@@ -98,7 +99,8 @@ class Refund extends Model
     ];
 
     protected $casts = [
-      'payments' => 'array'
+      'payments' => 'array',
+        'created_at' => 'datetime:d.m.Y H:i',
     ];
     public function counteragent(): BelongsTo
     {
@@ -130,11 +132,5 @@ class Refund extends Model
             1 => 'День в день',
             2 => 'Не день в день'
         };
-    }
-    protected function createdAt(): Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => Carbon::parse($value)->format('d.m.Y H:i'),
-        );
     }
 }

@@ -32,6 +32,11 @@ use Illuminate\Database\Eloquent\Model;
 class DiscountCard extends Model
 {
     use HasFactory;
+    public $timestamps = false;
+
+    protected $casts = [
+        'created_at' => 'datetime:d.m.Y H:i',
+    ];
 
     protected $fillable = ['store_id','discount','phone','cashback','cashback_total_price'];
 }

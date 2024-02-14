@@ -2,7 +2,7 @@
 <REJECT>
     <DOCUMENTNAME>720</DOCUMENTNAME>
     <NUMBER>{{ $reject->id  }}-0800{{  now()->year  }}-{{  substr($reject->user->id_1c,-4)  }}-{{  $reject->payment_type  }}</NUMBER>
-    <DATE>{{ $reject->created_at->format('Y-m-d')  }}</DATE>
+    <DATE>{{ $reject->getDate()  }}</DATE>
     <DELIVERYDATE>{{ now()->format('Y-m-d') }}</DELIVERYDATE>
     <MANAGER>{{  config('app.driver_id_onec')  }}</MANAGER>
     <DRIVER>{{$reject->user->id_1c}}</DRIVER>

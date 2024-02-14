@@ -10,6 +10,11 @@ class PromoCode extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+    protected $casts = [
+        'created_at' => 'datetime:d.m.Y H:i',
+    ];
+
     protected $fillable = [
         'name',
         'phone',

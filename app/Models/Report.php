@@ -12,6 +12,9 @@ class Report extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
+
     protected $fillable = [
         'name',
         'body',
@@ -20,7 +23,8 @@ class Report extends Model
     ];
 
     protected $casts = [
-        'body'=> 'array'
+        'body'=> 'array',
+        'created_at' => 'datetime:d.m.Y H:i',
     ];
 
     public function user(): BelongsTo
@@ -32,10 +36,12 @@ class Report extends Model
     {
         return $this->belongsTo(Store::class);
     }
-    protected function createdAt(): Attribute
+    public function getDate(): string
     {
-        return Attribute::make(
-            get: fn($value) => Carbon::parse($value)->format('d.m.Y H:i'),
-        );
+        return Carbon::parse($this->created_at)->format('Y-m-d');
+    }
+    public function getTime():string
+    {
+        return Carbon::parse($this->created_at)->format('H:i');
     }
 }

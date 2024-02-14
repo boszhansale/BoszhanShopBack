@@ -24,8 +24,8 @@
                 @foreach($reports as $report)
                     <tr>
                         <td>{{$report->id}}</td>
-                        <td>{{$report->created_at->format('Y-m-d')}}</td>
-                        <td>{{$report->created_at->format('H:i')}}</td>
+                        <td>{{$report->getDate()}}</td>
+                        <td>{{$report->getTime()}}</td>
                         <td  class="project-actions text-right">
                             <a class="btn btn-primary btn-sm" href="{{route('admin.store.z-report-show',$report->id)}}" target="_blank">
                                 <i class="fas fa-folder">

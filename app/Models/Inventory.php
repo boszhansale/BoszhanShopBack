@@ -35,7 +35,10 @@ class Inventory extends Model
     use HasFactory;
 
     protected $fillable = ['store_id','id','created_at','user_id','status'];
-
+    public $timestamps = false;
+    protected $casts = [
+        'created_at' => 'datetime:d.m.Y H:i',
+    ];
     public function products(): HasMany
     {
         return $this->hasMany(InventoryProduct::class);
@@ -48,11 +51,5 @@ class Inventory extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-    protected function createdAt(): Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => Carbon::parse($value)->format('d.m.Y H:i'),
-        );
     }
 }

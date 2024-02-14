@@ -20,7 +20,7 @@ class MovingController extends Controller
     public function index(MovingIndexRequest $request)
     {
         $movings = Moving::query()
-            ->where('movings.user_id',Auth::id())
+//            ->where('movings.user_id',Auth::id())
             ->when($request->has('date_from'),function ($q){
                 $q->whereDate('created_at','>=',request('date_from'));
             })
@@ -28,6 +28,7 @@ class MovingController extends Controller
                 $q->whereDate('created_at','<=',request('date_to'));
             })
             ->with(['products','products.product','store'])
+            ->where('id',687)
             ->latest()
             ->get();
         return response()->json($movings);

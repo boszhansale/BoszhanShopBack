@@ -76,6 +76,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Receipt extends Model
 {
     use HasFactory,SoftDeletes;
+    public $timestamps = false;
+    protected $casts =  [
+        'created_at' => 'datetime:d.m.Y H:i',
+    ];
     protected $fillable = [
         'id',
         'organization_id',
@@ -130,12 +134,6 @@ class Receipt extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-    protected function createdAt(): Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => Carbon::parse($value)->format('d.m.Y H:i'),
-        );
     }
 
 }
