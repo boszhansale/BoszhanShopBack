@@ -23,6 +23,9 @@ class InventoryStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'date' => 'date_format:Y-m-d',
+            'time' => 'date_format:H:i:s',
+
             'products' => 'required|array|min:1',
             'products.*.product_id' => 'required|exists:products,id',
 

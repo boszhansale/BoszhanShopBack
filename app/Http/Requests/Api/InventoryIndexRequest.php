@@ -5,7 +5,7 @@ namespace App\Http\Requests\Api;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class ReportProductRequest extends FormRequest
+class InventoryIndexRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,13 +23,14 @@ class ReportProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'date' => ['required','date','date_format:Y-m-d'],
-            'time' => ['required'],
+            'date' => 'date_format:Y-m-d',
+            'time' => 'date_format:H:i:s',
         ];
     }
     public function messages()
     {
         return [
+            'login.exists' => 'неверный логин',
         ];
     }
 

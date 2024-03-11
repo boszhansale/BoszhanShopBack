@@ -45,10 +45,11 @@ class ReportController extends Controller
                 DB::raw('COALESCE(moving_to.sum_count, 0) AS moving_to'),
                 DB::raw('COALESCE(receipt.sum_count, 0) AS receipt'),
                 DB::raw('COALESCE(orderProduct.sum_count, 0) AS sale'),
-                DB::raw('COALESCE(refund.sum_count, 0) AS refund'),
+//                DB::raw('COALESCE(refund.sum_count, 0) AS refund'),
                 DB::raw('COALESCE(refund_producer.sum_count, 0) AS refund_producer'),
                 DB::raw('COALESCE(reject.sum_count, 0) AS reject'),
-                DB::raw('COALESCE(receipt.sum_count, 0) + COALESCE(moving_from.sum_count, 0) + COALESCE(refund.sum_count, 0) - COALESCE(orderProduct.sum_count, 0) - COALESCE(refund_producer.sum_count, 0) - COALESCE(moving_to.sum_count, 0)  - COALESCE(reject.sum_count, 0) AS remains')
+//                DB::raw('COALESCE(receipt.sum_count, 0) + COALESCE(moving_from.sum_count, 0) + COALESCE(refund.sum_count, 0) - COALESCE(orderProduct.sum_count, 0) - COALESCE(refund_producer.sum_count, 0) - COALESCE(moving_to.sum_count, 0)  - COALESCE(reject.sum_count, 0) AS remains')
+                DB::raw('COALESCE(receipt.sum_count, 0) + COALESCE(moving_from.sum_count, 0) - COALESCE(orderProduct.sum_count, 0) - COALESCE(refund_producer.sum_count, 0) - COALESCE(moving_to.sum_count, 0)  - COALESCE(reject.sum_count, 0) AS remains')
             )
             ->leftJoin(
                 DB::raw("(SELECT moving_products.product_id, SUM(moving_products.count) AS sum_count
@@ -306,9 +307,15 @@ class ReportController extends Controller
         $products = Product::query()
             ->join('receipt_products','receipt_products.product_id','products.id')
             ->join('receipts','receipts.id','receipt_products.receipt_id')
-            ->where('receipts.user_id',Auth::id())
-            ->whereDate('receipts.created_at','>=',$request->get('date_from'))
-            ->whereDate('receipts.created_at','<=',$request->get('date_to'))
+            ->where('receipts.store_id',Auth::user()->store_id)
+
+            ->where(function ($qq){
+                $qq->whereDate('receipts.created_at', '<', request('date'))
+                    ->orWhere(function ($q) {
+                        $q->whereDate('receipts.created_at', request('date') )->whereTime('receipts.created_at','<',request('time'));
+                    });
+            })
+
             ->select('products.*')
             ->groupBy('products.id')
             ->get();
@@ -317,15 +324,19 @@ class ReportController extends Controller
             $item = [];
 
             $item['product_name'] = $product->name;
-            $item['remains_start'] =(float)  $product->remainsDateTo($request->get('date_from'));
-            $item['remains_end'] = (float)$product->remainsDateTo($request->get('date_to'));
+            $item['remains_start'] =(float)  $product->remainsDateFrom($request->get('date'));
+            $item['remains_end'] = (float)$product->remainsDateTo($request->get('date'));
             $item['receipt'] = (float)Product::query()
                 ->where('products.id',$product->id)
                 ->join('receipt_products','receipt_products.product_id','products.id')
                 ->join('receipts','receipts.id','receipt_products.receipt_id')
-                ->where('receipts.user_id',Auth::id())
-                ->whereDate('receipts.created_at','>=',$request->get('date_from'))
-                ->whereDate('receipts.created_at','<=',$request->get('date_to'))
+                ->where('receipts.store_id',Auth::user()->store_id)
+                ->where(function ($qq){
+                    $qq->whereDate('receipts.created_at', '<', request('date'))
+                        ->orWhere(function ($q) {
+                            $q->whereDate('receipts.created_at', request('date') )->whereTime('receipts.created_at','<',request('time'));
+                        });
+                })
                 ->where('operation',1)
                 ->where('source',1)
                 ->sum('count') ?? 0;
@@ -334,18 +345,26 @@ class ReportController extends Controller
                 ->where('products.id',$product->id)
                 ->join('receipt_products','receipt_products.product_id','products.id')
                 ->join('receipts','receipts.id','receipt_products.receipt_id')
-                ->where('receipts.user_id',Auth::id())
-                ->whereDate('receipts.created_at','>=',$request->get('date_from'))
-                ->whereDate('receipts.created_at','<=',$request->get('date_to'))
+                ->where('receipts.store_id',Auth::user()->store_id)
+                ->where(function ($qq){
+                    $qq->whereDate('receipts.created_at', '<', request('date'))
+                        ->orWhere(function ($q) {
+                            $q->whereDate('receipts.created_at', request('date') )->whereTime('receipts.created_at','<',request('time'));
+                        });
+                })
                 ->sum('count') ?? 0;
 
             $item['refund'] = (float)Product::query()
                 ->where('products.id',$product->id)
                 ->join('refund_products','refund_products.product_id','products.id')
                 ->join('refunds','refunds.id','refund_products.refund_id')
-                ->where('refunds.user_id',Auth::id())
-                ->whereDate('refunds.created_at','>=',$request->get('date_from'))
-                ->whereDate('refunds.created_at','<=',$request->get('date_to'))
+                ->where('refunds.store_id',Auth::user()->store_id)
+                ->where(function ($qq){
+                    $qq->whereDate('refunds.created_at', '<', request('date'))
+                        ->orWhere(function ($q) {
+                            $q->whereDate('refunds.created_at', request('date') )->whereTime('refunds.created_at','<',request('time'));
+                        });
+                })
                 ->sum('count') ?? 0;
 
 
@@ -353,45 +372,66 @@ class ReportController extends Controller
                 ->where('products.id',$product->id)
                 ->join('refund_producer_products','refund_producer_products.product_id','products.id')
                 ->join('refund_producers','refund_producers.id','refund_producer_products.refund_producer_id')
-                ->where('refund_producers.user_id',Auth::id())
-                ->whereDate('refund_producers.created_at','>=',$request->get('date_from'))
-                ->whereDate('refund_producers.created_at','<=',$request->get('date_to'))
+                ->where('refund_producers.store_id',Auth::user()->store_id)
+                ->where(function ($qq){
+                    $qq->whereDate('refund_producers.created_at', '<', request('date'))
+                        ->orWhere(function ($q) {
+                            $q->whereDate('refund_producers.created_at', request('date') )->whereTime('refund_producers.created_at','<',request('time'));
+                        });
+                })
                 ->sum('count') ?? 0;
 
             $item['order'] = (float)Product::query()
                 ->where('products.id',$product->id)
                 ->join('order_products','order_products.product_id','products.id')
                 ->join('orders','orders.id','order_products.order_id')
-                ->where('orders.user_id',Auth::id())
-                ->whereDate('orders.created_at','>=',$request->get('date_from'))
-                ->whereDate('orders.created_at','<=',$request->get('date_to'))
+                ->where('orders.store_id',Auth::user()->store_id)
+                ->where(function ($qq){
+                    $qq->whereDate('orders.created_at', '<', request('date'))
+                        ->orWhere(function ($q) {
+                            $q->whereDate('orders.created_at', request('date') )->whereTime('orders.created_at','<',request('time'));
+                        });
+                })
                 ->sum('count') ?? 0;
 
             $item['moving_from'] =(float) Product::query()
                 ->where('products.id',$product->id)
                 ->join('moving_products','moving_products.product_id','products.id')
                 ->join('movings','movings.id','moving_products.moving_id')
-                ->where('movings.user_id',Auth::id())
+                ->where('movings.store_id',Auth::user()->store_id)
                 ->where('movings.operation',1)
-                ->whereDate('movings.created_at','>=',$request->get('date_from'))
-                ->whereDate('movings.created_at','<=',$request->get('date_to'))
+                ->where(function ($qq){
+                    $qq->whereDate('movings.created_at', '<', request('date'))
+                        ->orWhere(function ($q) {
+                            $q->whereDate('movings.created_at', request('date') )->whereTime('movings.created_at','<',request('time'));
+                        });
+                })
                 ->sum('count') ?? 0;
+
             $item['moving_to'] = (float)Product::query()
                 ->where('products.id',$product->id)
                 ->join('moving_products','moving_products.product_id','products.id')
                 ->join('movings','movings.id','moving_products.moving_id')
-                ->where('movings.user_id',Auth::id())
+                ->where('movings.store_id',Auth::user()->store_id)
                 ->where('movings.operation',2)
-                ->whereDate('movings.created_at','>=',$request->get('date_from'))
-                ->whereDate('movings.created_at','<=',$request->get('date_to'))
+                ->where(function ($qq){
+                    $qq->whereDate('movings.created_at', '<', request('date'))
+                        ->orWhere(function ($q) {
+                            $q->whereDate('movings.created_at', request('date') )->whereTime('movings.created_at','<',request('time'));
+                        });
+                })
                 ->sum('count') ?? 0;
             $item['overage'] = (float)Product::query()
                 ->where('products.id',$product->id)
                 ->join('inventory_products','inventory_products.product_id','products.id')
                 ->join('inventories','inventories.id','inventory_products.inventory_id')
-                ->where('inventories.user_id',Auth::id())
-                ->whereDate('inventories.created_at','>=',$request->get('date_from'))
-                ->whereDate('inventories.created_at','<=',$request->get('date_to'))
+                ->where('inventories.store_id',Auth::user()->store_id)
+                ->where(function ($qq){
+                    $qq->whereDate('inventories.created_at', '<', request('date'))
+                        ->orWhere(function ($q) {
+                            $q->whereDate('inventories.created_at', request('date') )->whereTime('inventories.created_at','<',request('time'));
+                        });
+                })
                 ->latest('inventories.created_at')
                 ->first()?->overage ?? 0;
 
@@ -399,10 +439,14 @@ class ReportController extends Controller
                 ->where('products.id',$product->id)
                 ->join('reject_products','reject_products.product_id','products.id')
                 ->join('rejects','rejects.id','reject_products.reject_id')
-                ->where('rejects.user_id',Auth::id())
+                ->where('rejects.store_id',Auth::user()->store_id)
                 ->where('rejects.source',1)
-                ->whereDate('rejects.created_at','>=',$request->get('date_from'))
-                ->whereDate('rejects.created_at','<=',$request->get('date_to'))
+                ->where(function ($qq){
+                    $qq->whereDate('rejects.created_at', '<', request('date'))
+                        ->orWhere(function ($q) {
+                            $q->whereDate('rejects.created_at', request('date') )->whereTime('rejects.created_at','<',request('time'));
+                        });
+                })
                 ->sum('count') ?? 0;;
 
             $item['reject_all'] =    (float) $item['reject'] + $item['refund_producer'] + $item['order'] + $item['moving_to'];

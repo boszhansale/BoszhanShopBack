@@ -18,7 +18,8 @@ class DiscountCardController extends Controller
     public function index($storeId)
     {
         $discountCards = DiscountCard::where('store_id',$storeId)->latest()->get();
-        return view('admin.discountCard.index', compact('storeId','discountCards'));
+        $store = Store::find($storeId);
+        return view('admin.discountCard.index', compact('storeId','discountCards','store'));
     }
 
     public function create($storeId)
@@ -65,6 +66,16 @@ class DiscountCardController extends Controller
     public function delete(DiscountCard $discountCard)
     {
         $discountCard->delete();
+        return redirect()->back();
+    }
+    public function active(DiscountCard $discountCard)
+    {
+        if  ($discountCard->active == 1){
+            $discountCard->active = 0;
+        }else{
+            $discountCard->active = 1;
+        }
+        $discountCard->save();
         return redirect()->back();
     }
 

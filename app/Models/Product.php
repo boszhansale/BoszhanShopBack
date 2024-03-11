@@ -168,27 +168,66 @@ class Product extends Model
     }
 
     //ostatki
-    public function remainsDateTo($date)
+    public function remainsDateFrom($date)
     {
         $receiptProductCount = $this->join('receipt_products','receipt_products.product_id','products.id')
             ->join('receipts','receipts.id','receipt_products.receipt_id')
-            ->where('receipts.user_id',Auth::id())
-            ->whereDate('receipts.created_at','<=',$date)
+            ->where('receipts.store_id',Auth::user()->store_id)
+            ->where('receipt_products.product_id',$this->id)
+            ->whereNull('receipts.refund_id')
+            ->whereDate('receipts.created_at','<',$date)
             ->select('products.*')
             ->sum('count') ?? 0;
 
         $orderProductCount = $this->join('order_products','order_products.product_id','products.id')
             ->join('orders','orders.id','order_products.order_id')
-            ->where('orders.user_id',Auth::id())
-            ->whereDate('orders.created_at','<=',$date)
+            ->where('orders.store_id',Auth::user()->store_id)
+            ->where('order_products.product_id',$this->id)
+            ->whereNotNull('orders.check_number')
+            ->whereDate('orders.created_at','<',$date)
             ->select('products.*')
             ->sum('count') ?? 0;
 
         $movingProductCount = $this->join('moving_products','moving_products.product_id','products.id')
             ->join('movings','movings.id','moving_products.moving_id')
-            ->where('movings.user_id',Auth::id())
+            ->where('movings.store_id',Auth::user()->store_id)
+            ->where('moving_products.product_id',$this->id)
             ->where('movings.operation',1)
-            ->whereDate('movings.created_at','<=',$date)
+            ->whereDate('movings.created_at','<',$date)
+            ->select('products.*')
+            ->sum('count') ?? 0;
+
+
+        return $receiptProductCount - $orderProductCount - $movingProductCount;
+
+
+    }
+    public function remainsDateTo($date)
+    {
+        $receiptProductCount = $this->join('receipt_products','receipt_products.product_id','products.id')
+            ->join('receipts','receipts.id','receipt_products.receipt_id')
+            ->where('receipts.store_id',Auth::user()->store_id)
+            ->where('receipt_products.product_id',$this->id)
+            ->whereNull('receipts.refund_id')
+            ->whereDate('receipts.created_at','>=',$date)
+            ->select('products.*')
+            ->sum('count') ?? 0;
+
+        $orderProductCount = $this->join('order_products','order_products.product_id','products.id')
+            ->join('orders','orders.id','order_products.order_id')
+            ->where('orders.store_id',Auth::user()->store_id)
+            ->where('order_products.product_id',$this->id)
+            ->whereNotNull('orders.check_number')
+            ->whereDate('orders.created_at','>=',$date)
+            ->select('products.*')
+            ->sum('count') ?? 0;
+
+        $movingProductCount = $this->join('moving_products','moving_products.product_id','products.id')
+            ->join('movings','movings.id','moving_products.moving_id')
+            ->where('movings.store_id',Auth::user()->store_id)
+            ->where('moving_products.product_id',$this->id)
+            ->where('movings.operation',1)
+            ->whereDate('movings.created_at','>=',$date)
             ->select('products.*')
             ->sum('count') ?? 0;
 

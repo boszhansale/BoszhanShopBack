@@ -128,6 +128,7 @@ Route::middleware('auth:sanctum')->group(function (){
     });
     Route::prefix('inventory')->group(function (){
         Route::get('/',[InventoryController::class,'index']);
+        Route::get('/test',[InventoryController::class,'_index']);
         Route::post('/',[InventoryController::class,'store']);
         Route::post('active/{inventory}',[InventoryController::class,'active']);
         Route::post('update-product/{inventory}',[InventoryController::class,'update']);

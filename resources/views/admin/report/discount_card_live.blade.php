@@ -18,6 +18,7 @@
                     <th>Дата</th>
                     <th>Сумма</th>
                     <th>Сумма скидки</th>
+{{--                    <th>активность</th>--}}
                 </tr>
                 </thead>
                 <tbody>
@@ -31,6 +32,7 @@
                         <td>{{$report->getDate()}}</td>
                         <td>{{$report->total_price}}</td>
                         <td>{{$report->total_discount_price}}</td>
+{{--                        <td>{{$report->active}}</td>--}}
 
 
                     </tr>

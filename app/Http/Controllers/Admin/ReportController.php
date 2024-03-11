@@ -101,9 +101,9 @@ class ReportController extends Controller
                     "GROUP BY order_products.product_id) AS orderProduct"),
                 'orderProduct.product_id', '=', 'products.id'
             )
-            ->orderBy('products.name')
+            ->orderBy('remains', 'desc')
             ->groupBy('products.id')
-            ->having('remains', '>', 0)
+            ->having('remains', '<>', 0)
             ->get();
 
         return Excel::download(new RemainExcelExport($remains), 'remains.xlsx');

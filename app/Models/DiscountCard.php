@@ -38,5 +38,5 @@ class DiscountCard extends Model
         'created_at' => 'datetime:d.m.Y H:i',
     ];
 
-    protected $fillable = ['store_id','discount','phone','cashback','cashback_total_price'];
+    protected $fillable = ['store_id','discount','phone','cashback','cashback_total_price','active'];
 }

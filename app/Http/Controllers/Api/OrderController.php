@@ -90,8 +90,8 @@ class OrderController extends Controller
 
             if (!$store) throw new("магазин не найден");
             if ($request->has('phone')){
-                $discountCard = DiscountCard::where('store_id',$data['store_id'])->where('phone',$request->get('phone'))->first();
-//                if (!$discountCard) throw new Exception('Пользователь не найден');
+                $discountCard = DiscountCard::where('store_id',$data['store_id'])->where('active',1)->where('phone',$request->get('phone'))->first();
+                if (!$discountCard AND !$promoCode) throw new Exception('Пользователь не найден');
             }
             $order = Auth::user()->orders()->create(array_merge($request->validated(),$data));
             if ($request->has('products'))

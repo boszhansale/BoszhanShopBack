@@ -6,11 +6,13 @@ use App\Actions\ReceiptStoreAction;
 use App\Actions\RejectStoreAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\InventoryAddReceiptRequest;
+use App\Http\Requests\Api\InventoryIndexRequest;
 use App\Http\Requests\Api\InventoryStoreRequest;
 use App\Http\Requests\Api\ProductIndexRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Counteragent;
 use App\Models\Inventory;
+use App\Models\Moving;
 use App\Models\Product;
 use App\Models\ProductPriceType;
 use App\Models\ReceiptProduct;
@@ -23,14 +25,15 @@ use Illuminate\Support\Facades\Auth;
 
 class InventoryController extends Controller
 {
-    public function index()
+    public function _index(Request $request)
     {
+
         $storeId = Auth::user()->store_id;
         //приход - расход
         // поступления +  перемешение с склада + возврат от клиента  - продажа  - возврат поставщику  - перемешеие на склад = остаток
 
         $result = DB::table('products')
-            ->select('products.name', 'products.id AS product_id','id_1c','measure','article',
+            ->select('products.name', 'products.id AS product_id', 'id_1c', 'measure', 'article',
                 DB::raw('COALESCE(moving_from.sum_count, 0) AS moving_from'),
                 DB::raw('COALESCE(moving_to.sum_count, 0) AS moving_to'),
                 DB::raw('COALESCE(receipt.sum_count, 0) AS receipt'),
@@ -41,7 +44,7 @@ class InventoryController extends Controller
 
 
 //                DB::raw('COALESCE(receipt.sum_count, 0) + COALESCE(moving_from.sum_count, 0) +  COALESCE(refund.sum_count, 0) - COALESCE(orderProduct.sum_count, 0) - COALESCE(refund_producer.sum_count, 0) - COALESCE(moving_to.sum_count, 0)  - COALESCE(reject.sum_count, 0) AS remains' )
-                DB::raw('COALESCE(receipt.sum_count, 0) + COALESCE(moving_from.sum_count, 0)  - COALESCE(orderProduct.sum_count, 0) - COALESCE(refund_producer.sum_count, 0) - COALESCE(moving_to.sum_count, 0)  - COALESCE(reject.sum_count, 0) AS remains' )
+                DB::raw('COALESCE(receipt.sum_count, 0) + COALESCE(moving_from.sum_count, 0)  - COALESCE(orderProduct.sum_count, 0) - COALESCE(refund_producer.sum_count, 0) - COALESCE(moving_to.sum_count, 0)  - COALESCE(reject.sum_count, 0) AS remains')
             )
             ->leftJoin(
                 DB::raw("(SELECT moving_products.product_id, SUM(moving_products.count) AS sum_count
@@ -109,10 +112,197 @@ class InventoryController extends Controller
 
         return response()->json($result);
     }
+    public function index(InventoryIndexRequest $request)
+    {
+        //приход - расход
+        // поступления +  перемешение с склада + возврат от клиента  - продажа  - возврат поставщику  - перемешеие на склад = остаток
+
+//        $movings = Moving::query()
+//            ->join('moving_products', 'movings.id', '=', 'moving_products.moving_id')
+//            ->join('products', 'products.id', '=', 'moving_products.product_id')
+//            ->select('movings.id','movings.created_at','products.name')
+//            ->where(function ($qq){
+//                $qq->whereDate('movings.created_at', '<', request('date') ?? now())
+//                ->orWhere(function ($q) {
+//                    $q->whereDate('movings.created_at', request('date') ?? now())->whereTime('movings.created_at','<',request('time') ?? now()->toTimeString());
+//                });
+//            })
+////            ->where('movings.operation', 1)
+////            ->where('movings.store_id', Auth::user()->store_id)
+//            ->latest()
+//            ->groupBy('movings.id','products.id')
+//            ->get();
+//        return response()->json($movings);
+
+
+        $storeId = Auth::user()->store_id;
+
+        $result = Product::select(
+            'products.name',
+            'products.id AS product_id',
+            'id_1c',
+            'measure',
+            'article',
+            DB::raw('COALESCE(moving_from.sum_count, 0) AS moving_from'),
+            DB::raw('COALESCE(moving_to.sum_count, 0) AS moving_to'),
+            DB::raw('COALESCE(receipt.sum_count, 0) AS receipt'),
+            DB::raw('COALESCE(orderProduct.sum_count, 0) AS sale'),
+            DB::raw('COALESCE(refund_producer.sum_count, 0) AS refund_producer'),
+            DB::raw('COALESCE(reject.sum_count, 0) AS reject'),
+            DB::raw('COALESCE(receipt.sum_count, 0) + COALESCE(moving_from.sum_count, 0)  - COALESCE(orderProduct.sum_count, 0) - COALESCE(refund_producer.sum_count, 0) - COALESCE(moving_to.sum_count, 0)  - COALESCE(reject.sum_count, 0) AS remains')
+        )
+            ->leftJoinSub(
+                function ($query) use ($storeId) {
+                    $query->select(
+                        'moving_products.product_id',
+                        DB::raw('SUM(moving_products.count) AS sum_count')
+                    )
+                        ->from('moving_products')
+                        ->join('movings', 'movings.id', '=', 'moving_products.moving_id')
+                        ->where('movings.operation', 1)
+                        ->where('movings.store_id', $storeId)
+                        ->where(function ($qq){
+                            $qq->whereDate('movings.created_at', '<', request('date') ?? now())
+                                ->orWhere(function ($q) {
+                                    $q->whereDate('movings.created_at', request('date') ?? now())->whereTime('movings.created_at','<',request('time') ?? now()->toTimeString());
+                                });
+                        })
+
+                        ->groupBy('moving_products.product_id');
+                },
+                'moving_from',
+                'moving_from.product_id',
+                '=',
+                'products.id'
+            )
+            ->leftJoinSub(
+                function ($query) use ($storeId) {
+                    $query->select(
+                        'moving_products.product_id',
+                        DB::raw('SUM(moving_products.count) AS sum_count')
+                    )
+                        ->from('moving_products')
+                        ->join('movings', 'movings.id', '=', 'moving_products.moving_id')
+                        ->where('movings.operation', 2)
+                        ->where('movings.store_id', $storeId)
+                        ->where(function ($qq){
+                            $qq->whereDate('movings.created_at', '<', request('date') ?? now())
+                                ->orWhere(function ($q) {
+                                    $q->whereDate('movings.created_at', request('date') ?? now())->whereTime('movings.created_at','<',request('time') ?? now()->toTimeString());
+                                });
+                        })
+                        ->groupBy('moving_products.product_id');
+                },
+                'moving_to',
+                'moving_to.product_id',
+                '=',
+                'products.id'
+            )
+            ->leftJoinSub(
+                function ($query) use ($storeId) {
+                    $query->select(
+                        'reject_products.product_id',
+                        DB::raw('SUM(reject_products.count) AS sum_count')
+                    )
+                        ->from('reject_products')
+                        ->join('rejects', 'rejects.id', '=', 'reject_products.reject_id')
+                        ->where('rejects.store_id', $storeId)
+                        ->where(function ($qq){
+                            $qq->whereDate('rejects.created_at', '<', request('date') ?? now())
+                                ->orWhere(function ($q) {
+                                    $q->whereDate('rejects.created_at', request('date') ?? now())->whereTime('rejects.created_at','<',request('time') ?? now()->toTimeString());
+                                });
+                        })
+                        ->groupBy('reject_products.product_id');
+                },
+                'reject',
+                'reject.product_id',
+                '=',
+                'products.id'
+            )
+            ->leftJoinSub(
+                function ($query) use ($storeId) {
+                    $query->select(
+                        'refund_producer_products.product_id',
+                        DB::raw('SUM(refund_producer_products.count) AS sum_count')
+                    )
+                        ->from('refund_producer_products')
+                        ->join('refund_producers', 'refund_producers.id', '=', 'refund_producer_products.refund_producer_id')
+                        ->where('refund_producers.store_id', $storeId)
+                        ->where(function ($qq){
+                            $qq->whereDate('refund_producers.created_at', '<', request('date') ?? now())
+                                ->orWhere(function ($q) {
+                                    $q->whereDate('refund_producers.created_at', request('date') ?? now())->whereTime('refund_producers.created_at','<',request('time') ?? now()->toTimeString());
+                                });
+                        })
+                        ->groupBy('refund_producer_products.product_id');
+                },
+                'refund_producer',
+                'refund_producer.product_id',
+                '=',
+                'products.id'
+            )
+            ->leftJoinSub(
+                function ($query) use ($storeId) {
+                    $query->select(
+                        'receipt_products.product_id',
+                        DB::raw('SUM(receipt_products.count) AS sum_count')
+                    )
+                        ->from('receipt_products')
+                        ->join('receipts', 'receipts.id', '=', 'receipt_products.receipt_id')
+                        ->where('receipts.store_id', $storeId)
+                        ->where(function ($qq){
+                            $qq->whereDate('receipts.created_at', '<', request('date') ?? now())
+                                ->orWhere(function ($q) {
+                                    $q->whereDate('receipts.created_at', request('date') ?? now())->whereTime('receipts.created_at','<',request('time') ?? now()->toTimeString());
+                                });
+                        })
+                        ->groupBy('receipt_products.product_id');
+                },
+                'receipt',
+                'receipt.product_id',
+                '=',
+                'products.id'
+            )
+            ->leftJoinSub(
+                function ($query) use ($storeId) {
+                    $query->select(
+                        'order_products.product_id',
+                        DB::raw('SUM(order_products.count) AS sum_count')
+                    )
+                        ->from('order_products')
+                        ->join('orders', 'orders.id', '=', 'order_products.order_id')
+                        ->where('orders.store_id', $storeId)
+                        ->whereNotNull('orders.check_number')
+                        ->where(function ($qq){
+                            $qq->whereDate('orders.created_at', '<', request('date') ?? now())
+                                ->orWhere(function ($q) {
+                                    $q->whereDate('orders.created_at', request('date') ?? now())->whereTime('orders.created_at','<',request('time') ?? now()->toTimeString());
+                                });
+                        })
+                        ->groupBy('order_products.product_id');
+                },
+                'orderProduct',
+                'orderProduct.product_id',
+                '=',
+                'products.id'
+            )
+            ->groupBy('products.id')
+            ->orderBy('products.name')
+            ->having('remains', '>', 0)
+            ->get();
+
+        return response()->json($result);
+    }
 
     public function store(InventoryStoreRequest $request)
     {
-        $inventory =  Inventory::create(['user_id' => Auth::id(),'store_id' => Auth::user()->store_id]);
+        $inventory = Inventory::create([
+            'user_id' => Auth::id(),
+            'store_id' => Auth::user()->store_id,
+            'date' => $request->has('date') ?  $request->get('date') : now(),
+            'time' => $request->has('time') ?  $request->get('time') : now()->toTimeString(),
+        ]);
 
         foreach ($request->get('products') as $item) {
             $product = Product::findOrFail($item['product_id']);
@@ -128,8 +318,8 @@ class InventoryController extends Controller
 
     public function active(Inventory $inventory, ReceiptStoreAction $receiptStoreAction, RejectStoreAction $rejectStoreAction)
     {
-        if ($inventory->status == 2){
-            return response()->json(['message' => 'документ уже активен'],400);
+        if ($inventory->status == 2) {
+            return response()->json(['message' => 'документ уже активен'], 400);
         }
         try {
             DB::beginTransaction();
@@ -139,7 +329,7 @@ class InventoryController extends Controller
             foreach ($inventory->products as $inventoryProduct) {
                 $product = $inventoryProduct->product;
 
-                if ($inventoryProduct->remains < $inventoryProduct->count){
+                if ($inventoryProduct->remains < $inventoryProduct->count) {
                     //Излишки
                     $inventoryProduct->overage = $inventoryProduct->count - $inventoryProduct->remains;
                     $receiptData['products'] [] = [
@@ -148,7 +338,7 @@ class InventoryController extends Controller
                     ];
 
                 }
-                if ($inventoryProduct->remains > $inventoryProduct->count){
+                if ($inventoryProduct->remains > $inventoryProduct->count) {
                     //Недостачи
                     $inventoryProduct->shortage = $inventoryProduct->remains - $inventoryProduct->count;
                     $rejectData['products'] [] = [
@@ -163,26 +353,27 @@ class InventoryController extends Controller
                 $inventoryProduct->save();
 
             }
+
+
 //        //Излишки
-            if (count($receiptData) > 0){
+            if (count($receiptData) > 0) {
                 $receiptData['storage_id'] = Auth::user()->storage_id;
                 $receiptData['store_id'] = Auth::user()->store_id;
                 $receiptData['organization_id'] = Auth::user()->organization_id;
                 $receiptData['operation'] = 2;
                 $receiptData['inventory_id'] = $inventory->id;
-                $receiptData['description'] = "На основании инвентаризации №$inventory->id от ".$inventory->created_at;
+                $receiptData['description'] = "На основании инвентаризации №$inventory->id от " . $inventory->created_at;
 
                 $receiptStoreAction->execute($receiptData);
 
             }
 //        //Недостачи
-            if (count($rejectData) > 0)
-            {
+            if (count($rejectData) > 0) {
                 $rejectData['storage_id'] = Auth::user()->storage_id;
                 $rejectData['store_id'] = Auth::user()->store_id;
                 $rejectData['organization_id'] = Auth::user()->organization_id;
                 $rejectData['inventory_id'] = $inventory->id;
-                $rejectData['description'] = "На основании инвентаризации №$inventory->id от ".$inventory->created_at;
+                $rejectData['description'] = "На основании инвентаризации №$inventory->id от " . $inventory->created_at;
                 $rejectStoreAction->execute($rejectData);
             }
 
@@ -191,28 +382,28 @@ class InventoryController extends Controller
             $inventory->save();
             DB::commit();
             return response()->json($inventory);
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             DB::rollBack();
-            return response()->json(['message' => $exception->getMessage()],400);
+            return response()->json(['message' => $exception->getMessage()], 400);
         }
 
 
     }
 
-    public function update(InventoryStoreRequest $request,Inventory $inventory)
+    public function update(InventoryStoreRequest $request, Inventory $inventory)
     {
 
         foreach ($request->get('products') as $item) {
 
             $inventory->products()->updateOrCreate([
                 'product_id' => $item['product_id']
-            ],$item);
+            ], $item);
         }
 
         return response()->json($inventory);
     }
 
-    public function addReceipt(InventoryAddReceiptRequest $request,ReceiptStoreAction $receiptStoreAction )
+    public function addReceipt(InventoryAddReceiptRequest $request, ReceiptStoreAction $receiptStoreAction)
     {
         $data['operation'] = 2;
         $data['store_id'] = Auth::user()->store_id;
@@ -230,15 +421,16 @@ class InventoryController extends Controller
         return response()->json($receipt);
     }
 
-    public function history(Request $request){
+    public function history(Request $request)
+    {
         $inventories = Inventory::query()
-            ->where('user_id',Auth::id())
-            ->with(['products','products.product','store'])
-            ->when($request->has('date_from'),function ($q){
-                $q->whereDate('created_at','>=',request('date_from'));
+            ->where('user_id', Auth::id())
+            ->with(['products', 'products.product', 'store'])
+            ->when($request->has('date_from'), function ($q) {
+                $q->whereDate('created_at', '>=', request('date_from'));
             })
-            ->when($request->has('date_to'),function ($q){
-                $q->whereDate('created_at','<=',request('date_to'));
+            ->when($request->has('date_to'), function ($q) {
+                $q->whereDate('created_at', '<=', request('date_to'));
             })
             ->latest()
             ->get();
@@ -249,7 +441,7 @@ class InventoryController extends Controller
     {
 
 
-        return view('pdf.inventory',compact('inventory'));
+        return view('pdf.inventory', compact('inventory'));
 
 //        $pdf = Pdf::loadView('pdf.inventory',compact('inventory'));
 //

@@ -34,7 +34,15 @@ class Inventory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['store_id','id','created_at','user_id','status'];
+    protected $fillable = [
+        'store_id',
+        'id',
+        'created_at',
+        'user_id',
+        'status',
+        'date',
+        'time'
+    ];
     public $timestamps = false;
     protected $casts = [
         'created_at' => 'datetime:d.m.Y H:i',

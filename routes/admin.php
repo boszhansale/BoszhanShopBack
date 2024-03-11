@@ -117,6 +117,7 @@ Route::middleware(['admin.check','auth:sanctum'])->group(function (){
         Route::post('store', [DiscountCardController::class, 'store'])->name('store');
         Route::get('edit/{discountCard}', [DiscountCardController::class, 'edit'])->name('edit');
         Route::put('update/{discountCard}', [DiscountCardController::class, 'update'])->name('update');
+        Route::get('active/{discountCard}', [DiscountCardController::class, 'active'])->name('active');
         Route::get('delete/{discountCard}', [DiscountCardController::class, 'delete'])->name('delete');
     });
     Route::prefix('storeProductDiscount')->name('storeProductDiscount.')->group(function () {

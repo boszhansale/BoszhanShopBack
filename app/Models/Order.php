@@ -186,4 +186,9 @@ class Order extends Model implements Auditable
 //            get: fn($value) => \Illuminate\Support\Carbon::parse($value)->format('d.m.Y H:i'),
 //        );
 //    }
+
+    public function getDate(): string
+    {
+        return \Illuminate\Support\Carbon::parse($this->created_at)->format('Y-m-d');
+    }
 }
