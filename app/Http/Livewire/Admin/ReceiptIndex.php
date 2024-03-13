@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Admin;
 use App\Models\Order;
 use App\Models\Receipt;
 use App\Models\Refund;
+use App\Models\Store;
 use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -18,6 +19,7 @@ class ReceiptIndex extends Component
     public $search;
     public $userId;
     public $storeId;
+    public $stores;
     public $statusId;
     public $counteragentId;
 
@@ -35,15 +37,11 @@ class ReceiptIndex extends Component
             ->when($this->statusId, function ($q) {
                 return $q->where('receipts.status_id', $this->statusId);
             })
-            ->when($this->userId, function ($q) {
-                return $q->where('receipts.user_id', $this->userId);
-            })
+
             ->when($this->storeId, function ($q) {
                 return $q->where('receipts.store_id', $this->storeId);
             })
-            ->when($this->counteragentId, function ($q) {
-                return $q->where('stores.counteragent_id', $this->counteragentId);
-            })
+
             ->when($this->start_created_at, function ($q) {
                 return $q->whereDate('receipts.created_at', '>=', $this->start_created_at);
             })
@@ -54,10 +52,6 @@ class ReceiptIndex extends Component
             ->select('receipts.*');
 
         return view('admin.receipt.index_live', [
-            'users' => User::query()
-                ->where('users.status', 1)
-                ->orderBy('users.name')
-                ->get('users.*'),
 
             'receipts' => $query->clone()
                 ->with(['store'])
@@ -68,6 +62,6 @@ class ReceiptIndex extends Component
 
     public function mount()
     {
-
+        $this->stores = Store::whereNotNull('warehouse_in')->get();
     }
 }

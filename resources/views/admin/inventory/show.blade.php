@@ -10,7 +10,7 @@
             <div class="card">
                 <div class="card-header">Обшая информация</div>
                 <div class="card-body">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered table-striped">
                         <tr>
                             <th>ID</th>
                             <td>{{$inventory->id}}</td>
@@ -54,7 +54,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
-                    <table class="table table-bordered table-responsive">
+                    <table class="table table-bordered table-responsive table-striped">
                         <thead>
                         <tr>
                             <th>Продукт</th>

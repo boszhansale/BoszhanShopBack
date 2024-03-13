@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Moving
@@ -49,7 +50,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Moving extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
     protected $fillable = [
         'id',
         'store_id',
@@ -60,6 +61,7 @@ class Moving extends Model
         'total_price',
         'removed_at',
         'operation',
+        'comment'
     ];
 
     const OPERATION = [

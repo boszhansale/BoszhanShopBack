@@ -118,6 +118,7 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::post('check/{moving}',[MovingController::class,'check']);
 
         Route::get('html/{moving}',[MovingController::class,'html'])->withoutMiddleware('auth:sanctum');
+        Route::get('print/to_storage/{moving}',[MovingController::class,'toStoragePrint'])->withoutMiddleware('auth:sanctum');
     });
     //Списание
     Route::prefix('reject')->group(function (){
@@ -133,6 +134,7 @@ Route::middleware('auth:sanctum')->group(function (){
         Route::post('active/{inventory}',[InventoryController::class,'active']);
         Route::post('update-product/{inventory}',[InventoryController::class,'update']);
         Route::post('add-receipt',[InventoryController::class,'addReceipt']);
+        Route::post('add-product',[InventoryController::class,'addProduct']);
         Route::get('history',[InventoryController::class,'history']);
         Route::get('html/{inventory}',[InventoryController::class,'html'])->withoutMiddleware('auth:sanctum');
     });

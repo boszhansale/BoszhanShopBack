@@ -156,5 +156,13 @@ class MovingController extends Controller
 
         return view('pdf.moving',compact('moving'));
     }
+    public function toStoragePrint(Moving $moving)
+    {
+        if ($moving->operation == 1)
+        {
+            return response()->json(['message' => 'error']);
+        }
+        return view('pdf.moving_to_storage',compact('moving'));
+    }
 
 }

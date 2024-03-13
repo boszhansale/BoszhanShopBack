@@ -59,13 +59,9 @@ class MovingIndex extends Component
             ->select('movings.*');
 
         return view('admin.moving.index_live', [
-            'users' => $this->users,
-            'stores' => $this->stores,
-
             'movings' => $query->clone()
                 ->with(['store'])
                 ->paginate(50),
-            'query' => $query,
         ]);
     }
 

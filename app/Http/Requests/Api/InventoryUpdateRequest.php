@@ -5,7 +5,7 @@ namespace App\Http\Requests\Api;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class MovingStoreRequest extends FormRequest
+class InventoryUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,17 +23,19 @@ class MovingStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'payment_type' => ['numeric'],
-            'operation' => ['required','in:1,2'],
-            'storage_id' => ['exists:storages,id'],
-            'order_id' => ['exists:orders,id'],
-            'comment' => '',
 
             'products' => 'required|array|min:1',
             'products.*.product_id' => 'required|exists:products,id',
-            'products.*.comment' => 'string',
+
+            'products.*.receipt' => 'required',
+            'products.*.sale' => 'required',
             'products.*.count' => 'required',
-            'products.*.price' => 'required',
+            'products.*.moving_from' => 'required',
+            'products.*.moving_to' => 'required',
+            'products.*.remains' => 'required',
+
+//            'products.*.overage' => 'required',
+//            'products.*.shortage' => 'required',
         ];
     }
     public function messages()

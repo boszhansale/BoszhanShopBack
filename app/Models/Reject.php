@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 
@@ -65,7 +66,7 @@ use Illuminate\Support\Carbon;
 //Списание
 class Reject extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
 
     public $timestamps = false;
     protected $casts = [
@@ -120,11 +121,9 @@ class Reject extends Model
     {
         return $this->hasMany(RejectProduct::class);
     }
-    protected function createdAt(): Attribute
+    public function inventory(): BelongsTo
     {
-        return Attribute::make(
-            get: fn($value) => Carbon::parse($value)->format('d.m.Y H:i'),
-        );
+        return $this->belongsTo(Inventory::class);
     }
     public function getDate():string
     {

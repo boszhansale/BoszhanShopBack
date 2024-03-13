@@ -222,7 +222,6 @@ Route::middleware(['admin.check','auth:sanctum'])->group(function (){
         Route::get('show/{reject}', [RejectController::class, 'show'])->name('show');
         Route::put('update/{reject}', [RejectController::class, 'update'])->name('update');
         Route::get('delete/{reject}', [RejectController::class, 'delete'])->name('delete');
-        Route::get('remove/{reject}', [RejectController::class, 'remove'])->name('remove');
         Route::get('recover/{reject}', [RejectController::class, 'recover'])->name('recover');
         Route::get('history/{reject}', [RejectController::class, 'history'])->name('history');
     });
@@ -234,7 +233,6 @@ Route::middleware(['admin.check','auth:sanctum'])->group(function (){
         Route::get('show/{inventory}', [InventoryController::class, 'show'])->name('show');
         Route::put('update/{inventory}', [InventoryController::class, 'update'])->name('update');
         Route::get('delete/{inventory}', [InventoryController::class, 'delete'])->name('delete');
-        Route::get('remove/{inventory}', [InventoryController::class, 'remove'])->name('remove');
         Route::get('recover/{inventory}', [InventoryController::class, 'recover'])->name('recover');
         Route::get('history/{inventory}', [InventoryController::class, 'history'])->name('history');
     });

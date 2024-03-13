@@ -8,12 +8,12 @@
                 </div>
 
                 <div class="col-md-2">
-                    <small>продавец</small>
+                    <small>магазин</small>
 
-                    <select wire:model="salesrepId" class="form-control">
+                    <select wire:model="storeId" class="form-control">
                         <option value="">все</option>
-                        @foreach($users as $user)
-                            <option value="{{$user->id}}">{{$user->name}}</option>
+                        @foreach($stores as $store)
+                            <option value="{{$store->id}}">{{$store->name}}</option>
                         @endforeach
                     </select>
                 </div>
@@ -29,13 +29,11 @@
     </div>
     <div class="card">
         <div class="card-body">
-            <table class="table table-hover text-nowrap">
+            <table class="table table-hover text-nowrap table-striped">
                 <thead>
                 <tr>
                     <th>ID</th>
                     <th></th>
-                    <th>Контрагент</th>
-                    <th>Контрагент(BIN)</th>
                     <th>ТТ</th>
                     <th>Статус</th>
                     <th>Продавец</th>
@@ -44,52 +42,45 @@
                 </thead>
                 <tbody>
                 @foreach($inventories as $inventory)
-                    @if($inventory->deleted_at)
-                        <tr class="bg-red">
-                    @elseif($inventory->removed_at)
-                        <tr class="bg-black">
-                    @else
-                        <tr>
+                    <tr>
+                        <td>{{$inventory->id}}
+                        </td>
+                        <td class="project-actions text-left">
+                            <a class="btn btn-primary btn-sm" href="{{route('admin.inventory.show',$inventory->id)}}">
+                                <i class="fas fa-folder">
+                                </i>
+                            </a>
+                            <a class="btn btn-danger btn-sm" href="{{route('admin.inventory.delete',$inventory->id)}}">
+                                <i class="fas fa-trash">
+                                </i>
+                            </a>
+                            <a class="btn btn-warning btn-sm" href="{{route('admin.inventory.edit',$inventory->id)}}">
+                                <i class="fas fa-pencil-alt">
+                                </i>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{{route('admin.store.show',$inventory->store_id)}}">
+                                {{$inventory->store?->name}}
+                            </a>
+                        </td>
+                        <td>
+                            @if($inventory->status == 2)
+                                <span class="badge badge-success">активен</span>
+                            @else
+                                <span class="badge badge-warning">сохранен</span>
                             @endif
-                            <td>{{$inventory->id}}
-                            </td>
-                            <td class="project-actions text-left">
-                                <a class="btn btn-primary btn-sm" href="{{route('admin.inventory.show',$inventory->id)}}">
-                                    <i class="fas fa-folder">
-                                    </i>
-                                </a>
-                            </td>
-                            <td>
-                                @if($inventory->store?->counteragent_id)
-                                    {{$inventory->store->counteragent->name}}
-                                @endif
-                            </td>
-                            <td>
-                                {{$inventory->store?->counteragent?->bin}}
-                            </td>
-
-                            <td>
-                                <a href="{{route('admin.store.show',$inventory->store_id)}}">
-                                    {{$inventory->store?->name}}
-                                </a>
-                            </td>
-                            <td>
-                                @if($inventory->status == 2)
-                                    активен
-                                @else
-                                    сохранен
-                                @endif
-                            </td>
-                            <td>
-                                <a href="{{route('admin.user.show',$inventory->user_id)}}">
-                                    {{$inventory->user->name}}
-                                </a>
-                            </td>
+                        </td>
+                        <td>
+                            <a href="{{route('admin.user.show',$inventory->user_id)}}">
+                                {{$inventory->user->name}}
+                            </a>
+                        </td>
 
 
-                            <td>{{$inventory->created_at}}</td>
-                        </tr>
-                        @endforeach
+                        <td>{{$inventory->created_at}}</td>
+                    </tr>
+                @endforeach
                 </tbody>
             </table>
 

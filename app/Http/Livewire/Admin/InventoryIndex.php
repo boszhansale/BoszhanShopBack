@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Admin;
 
 use App\Models\Inventory;
+use App\Models\Store;
 use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -18,6 +19,7 @@ class InventoryIndex extends Component
     public $storeId;
     public $statusId;
     public $counteragentId;
+    public $stores;
 
     public $start_created_at;
     public $end_created_at;
@@ -33,9 +35,7 @@ class InventoryIndex extends Component
             ->when($this->statusId, function ($q) {
                 return $q->where('inventories.status_id', $this->statusId);
             })
-            ->when($this->userId, function ($q) {
-                return $q->where('inventories.user_id', $this->userId);
-            })
+
             ->when($this->storeId, function ($q) {
                 return $q->where('inventories.store_id', $this->storeId);
             })
@@ -52,14 +52,6 @@ class InventoryIndex extends Component
             ->select('inventories.*');
 
         return view('admin.inventory.index_live', [
-            'users' => User::query()
-                ->where('users.status', 1)
-                ->when($this->storeId,function ($q){
-                    $q->where('store_id',$this->storeId);
-                })
-                ->orderBy('users.name')
-                ->get('users.*'),
-
             'inventories' => $query->clone()
                 ->with(['store'])
                 ->paginate(50),
@@ -69,6 +61,6 @@ class InventoryIndex extends Component
 
     public function mount()
     {
-
+        $this->stores = Store::whereNotNull('warehouse_in')->get();
     }
 }

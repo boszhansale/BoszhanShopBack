@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\OrderManyUpdateRequest;
 use App\Http\Requests\Admin\OrderUpdateRequest;
 use App\Models\Moving;
+use App\Models\MovingProduct;
 use App\Models\User;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\View\View;
@@ -31,9 +33,25 @@ class MovingController extends Controller
 
     public function update(OrderUpdateRequest $request, Moving $moving)
     {
-        $moving->update($request->validated());
+        DB::beginTransaction();
+        try {
+            foreach ($request->get('products') as $productId => $item) {
+                $movingProduct = MovingProduct::findOrFail($productId);
+                $movingProduct->count = $item['count'];
+                $movingProduct->all_price = $movingProduct->price * $item['count'];
+                $movingProduct->save();
+            }
+            $moving->total_price = $moving->products()->sum('all_price');
+            $moving->save();
+            DB::commit();
 
-        return redirect()->back();
+            return redirect()->route('admin.moving.show', $moving->id)->with('success', 'Отгрузка успешно обновлена');
+
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function show($orderId)

@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Actions\ReceiptStoreAction;
 use App\Actions\RejectStoreAction;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\InventoryAddProductRequest;
 use App\Http\Requests\Api\InventoryAddReceiptRequest;
 use App\Http\Requests\Api\InventoryIndexRequest;
 use App\Http\Requests\Api\InventoryStoreRequest;
+use App\Http\Requests\Api\InventoryUpdateRequest;
 use App\Http\Requests\Api\ProductIndexRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Counteragent;
@@ -20,6 +22,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use DB;
 use Dflydev\DotAccessData\Data;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -112,6 +115,7 @@ class InventoryController extends Controller
 
         return response()->json($result);
     }
+
     public function index(InventoryIndexRequest $request)
     {
         //приход - расход
@@ -161,13 +165,12 @@ class InventoryController extends Controller
                         ->join('movings', 'movings.id', '=', 'moving_products.moving_id')
                         ->where('movings.operation', 1)
                         ->where('movings.store_id', $storeId)
-                        ->where(function ($qq){
+                        ->where(function ($qq) {
                             $qq->whereDate('movings.created_at', '<', request('date') ?? now())
                                 ->orWhere(function ($q) {
-                                    $q->whereDate('movings.created_at', request('date') ?? now())->whereTime('movings.created_at','<',request('time') ?? now()->toTimeString());
+                                    $q->whereDate('movings.created_at', request('date') ?? now())->whereTime('movings.created_at', '<', request('time') ?? now()->toTimeString());
                                 });
                         })
-
                         ->groupBy('moving_products.product_id');
                 },
                 'moving_from',
@@ -185,10 +188,10 @@ class InventoryController extends Controller
                         ->join('movings', 'movings.id', '=', 'moving_products.moving_id')
                         ->where('movings.operation', 2)
                         ->where('movings.store_id', $storeId)
-                        ->where(function ($qq){
+                        ->where(function ($qq) {
                             $qq->whereDate('movings.created_at', '<', request('date') ?? now())
                                 ->orWhere(function ($q) {
-                                    $q->whereDate('movings.created_at', request('date') ?? now())->whereTime('movings.created_at','<',request('time') ?? now()->toTimeString());
+                                    $q->whereDate('movings.created_at', request('date') ?? now())->whereTime('movings.created_at', '<', request('time') ?? now()->toTimeString());
                                 });
                         })
                         ->groupBy('moving_products.product_id');
@@ -207,10 +210,10 @@ class InventoryController extends Controller
                         ->from('reject_products')
                         ->join('rejects', 'rejects.id', '=', 'reject_products.reject_id')
                         ->where('rejects.store_id', $storeId)
-                        ->where(function ($qq){
+                        ->where(function ($qq) {
                             $qq->whereDate('rejects.created_at', '<', request('date') ?? now())
                                 ->orWhere(function ($q) {
-                                    $q->whereDate('rejects.created_at', request('date') ?? now())->whereTime('rejects.created_at','<',request('time') ?? now()->toTimeString());
+                                    $q->whereDate('rejects.created_at', request('date') ?? now())->whereTime('rejects.created_at', '<', request('time') ?? now()->toTimeString());
                                 });
                         })
                         ->groupBy('reject_products.product_id');
@@ -229,10 +232,10 @@ class InventoryController extends Controller
                         ->from('refund_producer_products')
                         ->join('refund_producers', 'refund_producers.id', '=', 'refund_producer_products.refund_producer_id')
                         ->where('refund_producers.store_id', $storeId)
-                        ->where(function ($qq){
+                        ->where(function ($qq) {
                             $qq->whereDate('refund_producers.created_at', '<', request('date') ?? now())
                                 ->orWhere(function ($q) {
-                                    $q->whereDate('refund_producers.created_at', request('date') ?? now())->whereTime('refund_producers.created_at','<',request('time') ?? now()->toTimeString());
+                                    $q->whereDate('refund_producers.created_at', request('date') ?? now())->whereTime('refund_producers.created_at', '<', request('time') ?? now()->toTimeString());
                                 });
                         })
                         ->groupBy('refund_producer_products.product_id');
@@ -251,10 +254,10 @@ class InventoryController extends Controller
                         ->from('receipt_products')
                         ->join('receipts', 'receipts.id', '=', 'receipt_products.receipt_id')
                         ->where('receipts.store_id', $storeId)
-                        ->where(function ($qq){
+                        ->where(function ($qq) {
                             $qq->whereDate('receipts.created_at', '<', request('date') ?? now())
                                 ->orWhere(function ($q) {
-                                    $q->whereDate('receipts.created_at', request('date') ?? now())->whereTime('receipts.created_at','<',request('time') ?? now()->toTimeString());
+                                    $q->whereDate('receipts.created_at', request('date') ?? now())->whereTime('receipts.created_at', '<', request('time') ?? now()->toTimeString());
                                 });
                         })
                         ->groupBy('receipt_products.product_id');
@@ -274,10 +277,10 @@ class InventoryController extends Controller
                         ->join('orders', 'orders.id', '=', 'order_products.order_id')
                         ->where('orders.store_id', $storeId)
                         ->whereNotNull('orders.check_number')
-                        ->where(function ($qq){
+                        ->where(function ($qq) {
                             $qq->whereDate('orders.created_at', '<', request('date') ?? now())
                                 ->orWhere(function ($q) {
-                                    $q->whereDate('orders.created_at', request('date') ?? now())->whereTime('orders.created_at','<',request('time') ?? now()->toTimeString());
+                                    $q->whereDate('orders.created_at', request('date') ?? now())->whereTime('orders.created_at', '<', request('time') ?? now()->toTimeString());
                                 });
                         })
                         ->groupBy('order_products.product_id');
@@ -300,8 +303,8 @@ class InventoryController extends Controller
         $inventory = Inventory::create([
             'user_id' => Auth::id(),
             'store_id' => Auth::user()->store_id,
-            'date' => $request->has('date') ?  $request->get('date') : now(),
-            'time' => $request->has('time') ?  $request->get('time') : now()->toTimeString(),
+            'date' => $request->has('date') ? $request->get('date') : now(),
+            'time' => $request->has('time') ? $request->get('time') : now()->toTimeString(),
         ]);
 
         foreach ($request->get('products') as $item) {
@@ -386,8 +389,6 @@ class InventoryController extends Controller
             DB::rollBack();
             return response()->json(['message' => $exception->getMessage()], 400);
         }
-
-
     }
 
     public function update(InventoryStoreRequest $request, Inventory $inventory)
@@ -446,5 +447,52 @@ class InventoryController extends Controller
 //        $pdf = Pdf::loadView('pdf.inventory',compact('inventory'));
 //
 //        return $pdf->download('inventory.pdf');
+    }
+
+    public function addProduct(InventoryAddProductRequest $request)
+    {
+        DB::beginTransaction();
+        $inventory = Inventory::findOrFail($request->get('inventory_id'));
+        try {
+            if ($inventory->status == 2) {
+               throw new Exception('документ уже активен');
+            }
+            $exists = $inventory->products()->where('product_id', $request->get('product_id'))->exists();
+            if ($exists) {
+                throw new Exception('товар уже добавлен');
+            }
+//            $data['operation'] = 2;
+//            $data['store_id'] = Auth::user()->store_id;
+//            $data['storage_id'] = Auth::user()->storage_id;
+//            $data['organization_id'] = Auth::user()->organization_id;
+//            $data['description'] = 'добавлен через инвентор: ' . $inventory->id . ' от ' . $inventory->created_at;
+//            $data['products'][] = [
+//                'product_id' => $request->get('product_id'),
+//                'count' => $request->get('count')
+//            ];
+//
+//            $receiptStoreAction = new ReceiptStoreAction();
+//            $receiptStoreAction->execute($data);
+
+            $product = Product::findOrFail($request->get('product_id'));
+            $priceType = $product->prices()->where('price_type_id',3)->first();
+            if (!$priceType) throw new Exception("price not found: $product->id");
+
+            $inventory->products()->create([
+                'product_id' => $request->get('product_id'),
+                'count' => 0,
+                'receipt' => 0,
+                'remains' => 0,
+                'price' => $priceType->price,
+            ]);
+
+            DB::commit();
+
+            return response()->json($inventory);
+
+        } catch (Exception $exception) {
+            DB::rollBack();
+            return response()->json(['message' => $exception->getMessage()], 400);
+        }
     }
 }

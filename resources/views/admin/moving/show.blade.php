@@ -42,6 +42,10 @@
                             <th>Сумма</th>
                             <td>{{$moving->total_price}}</td>
                         </tr>
+                        <tr>
+                            <th>комментарии</th>
+                            <td>{{$moving->comment}}</td>
+                        </tr>
 
                     </table>
                 </div>

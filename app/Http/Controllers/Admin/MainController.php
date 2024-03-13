@@ -17,7 +17,6 @@ class MainController extends Controller
     public function index(): View
     {
 
-
         return view('admin.main');
     }
 }

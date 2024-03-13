@@ -10,7 +10,7 @@
             <div class="card">
                 <div class="card-header">Обшая информация</div>
                 <div class="card-body">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered table-striped">
                         <tr>
                             <th>ID</th>
                             <td>{{$reject->id}}</td>
@@ -45,9 +45,19 @@
                         </tr>
                         <tr>
                             <th>Сумма</th>
-                            <td>{{$reject->total_price}}</td>
+                            <td><span class="price">{{$reject->total_price}}</span></td>
                         </tr>
 
+                        @if($reject->inventory)
+                            <tr>
+                                <th>Инвентаризация</th>
+                                <td>
+                                    <a href="{{route('admin.inventory.show',$reject->inventory_id)}}">
+                                        {{$reject->inventory->id}} от {{$reject->inventory->created_at}}
+                                    </a>
+                                </td>
+                            </tr>
+                        @endif
                     </table>
                 </div>
             </div>
@@ -57,9 +67,8 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Покупки на сумму {{$reject->products()->sum('all_price')}}</div>
                 <div class="card-body">
-                    <table class="table table-bordered">
+                    <table class="table table-bordered table-striped">
                         <thead>
                         <tr>
                             <th>ID</th>

@@ -2,21 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Actions\OrderPriceAction;
-use App\Exports\Excel\OrderExcelExport;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\OrderManyUpdateRequest;
-use App\Http\Requests\Admin\OrderUpdateRequest;
 use App\Models\Receipt;
-use App\Models\PaymentStatus;
-use App\Models\PaymentType;
-use App\Models\Status;
-use App\Models\User;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\ReceiptProduct;
+use DB;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\View\View;
-use Maatwebsite\Excel\Facades\Excel;
 
 class ReceiptController extends Controller
 {
@@ -34,11 +25,27 @@ class ReceiptController extends Controller
         return view('admin.receipt.edit', compact('receipt'));
     }
 
-    public function update(OrderUpdateRequest $request, Receipt $receipt)
+    public function update(Request $request, Receipt $receipt)
     {
-        $receipt->update($request->validated());
+        DB::beginTransaction();
+        try {
+            foreach ($request->get('products') as $productId => $item) {
+                $receiptProduct = ReceiptProduct::findOrFail($productId);
+                $receiptProduct->count = $item['count'];
+                $receiptProduct->all_price = $receiptProduct->price * $item['count'];
+                $receiptProduct->save();
+            }
+            $receipt->total_price = $receipt->products()->sum('all_price');
+            $receipt->save();
+            DB::commit();
 
-        return redirect()->back();
+            return redirect()->route('admin.receipt.show', $receipt->id)->with('success', 'Отгрузка успешно обновлена');
+
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     public function show($orderId)

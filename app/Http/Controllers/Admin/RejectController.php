@@ -5,7 +5,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\OrderManyUpdateRequest;
 use App\Http\Requests\Admin\OrderUpdateRequest;
 use App\Models\Reject;
+use App\Models\RejectProduct;
 use App\Models\User;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\View\View;
@@ -22,16 +24,34 @@ class RejectController extends Controller
         return view('admin.reject.index', compact( 'storeId', 'userId','counteragentId'));
     }
 
-    public function edit(Reject $order): View
+    public function edit(Reject $reject): View
     {
-        return view('admin.reject.edit', compact('order'));
+        return view('admin.reject.edit', compact('reject'));
     }
 
-    public function update(OrderUpdateRequest $request, Reject $order)
+    public function update(Request $request, Reject $reject)
     {
-        $order->update($request->validated());
 
-        return redirect()->back();
+        DB::beginTransaction();
+        try {
+            foreach ($request->get('products') as $productId => $item) {
+                $rejectProduct = RejectProduct::findOrFail($productId);
+                $rejectProduct->count = $item['count'];
+                $rejectProduct->all_price = $rejectProduct->price * $item['count'];
+                $rejectProduct->save();
+            }
+            $reject->total_price = $reject->products()->sum('all_price');
+            $reject->save();
+            DB::commit();
+
+            return redirect()->route('admin.reject.show', $reject->id)->with('success', 'Отгрузка успешно обновлена');
+
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+
     }
 
     public function show(Reject $reject)
@@ -45,14 +65,6 @@ class RejectController extends Controller
 
         return redirect()->back();
     }
-
-    public function remove(Reject $store)
-    {
-        $store->removed_at = now();
-        $store->save();
-        return redirect()->back();
-    }
-
     public function recover($id)
     {
 
