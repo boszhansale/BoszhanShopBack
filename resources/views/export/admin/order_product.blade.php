@@ -3,6 +3,7 @@
     <tr>
         <th>ID</th>
         <th>торговая точка</th>
+        <th>продавец</th>
         <th>позиция</th>
         <th>кол.</th>
         <th>цена</th>
@@ -14,6 +15,7 @@
         <tr>
             <td>{{$order->product_id}}</td>
             <td>{{$order->store->name}}</td>
+            <td>{{$order->user->name}}</td>
             <td>{{$order->name}}</td>
             <td>{{$order->count}}</td>
             <td>{{$order->price}}</td>

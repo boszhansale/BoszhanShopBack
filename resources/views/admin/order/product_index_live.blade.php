@@ -7,16 +7,16 @@
 {{--                    <input wire:model="search" type="search" name="search" placeholder="поиск" class="form-control">--}}
 {{--                </div>--}}
 
-{{--                <div class="col-md-2">--}}
-{{--                    <small>продавец</small>--}}
+                <div class="col-md-2">
+                    <small>продавец</small>
 
-{{--                    <select wire:model="userId" class="form-control">--}}
-{{--                        <option value="">все</option>--}}
-{{--                        @foreach($users as $user)--}}
-{{--                            <option value="{{$user->id}}">{{$user->name}}</option>--}}
-{{--                        @endforeach--}}
-{{--                    </select>--}}
-{{--                </div>--}}
+                    <select wire:model="userId" class="form-control">
+                        <option value="">все</option>
+                        @foreach($users as $user)
+                            <option value="{{$user->id}}">{{$user->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
                     <div class="col-md-2">
                         <small>торговая точка</small>
                         <select wire:model="storeId" class="form-control">
@@ -33,7 +33,7 @@
                     <input wire:model="end_created_at" type="date"  class="form-control">
                 </div>
                 <div class="col-md-2">
-                    <a href="{{route('admin.order.productExcel',['start_created_at' => $start_created_at,'end_created_at',$end_created_at,'store_id' => $storeId,'search' => $search])}}" target="_blank" class="btn btn-primary">скачать Excel</a>
+                    <a href="{{route('admin.order.productExcel',['start_created_at' => $start_created_at,'end_created_at' => $end_created_at,'store_id' => $storeId,'search' => $search])}}" target="_blank" class="btn btn-primary">скачать Excel</a>
                 </div>
             </div>
         </div>
@@ -45,6 +45,7 @@
                 <tr>
                     <th></th>
                     <th>ТТ</th>
+                    <th>Продавец</th>
                     <th>позиция</th>
                     <th>кол.</th>
                     <th>цена</th>
@@ -65,6 +66,7 @@
                             <td>
                                 <a href="{{route('admin.store.show',$order->store_id)}}">{{$order->store->name}}</a>
                             </td>
+                            <td>{{$order->user->name}}</td>
                             <td>{{$order->name}}</td>
 {{--                            <td>--}}
 {{--                                <a href="{{route('admin.user.show',$order->user_id)}}">{{$order->user->name}}</a>--}}

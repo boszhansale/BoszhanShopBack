@@ -47,9 +47,10 @@ class OrderProductIndex extends Component
                 return $q->whereDate('orders.created_at', '<=', $this->end_created_at);
             })
 
-            ->selectRaw('store_id,product_id,products.name,price,SUM(count) as count,SUM(all_price) as all_price')
-            ->groupBy('store_id','product_id','price')
+            ->selectRaw('store_id,product_id,products.name,price,SUM(count) as count,SUM(all_price) as all_price,orders.user_id')
+            ->groupBy('store_id','product_id','price','orders.user_id')
             ->orderBy('products.name')
+            ->orderBy('store_id')
             ->get();
 
         return view('admin.order.product_index_live', [

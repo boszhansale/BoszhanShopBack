@@ -44,7 +44,6 @@ class OrderController extends Controller
 
     public function productExcel(Request $request)
     {
-
         $orders = Order::query()
 //            ->join('stores', 'stores.id', 'orders.store_id')
             ->join('order_products','order_products.order_id','orders.id')
@@ -65,9 +64,10 @@ class OrderController extends Controller
             ->when($request->get('end_created_at'), function ($q) {
                 return $q->whereDate('orders.created_at', '<=', \request('end_created_at'));
             })
-            ->selectRaw('store_id,product_id,products.name,price,SUM(count) as count,SUM(all_price) as all_price')
+            ->selectRaw('store_id,product_id,products.name,price,SUM(count) as count,SUM(all_price) as all_price,orders.user_id')
+            ->groupBy('store_id','product_id','price','orders.user_id')
             ->orderBy('products.name')
-            ->groupBy('store_id','product_id','price')
+            ->orderBy('store_id')
             ->get();
 
         return Excel::download(new OrderProductExcelExport($orders), 'order_products.xlsx');
