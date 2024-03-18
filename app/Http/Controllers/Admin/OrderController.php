@@ -64,7 +64,7 @@ class OrderController extends Controller
             ->when($request->get('end_created_at'), function ($q) {
                 return $q->whereDate('orders.created_at', '<=', \request('end_created_at'));
             })
-            ->selectRaw('store_id,product_id,products.name,price,SUM(count) as count,SUM(all_price) as all_price,orders.user_id')
+            ->selectRaw('store_id,product_id,products.name,products.article,products.measure,price,SUM(count) as count,SUM(all_price) as all_price,orders.user_id')
             ->groupBy('store_id','product_id','price','orders.user_id')
             ->orderBy('products.name')
             ->orderBy('store_id')

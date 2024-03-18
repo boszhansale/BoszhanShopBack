@@ -46,7 +46,9 @@
                     <th></th>
                     <th>ТТ</th>
                     <th>Продавец</th>
+                    <th>Артикул</th>
                     <th>позиция</th>
+                    <th>ед.</th>
                     <th>кол.</th>
                     <th>цена</th>
                     <th>сумма</th>
@@ -67,7 +69,9 @@
                                 <a href="{{route('admin.store.show',$order->store_id)}}">{{$order->store->name}}</a>
                             </td>
                             <td>{{$order->user->name}}</td>
+                            <td>{{$order->article}}</td>
                             <td>{{$order->name}}</td>
+                            <td>{{$order->measure == 1 ?'шт':'кг'}}</td>
 {{--                            <td>--}}
 {{--                                <a href="{{route('admin.user.show',$order->user_id)}}">{{$order->user->name}}</a>--}}
 {{--                            </td>--}}
