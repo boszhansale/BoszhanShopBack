@@ -15,6 +15,7 @@ class StoreController extends Controller
     {
 
         $stores = Store::query()
+            ->select(['stores.id','stores.name'])
             ->join('user_stores', 'user_stores.store_id', '=', 'stores.id')
             ->where('user_stores.user_id', Auth::id())
             ->get();
@@ -35,8 +36,20 @@ class StoreController extends Controller
             if (!$userStore){
                 throw new \Exception("not found store");
             }
-
             $user = Auth::user();
+
+            $oldUserStore = UserStore::query()
+                ->where('user_id', Auth::id())
+                ->where('store_id', Auth::user()->store_id)
+                ->first();
+
+            if ($oldUserStore){
+                $oldUserStore->webkassa_token = $user->webkassa_token;
+                $oldUserStore->webkassa_login_at = $user->webkassa_login_at;
+                $oldUserStore->save();
+            }
+
+
             $user->store_id = $request->store_id;
             $user->webkassa_login = $userStore->webkassa_login;
             $user->webkassa_token = $userStore->webkassa_token;
