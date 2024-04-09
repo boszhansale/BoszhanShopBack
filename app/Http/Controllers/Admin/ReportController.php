@@ -144,7 +144,6 @@ class ReportController extends Controller
 //            Остатки на конец = remains_end
 
 
-
         return view('admin.report.product',compact('store'));
     }
 }

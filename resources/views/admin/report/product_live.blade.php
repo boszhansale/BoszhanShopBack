@@ -15,17 +15,17 @@
                 <thead>
                 <tr>
                     <th>Название</th>
-                    <th>Остат нач</th>
+{{--                    <th>Остат нач</th>--}}
                     <th>Поступило</th>
                     <th>Возв от покуп</th>
-                    <th>Излишки</th>
-                    <th>Пеоем со скл</th>
+{{--                    <th>Излишки</th>--}}
+                    <th>Перем со скл</th>
                     <th>Списано общее</th>
-                    <th>Списание</th>
+{{--                    <th>Списание</th>--}}
                     <th>Возв постав</th>
                     <th>Продажи</th>
-                    <th>Перем со скл</th>
-                    <th>Остат конец</th>
+                    <th>Перем на скл</th>
+                    <th>остаток</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -33,24 +33,24 @@
                     <tr>
                         <td>
                             <a href="{{route('admin.product.show',$report['id'])}}">
-                                {{$report['product_name']}}
+                                {{$report['name']}}
                             </a>
                         </td>
 
-                        <td>{{$report['remains_start']}}</td>
-                        <td>{{$report['receipt_all']}}</td>
+{{--                        <td>{{$report['remains_start']}}</td>--}}
+                        <td>{{$report['receipt']}}</td>
                         <td>{{$report['refund']}}</td>
-                        <td>{{$report['overage']}}</td>
+{{--                        <td>{{$report['overage']}}</td>--}}
 
                         <td>{{$report['moving_from']}}</td>
 
                         <td>{{$report['reject']}}</td>
-                        <td>{{$report['reject_all']}}</td>
+{{--                        <td>{{$report['reject_all']}}</td>--}}
                         <td>{{$report['refund_producer']}}</td>
 
-                        <td>{{$report['order']}}</td>
+                        <td>{{$report['sale']}}</td>
                         <td>{{$report['moving_to']}}</td>
-                        <td>{{$report['remains_end']}}</td>
+                        <td>{{$report['remains']}}</td>
                     </tr>
                 @endforeach
                 </tbody>

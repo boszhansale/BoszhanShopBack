@@ -68,7 +68,43 @@
                 </div>
 
             </div>
-
+            <hr>
+            <div class="col-md-12">
+               <div class="card">
+                   <div class="card-header">
+                       <h4>Доступы</h4>
+                   </div>
+                 <div class="card-body">
+                     <table class="table">
+                         <thead>
+                         <tr>
+                             <th>магазин</th>
+                             <th>логин webkassa</th>
+                             <th>пароль webkassa</th>
+                             <th>бокс</th>
+                         </tr>
+                         </thead>
+                         <tbody>
+                         @foreach($userStores as $userStore)
+                             <tr>
+                                <td>{{$userStore['store_name']}}</td>
+                                <td><input name="user_stores[{{$userStore['store_id']}}][webkassa_login]" type="text" class="form-control" value="{{$userStore['user_store']?->webkassa_login}}"></td>
+                                <td><input name="user_stores[{{$userStore['store_id']}}][webkassa_password]" type="text" class="form-control" value="{{$userStore['user_store']?->webkassa_password}}"></td>
+                                <td>
+                                    <select name="user_stores[{{$userStore['store_id']}}][webkassa_cash_box_id]" class="form-control">
+                                        <option value=""></option>
+                                        @foreach($cashboxes as $cashbox)
+                                            <option {{$userStore['user_store']?->webkassa_cash_box_id == $cashbox->id ?'selected':''}} value="{{$cashbox->id}}">{{$cashbox->unique_number}}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                             </tr>
+                         @endforeach
+                         </tbody>
+                     </table>
+                 </div>
+               </div>
+            </div>
 
         </div>
         <button type="submit" class="mt-5 mb-10 btn btn-primary col-3 ">Сохранить</button>

@@ -19,6 +19,7 @@ use App\Models\Storage;
 use App\Models\Store;
 use App\Models\SupervisorSalesrep;
 use App\Models\User;
+use App\Models\UserStore;
 use App\Models\WebkassaCashBox;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -78,16 +79,47 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
-        $stores = Store::orderBy('name')->get();
+        $stores = Store::orderBy('name')->whereNotNull('warehouse_in')->get();
         $storages = Storage::orderBy('name')->get();
+        $userStores = [];
+        foreach ($stores as $i => $store) {
+            $userStores[$i]['store_id'] = $store->id;
+            $userStores[$i]['store_name'] = $store->name;
+            $userStores[$i]['user_store'] = UserStore::query()
+                ->where('user_id', $user->id)
+                ->where('store_id', $store->id)
+                ->first();
+        }
 
-        return view('admin.user.edit', compact('user', 'stores','storages' ));
+        $cashboxes = WebkassaCashBox::latest()->get();
+        return view('admin.user.edit', compact('user', 'stores','storages','cashboxes','userStores'));
     }
 
     public function update(UserUpdateRequest $request, User $user)
     {
 
-        $user->update($request->validated());
+//        $user->update($request->validated());
+
+        if ($request->has('user_stores')){
+            foreach ($request->get('user_stores') as $storeId => $value) {
+                if ($value['webkassa_login'] AND $value['webkassa_password'] AND $value['webkassa_cash_box_id']){
+                    UserStore::updateOrCreate([
+                        'user_id' => $user->id,
+                        'store_id' => $storeId,
+                    ],[
+                        'webkassa_login' => $value['webkassa_login'],
+                        'webkassa_password' => $value['webkassa_password'],
+                        'webkassa_cash_box_id' => $value['webkassa_cash_box_id'],
+
+                    ]);
+                }else{
+                    UserStore::query()
+                        ->where('user_id', $user->id)
+                        ->where('store_id', $storeId)
+                        ->delete();
+                }
+            }
+        }
 
         return redirect()->back();
     }

@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Store;
+use App\Models\UserStore;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class StoreController extends Controller
 {
@@ -13,44 +15,47 @@ class StoreController extends Controller
     {
 
         $stores = Store::query()
-            ->leftJoin('store_salesreps', 'store_salesreps.store_id', 'stores.id')
-            ->where(function ($q) {
-                return $q->where('stores.salesrep_id', Auth::id())->orWhere('store_salesreps.salesrep_id', Auth::id());
-            })
-            ->when($request->has('counteragent'), function ($query) {
-                if (\request('counteragent') == 1) {
-                    return $query->whereNotNull('counteragent_id');
-                } else {
-                    return $query->whereNull('counteragent_id');
-                }
-            })
-            ->when($request->has('counteragent_id'), function ($q) {
-                return $q->where('counteragent_id', \request('counteragent_id'));
-            })
-            ->groupBy('stores.id')
-            ->orderBy('stores.name')
-            ->with(['salesrep', 'counteragent'])
-            ->select('stores.*')
+            ->join('user_stores', 'user_stores.store_id', '=', 'stores.id')
+            ->where('user_stores.user_id', Auth::id())
             ->get();
-
 
         return response()->json($stores);
     }
 
-    public function store(StoreStoreRequest $request)
+    public function save(Request $request)
     {
-        $store = Auth::user()->stores()->create($request->validated());
+        DB::beginTransaction();
 
-        $store->id_sell = 300000000000000 + $store->id;
-        $store->save();
+        try {
+            $userStore = UserStore::query()
+                ->where('user_id', Auth::id())
+                ->where('store_id', $request->store_id)
+                ->latest()
+                ->first();
+            if (!$userStore){
+                throw new \Exception("not found store");
+            }
 
-        return response()->json(Store::with(['salesrep', 'counteragent'])->find($store->id));
-    }
+            $user = Auth::user();
+            $user->store_id = $request->store_id;
+            $user->webkassa_login = $userStore->webkassa_login;
+            $user->webkassa_token = $userStore->webkassa_token;
+            $user->webkassa_password = $userStore->webkassa_password;
+            $user->webkassa_login_at = $userStore->webkassa_login_at;
+            $user->webkassa_cash_box_id = $userStore->webkassa_cash_box_id;
+            $user->save();
 
-    public function update(StoreUpdateRequest $request, Store $store)
-    {
-        $store->update($request->validated());
+            DB::commit();
+            return response(['message' => 'success'],200);
 
-        return response()->json($store);
+
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return response(['message' => $exception->getMessage()],400);
+        } catch (\Throwable $e) {
+            return response(['message' => $e->getMessage()],500);
+        }
+
+
     }
 }

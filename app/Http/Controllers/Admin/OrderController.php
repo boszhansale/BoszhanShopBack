@@ -44,7 +44,9 @@ class OrderController extends Controller
 
     public function productExcel(Request $request)
     {
-        $orders = Order::query()
+        $startCreatedAt = $request->get('start_created_at');
+        $endCreatedAt = $request->get('end_created_at');
+        $query = Order::query()
 //            ->join('stores', 'stores.id', 'orders.store_id')
             ->join('order_products','order_products.order_id','orders.id')
             ->join('products','products.id','order_products.product_id')
@@ -58,19 +60,23 @@ class OrderController extends Controller
             ->when($request->get('store_id'), function ($q) {
                 return $q->where('orders.store_id', \request('store_id'));
             })
-            ->when($request->get('start_created_at'), function ($q) {
+            ->when($startCreatedAt, function ($q) {
                 return $q->whereDate('orders.created_at', '>=', \request('start_created_at'));
             })
-            ->when($request->get('end_created_at'), function ($q) {
+            ->when($endCreatedAt, function ($q) {
                 return $q->whereDate('orders.created_at', '<=', \request('end_created_at'));
-            })
-            ->selectRaw('store_id,product_id,products.name,products.article,products.measure,price,SUM(count) as count,SUM(all_price) as all_price,orders.user_id')
+            });
+
+
+        $totalPrice = $query->sum('all_price');
+        $count = $query->sum('order_products.count');
+        $orders  = $query ->selectRaw('store_id,product_id,products.name,products.article,products.measure,price,SUM(count) as count,SUM(all_price) as all_price,orders.user_id')
             ->groupBy('store_id','product_id','price','orders.user_id')
             ->orderBy('products.name')
-            ->orderBy('store_id')
-            ->get();
+            ->orderBy('store_id')->get();
 
-        return Excel::download(new OrderProductExcelExport($orders), 'order_products.xlsx');
+        $fileName = 'order_products_'.$startCreatedAt.'_'.$startCreatedAt.'.xlsx';
+        return Excel::download(new OrderProductExcelExport($orders,$count,$totalPrice,$startCreatedAt,$endCreatedAt), $fileName);
 
 
     }

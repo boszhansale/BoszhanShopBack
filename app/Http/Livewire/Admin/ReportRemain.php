@@ -107,7 +107,7 @@ class ReportRemain extends Component
                     "GROUP BY order_products.product_id) AS orderProduct"),
                 'orderProduct.product_id', '=', 'products.id'
             )
-            ->orderBy('remains', 'desc')
+            ->orderBy('products.name')
             ->groupBy('products.id')
             ->having('remains', '<>', 0)
             ->get();

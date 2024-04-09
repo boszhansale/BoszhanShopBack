@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\RefundProducerController;
 use App\Http\Controllers\Api\RejectController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\StorageController;
+use App\Http\Controllers\Api\StoreController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\WebkassaController;
 use App\Http\Controllers\TestController;
@@ -148,5 +149,9 @@ Route::middleware('auth:sanctum')->group(function (){
 
         Route::get('z',[ReportController::class,'zReport']);
         Route::get('z/{report}/print',[ReportController::class,'zReportPrint'])->withoutMiddleware('auth:sanctum');
+    });
+    Route::prefix('store')->group(function (){
+        Route::get('/',[StoreController::class,'index']);
+        Route::post('/',[StoreController::class,'save']);
     });
 });
