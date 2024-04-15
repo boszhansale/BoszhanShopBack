@@ -58,7 +58,7 @@ class Handler extends ExceptionHandler
         }
 
         if (str_starts_with($request->path(), 'admin/')) {
-            return redirect()->guest('admin/login');
+            return redirect()->guest('admin');
         }
 
         return redirect()->guest('asdsdad');

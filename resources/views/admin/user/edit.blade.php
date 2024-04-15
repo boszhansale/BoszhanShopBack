@@ -27,7 +27,7 @@
 
                 <div class="form-group">
                     <label for="">Новый Пароль</label>
-                    <input type="text" class="form-control" name="phone" >
+                    <input type="text" class="form-control" name="password" >
                 </div>
 
                 <div class="form-group">
