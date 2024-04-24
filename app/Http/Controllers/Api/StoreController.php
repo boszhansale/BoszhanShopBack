@@ -33,29 +33,31 @@ class StoreController extends Controller
                 ->where('store_id', $request->store_id)
                 ->latest()
                 ->first();
+
             if (!$userStore){
                 throw new \Exception("not found store");
             }
             $user = Auth::user();
 
-            $oldUserStore = UserStore::query()
-                ->where('user_id', Auth::id())
-                ->where('store_id', Auth::user()->store_id)
-                ->first();
-
-            if ($oldUserStore){
-                $oldUserStore->webkassa_token = $user->webkassa_token;
-                $oldUserStore->webkassa_login_at = $user->webkassa_login_at;
-                $oldUserStore->save();
-            }
+//            $oldUserStore = UserStore::query()
+//                ->where('user_id', Auth::id())
+//                ->where('store_id', Auth::user()->store_id)
+//                ->first();
+//
+//            if ($oldUserStore){
+//                $oldUserStore->webkassa_token = $user->webkassa_token;
+//                $oldUserStore->webkassa_login_at = $user->webkassa_login_at;
+//                $oldUserStore->save();
+//            }
 
 
             $user->store_id = $request->store_id;
             $user->webkassa_login = $userStore->webkassa_login;
-            $user->webkassa_token = $userStore->webkassa_token;
             $user->webkassa_password = $userStore->webkassa_password;
-            $user->webkassa_login_at = $userStore->webkassa_login_at;
             $user->webkassa_cash_box_id = $userStore->webkassa_cash_box_id;
+
+            $user->webkassa_token = null;
+            $user->webkassa_login_at = null;
             $user->save();
 
             DB::commit();

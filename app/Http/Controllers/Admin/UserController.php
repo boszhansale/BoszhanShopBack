@@ -97,7 +97,6 @@ class UserController extends Controller
 
     public function update(UserUpdateRequest $request, User $user)
     {
-
         $user->update($request->validated());
 
         if ($request->has('user_stores')){

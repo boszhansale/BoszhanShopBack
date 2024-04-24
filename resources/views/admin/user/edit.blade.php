@@ -64,7 +64,17 @@
 
                 <div class="form-group">
                     <label for="">webkassa_cash_box_id</label>
-                    <input type="text" class="form-control" name="webkassa_cash_box_id"  value="{{$user->webkassa_cash_box_id}}">
+{{--                    <input type="text" class="form-control" name="webkassa_cash_box_id"  value="{{$user->webkassa_cash_box_id}}">--}}
+
+                    <select name="webkassa_cash_box_id" class="form-control">
+                        @foreach($cashboxes as $cashbox)
+                            <option {{$user->webkassa_cash_box_id == $cashbox->id ?'selected':''}} value="{{$cashbox->id}}">{{$cashbox->unique_number}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="">webkassa_token</label>
+                    <input type="text" class="form-control" name=""  value="{{$user->webkassa_token}}">
                 </div>
 
             </div>
@@ -72,7 +82,7 @@
             <div class="col-md-12">
                <div class="card">
                    <div class="card-header">
-                       <h4>Доступы</h4>
+                       <h4>Шаблон доступов</h4>
                    </div>
                  <div class="card-body">
                      <table class="table">
