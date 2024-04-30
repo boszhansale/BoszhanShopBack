@@ -50,10 +50,10 @@ class WebkassaController extends Controller
         try {
             return response()->json(WebKassaService::ZReport($user));
         } catch (\Exception $e) {
-
-            return  response()->json([
-                'message' => $e->getMessage()
-            ],400);
+            $user->webkassa_token = null;
+            $user->webkassa_login_at = null;
+            $user->save();
+            return  response()->view('message', ['message' => $e->getMessage()]);
         }
     }
 
@@ -70,9 +70,10 @@ class WebkassaController extends Controller
             ]);
             return response()->json($data);
         } catch (\Exception $e) {
-            return  response()->json([
-                'message' => $e->getMessage()
-            ],400);
+            $user->webkassa_token = null;
+            $user->webkassa_login_at = null;
+            $user->save();
+            return  response()->view('message', ['message' => $e->getMessage()]);
         }
     }
 
@@ -88,10 +89,10 @@ class WebkassaController extends Controller
             ]);
             return view('pdf.z-report',compact('data'));
         } catch (\Exception $e) {
-
-            return  response()->json([
-                'message' => $e->getMessage()
-            ],400);
+            $user->webkassa_token = null;
+            $user->webkassa_login_at = null;
+            $user->save();
+            return  response()->view('message', ['message' => $e->getMessage()]);
         }
     }
 
@@ -108,9 +109,12 @@ class WebkassaController extends Controller
 //            ]);
             return view('pdf.x-report',compact('data'));
         } catch (\Exception $e) {
-            return  response()->json([
-                'message' => $e->getMessage()
-            ],400);
+
+            $user->webkassa_token = null;
+            $user->webkassa_login_at = null;
+            $user->save();
+
+            return  response()->view('message', ['message' => $e->getMessage()]);
         }
     }
 }

@@ -461,7 +461,7 @@ class ReportController extends Controller
     {
 
         $reports = Report::query()
-//            ->where('store_id',Auth::user()->store_id)
+            ->where('store_id',Auth::user()->store_id)
             ->where('name','z-report')
             ->latest()
             ->when($request->has('date_from'),function ($q){
