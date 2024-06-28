@@ -60,6 +60,8 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::prefix('user')->group(function (){
         Route::get('/',[UserController::class,'profile']);
         Route::post('update',[UserController::class,'update']);
+        Route::get('cashiers',[UserController::class,'cashiers']);
+        Route::post('change-store',[UserController::class,'changeStore']);
     });
 
     Route::prefix('counteragent')->group(function (){

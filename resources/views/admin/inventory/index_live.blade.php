@@ -50,14 +50,16 @@
                                 <i class="fas fa-folder">
                                 </i>
                             </a>
-                            <a class="btn btn-danger btn-sm" href="{{route('admin.inventory.delete',$inventory->id)}}">
-                                <i class="fas fa-trash">
-                                </i>
-                            </a>
-                            <a class="btn btn-warning btn-sm" href="{{route('admin.inventory.edit',$inventory->id)}}">
-                                <i class="fas fa-pencil-alt">
-                                </i>
-                            </a>
+                            @if(Auth::id() == 1)
+                                <a class="btn btn-danger btn-sm" href="{{route('admin.inventory.delete',$inventory->id)}}">
+                                    <i class="fas fa-trash">
+                                    </i>
+                                </a>
+                                <a class="btn btn-warning btn-sm" href="{{route('admin.inventory.edit',$inventory->id)}}">
+                                    <i class="fas fa-pencil-alt">
+                                    </i>
+                                </a>
+                            @endif
                         </td>
                         <td>
                             <a href="{{route('admin.store.show',$inventory->store_id)}}">

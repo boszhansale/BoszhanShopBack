@@ -51,14 +51,16 @@
                                     <i class="fas fa-folder">
                                     </i>
                                 </a>
-                                <a class="btn btn-warning btn-sm" href="{{route('admin.receipt.edit',$receipt->id)}}">
-                                    <i class="fas fa-pencil-alt">
-                                    </i>
-                                </a>
-                                <a class="btn btn-danger btn-sm" href="{{route('admin.receipt.delete',$receipt->id)}}">
-                                    <i class="fas fa-trash">
-                                    </i>
-                                </a>
+                              @if(Auth::id() == 1)
+                                    <a class="btn btn-warning btn-sm" href="{{route('admin.receipt.edit',$receipt->id)}}">
+                                        <i class="fas fa-pencil-alt">
+                                        </i>
+                                    </a>
+                                    <a class="btn btn-danger btn-sm" href="{{route('admin.receipt.delete',$receipt->id)}}">
+                                        <i class="fas fa-trash">
+                                        </i>
+                                    </a>
+                              @endif
 
 
                             </td>

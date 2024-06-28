@@ -15,25 +15,35 @@
                     <input type="text" class="form-control" name="name" required value="{{$user->name}}">
                 </div>
 
-                <div class="form-group">
-                    <label for="">Логин</label>
-                    <input type="text" class="form-control" name="login" required value="{{$user->login}}">
-                </div>
+               @if(Auth::id() == 1)
+                        <div class="form-group">
+                            <label for="">Логин</label>
+                            <input type="text" class="form-control" name="login" required value="{{$user->login}}">
+                        </div>
 
-                <div class="form-group">
-                    <label for="">Телефон номер</label>
-                    <input type="text" class="form-control" name="phone" value="{{$user->phone}}">
-                </div>
+                        <div class="form-group">
+                            <label for="">Телефон номер</label>
+                            <input type="text" class="form-control" name="phone" value="{{$user->phone}}">
+                        </div>
 
-                <div class="form-group">
-                    <label for="">Новый Пароль</label>
-                    <input type="text" class="form-control" name="password" >
-                </div>
+                        <div class="form-group">
+                            <label for="">Новый Пароль</label>
+                            <input type="text" class="form-control" name="password" >
+                        </div>
 
-                <div class="form-group">
-                    <label for="">id_1c</label>
-                    <input type="text" class="form-control" name="id_1c" value="{{$user->id_1c}}">
-                </div>
+                        <div class="form-group">
+                            <label for="">id_1c</label>
+                            <input type="text" class="form-control" name="id_1c" value="{{$user->id_1c}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="">склад</label>
+                            <select name="storage_id" class="form-control">
+                                @foreach($storages as $storage)
+                                    <option value="{{$storage->id}}" {{$user->storage_id == $storage->id ? 'selected':''}} >{{$storage->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+               @endif
                 <div class="form-group">
                     <label for="">магазин</label>
                     <select name="store_id" class="form-control">
@@ -42,15 +52,9 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="">склад</label>
-                    <select name="storage_id" class="form-control">
-                        @foreach($storages as $storage)
-                            <option value="{{$storage->id}}" {{$user->storage_id == $storage->id ? 'selected':''}} >{{$storage->name}}</option>
-                        @endforeach
-                    </select>
-                </div>
+
             </div>
+            @if(Auth::id() == 1)
             <div class="col-md-6">
 
                 <div class="form-group">
@@ -115,7 +119,7 @@
                  </div>
                </div>
             </div>
-
+            @endif
         </div>
         <button type="submit" class="mt-5 mb-10 btn btn-primary col-3 ">Сохранить</button>
     </form>

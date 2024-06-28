@@ -61,14 +61,16 @@
                                     <i class="fas fa-folder">
                                     </i>
                                 </a>
-                                <a class="btn btn-warning btn-sm" href="{{route('admin.moving.edit',$moving->id)}}">
-                                    <i class="fas fa-pencil-alt">
-                                    </i>
-                                </a>
-                                <a class="btn btn-danger btn-sm" href="{{route('admin.moving.delete',$moving->id)}}">
-                                    <i class="fas fa-trash">
-                                    </i>
-                                </a>
+                               @if(Auth::id() == 1)
+                                    <a class="btn btn-warning btn-sm" href="{{route('admin.moving.edit',$moving->id)}}">
+                                        <i class="fas fa-pencil-alt">
+                                        </i>
+                                    </a>
+                                    <a class="btn btn-danger btn-sm" href="{{route('admin.moving.delete',$moving->id)}}">
+                                        <i class="fas fa-trash">
+                                        </i>
+                                    </a>
+                               @endif
 
                             </td>
                             <td>

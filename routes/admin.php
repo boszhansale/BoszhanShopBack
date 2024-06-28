@@ -64,6 +64,7 @@ Route::middleware(['admin.check','auth:sanctum'])->group(function (){
         Route::post('store', [ProductController::class, 'store'])->name('store');
         Route::get('edit/{product}', [ProductController::class, 'edit'])->name('edit');
         Route::get('show/{product}', [ProductController::class, 'show'])->name('show');
+        Route::get('info', [ProductController::class, 'info'])->name('info');
         Route::put('update/{product}', [ProductController::class, 'update'])->name('update');
         Route::get('delete/{product}', [ProductController::class, 'delete'])->name('delete');
         Route::get('deleteImage/{productImage}', [ProductController::class, 'deleteImage'])->name('deleteImage');

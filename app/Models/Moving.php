@@ -65,8 +65,8 @@ class Moving extends Model
     ];
 
     const OPERATION = [
-        1 => 'с склада',//in shop out storage
-        2 => 'на склад'// in storage out shop
+        1 => 'с склада',//in shop out storage  || from
+        2 => 'на склад'// in storage out shop || to
     ];
     public $timestamps = false;
 

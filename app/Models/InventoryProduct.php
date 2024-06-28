@@ -64,7 +64,12 @@ class InventoryProduct extends Model
         'overage_price',
         'shortage',
         'shortage_price',
-        'price'
+        'price',
+
+        'between_sale',
+        'between_receipt',
+        'between_moving_from',
+        'between_moving_to',
     ];
     protected $hidden = ['created_at','updated_at'];
 

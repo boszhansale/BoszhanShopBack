@@ -118,7 +118,8 @@ class User extends Authenticatable
         'balance',
         'store_id',
         'storage_id',
-        'organization_id'
+        'organization_id',
+        'role'
     ];
 
     /**
@@ -173,6 +174,10 @@ class User extends Authenticatable
     public function store(): BelongsTo
     {
         return $this->belongsTo(Store::class);
+    }
+    public function stores(): HasMany
+    {
+        return $this->HasMany(UserStore::class);
     }
     public function webkassaCashBox(): BelongsTo
     {

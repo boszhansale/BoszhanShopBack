@@ -244,4 +244,9 @@ class ProductController extends Controller
 
         return redirect()->back()->with('успешно');
     }
+
+    public function info(Request $request)
+    {
+        return view('admin.product.info');
+    }
 }

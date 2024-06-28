@@ -20,6 +20,14 @@
                                 <th>артикул</th>
                                 <td>{{$product->article}}</td>
                             </tr>
+                            <tr>
+                                <th>бренд</th>
+                                <td>{{$product->category->brand->name}}</td>
+                            </tr>
+                            <tr>
+                                <th>категория</th>
+                                <td>{{$product->category->name}}</td>
+                            </tr>
                         </table>
                     </div>
                 </div>
