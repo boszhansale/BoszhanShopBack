@@ -5,14 +5,7 @@
         @csrf
         <div class="row">
             <div class="col-md-4">
-                <div class="form-group">
-                    <label for=""></label>
-                    <select name="price_type_id" class="form-control">
-                        @foreach($priceTypes as $priceType)
-                            <option value="{{$priceType->id}}">{{$priceType->name}}</option>
-                        @endforeach
-                    </select>
-                </div>
+                <input type="hidden" name="price_type_id" value="3">
                 <div class="form-group">
                     <label for="">Excel файл</label>
                     <input type="file" multiple name="price" class="form-control"

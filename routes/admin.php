@@ -60,6 +60,7 @@ Route::middleware(['admin.check','auth:sanctum'])->group(function (){
     });
     Route::prefix('product')->name('product.')->group(function () {
         Route::get('/', [ProductController::class, 'index'])->name('index');
+        Route::any('price-parse', [ProductController::class, 'priceParse'])->name('priceParse');
         Route::get('create', [ProductController::class, 'create'])->name('create');
         Route::post('store', [ProductController::class, 'store'])->name('store');
         Route::get('edit/{product}', [ProductController::class, 'edit'])->name('edit');

@@ -29,7 +29,7 @@ class UserController extends Controller
         $cashiers = User::query()
             ->where('role', 'cashier')
             ->where('status',1)
-            ->with(['store','stores'])
+            ->with(['store','stores.store'])
             ->get();
 
         return response()->json($cashiers);
