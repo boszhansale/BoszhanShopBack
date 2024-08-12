@@ -50,7 +50,7 @@
                                 <i class="fas fa-folder">
                                 </i>
                             </a>
-                            @if(Auth::id() == 1)
+{{--                            @if(Auth::id() == 1)--}}
                                 <a class="btn btn-danger btn-sm" href="{{route('admin.inventory.delete',$inventory->id)}}">
                                     <i class="fas fa-trash">
                                     </i>
@@ -59,7 +59,7 @@
                                     <i class="fas fa-pencil-alt">
                                     </i>
                                 </a>
-                            @endif
+{{--                            @endif--}}
                         </td>
                         <td>
                             <a href="{{route('admin.store.show',$inventory->store_id)}}">
