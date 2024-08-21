@@ -62,8 +62,6 @@
             <span>сумма: {{$orderInfo?->total_price}} </span>
         </a>
     @endif
-
-
     <div class="collapse multi-collapse" id="orders">
         <div class="card">
             <div class="card-header">
@@ -102,6 +100,50 @@
         </div>
 
     </div>
+
+    @if(count($refunds) > 0)
+        <a class="btn btn-primary" data-toggle="collapse" href="#refunds" role="button" aria-expanded="false"
+           aria-controls="refunds">
+            Возвраты
+        </a>
+    @endif
+    <div class="collapse multi-collapse" id="refunds">
+        <div class="card">
+            <div class="card-header">
+                Возвраты
+            </div>
+            <div class=" card-body">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>номер</th>
+                        <th>дата</th>
+                        <th>магазин</th>
+                        <th>продавец</th>
+                        <th>кол.</th>
+                        <th>цена</th>
+                        <th>сумма</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($refunds as $refund)
+                        <tr>
+                            <td><a href="{{route('admin.refund.show',$refund->id)}}" target="_blank">{{$refund->id}}</a></td>
+                            <td>{{$refund->created_at}}</td>
+                            <td>{{$refund->store_name}}</td>
+                            <td>{{$refund->user_name}}</td>
+                            <td>{{$refund->count}}</td>
+                            <td>{{$refund->price}}</td>
+                            <td>{{$refund->all_price}}</td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
     @if(count($inventories) > 0)
         <a class="btn btn-primary" data-toggle="collapse" href="#inventories" role="button" aria-expanded="false"
            aria-controls="inventories">инвентаризация</a>

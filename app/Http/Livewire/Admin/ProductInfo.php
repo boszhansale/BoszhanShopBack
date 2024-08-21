@@ -8,6 +8,7 @@ use App\Models\Inventory;
 use App\Models\Moving;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Refund;
 use App\Models\Store;
 use App\Models\User;
 use Livewire\Component;
@@ -34,6 +35,7 @@ class ProductInfo extends Component
     public $users = [];
 
     public $orders = [];
+    public $refunds = [];
     public $movingFrom = [];
     public $movingTo = [];
     public $orderInfo;
@@ -79,6 +81,21 @@ class ProductInfo extends Component
                ->whereNotNull('orders.check_number')
                ->selectRaw('orders.id,stores.name as store_name,users.name as user_name,order_products.price,order_products.count,order_products.all_price,discount_price,orders.created_at')
                ->orderBy('orders.id', 'desc')
+               ->get();
+           $this->refunds = Refund::query()
+               ->join('refund_products', 'refunds.id', '=', 'refund_products.refund_id')
+               ->join('stores', 'stores.id', '=', 'refunds.store_id')
+               ->join('users', 'users.id', '=', 'refunds.user_id')
+               ->where('refund_products.product_id', $this->product_id)
+               ->when( $this->store_id,function ($query){
+                    $query->where('stores.id', $this->store_id);
+                })
+               ->when($this->user_id,function ($query){
+                   $query->where('users.id', $this->user_id);
+               })
+               ->whereNotNull('refunds.check_number')
+               ->selectRaw('refunds.id,stores.name as store_name,users.name as user_name,refund_products.price,refund_products.count,refund_products.all_price,refunds.created_at')
+               ->orderBy('refunds.id', 'desc')
                ->get();
            $this->orderInfo = Order::query()
                ->join('order_products', 'orders.id', '=', 'order_products.order_id')
