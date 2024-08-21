@@ -8,6 +8,7 @@ use App\Models\Inventory;
 use App\Models\Moving;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Receipt;
 use App\Models\Refund;
 use App\Models\Store;
 use App\Models\User;
@@ -35,7 +36,9 @@ class ProductInfo extends Component
     public $users = [];
 
     public $orders = [];
+
     public $refunds = [];
+    public $receipts = [];
     public $movingFrom = [];
     public $movingTo = [];
     public $orderInfo;
@@ -114,6 +117,20 @@ class ProductInfo extends Component
                ->selectRaw('SUM(order_products.count) as total_count,SUM(order_products.all_price) as total_price')
                ->first();
 
+           $this->receipts = Receipt::query()
+               ->join('receipt_products', 'receipts.id', '=', 'receipt_products.receipt_id')
+               ->join('stores', 'stores.id', '=', 'receipts.store_id')
+               ->join('users', 'users.id', '=', 'receipts.user_id')
+               ->where('receipt_products.product_id', $this->product_id)
+               ->when( $this->store_id,function ($query){
+                   $query->where('stores.id', $this->store_id);
+               })
+               ->when($this->user_id,function ($query){
+                   $query->where('users.id', $this->user_id);
+               })
+               ->selectRaw('receipts.id,stores.name as store_name,users.name as user_name,receipt_products.price,receipt_products.count,receipt_products.all_price,receipts.created_at')
+               ->orderBy('receipts.id', 'desc')
+               ->get();
 
            $this->inventories = Inventory::query()
                ->join('inventory_products', 'inventories.id', '=', 'inventory_products.inventory_id')

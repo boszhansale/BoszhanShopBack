@@ -143,6 +143,48 @@
         </div>
 
     </div>
+    @if(count($receipts) > 0)
+        <a class="btn btn-primary" data-toggle="collapse" href="#receipts" role="button" aria-expanded="false"
+           aria-controls="receipts">
+            Поступление
+        </a>
+    @endif
+    <div class="collapse multi-collapse" id="receipts">
+        <div class="card">
+            <div class="card-header">
+                Поступление
+            </div>
+            <div class=" card-body">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>номер</th>
+                        <th>дата</th>
+                        <th>магазин</th>
+                        <th>продавец</th>
+                        <th>кол.</th>
+                        <th>цена</th>
+                        <th>сумма</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($receipts as $receipt)
+                        <tr>
+                            <td><a href="{{route('admin.receipt.show',$receipt->id)}}" target="_blank">{{$receipt->id}}</a></td>
+                            <td>{{$receipt->created_at}}</td>
+                            <td>{{$receipt->store_name}}</td>
+                            <td>{{$receipt->user_name}}</td>
+                            <td>{{$receipt->count}}</td>
+                            <td>{{$receipt->price}}</td>
+                            <td>{{$receipt->all_price}}</td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
 
     @if(count($inventories) > 0)
         <a class="btn btn-primary" data-toggle="collapse" href="#inventories" role="button" aria-expanded="false"
