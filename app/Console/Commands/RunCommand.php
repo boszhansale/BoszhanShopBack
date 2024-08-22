@@ -53,7 +53,7 @@ class RunCommand extends Command
 //            $order->save();
 //        }
 //        dd(WebKassaService::authorize(User::find(2503)));
-        $store_id = 6;
+        $store_id = 5;
         $inventories = Inventory::query()
             ->where('store_id', $store_id)
             ->where('status', 2)

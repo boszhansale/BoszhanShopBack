@@ -109,7 +109,7 @@ class ReportRemain extends Component
             )
             ->orderBy('products.name')
             ->groupBy('products.id')
-            ->having('remains', '<>', 0)
+//            ->having('remains', '<>', 0)
             ->get();
 
         return view('admin.report.remain_live', [
