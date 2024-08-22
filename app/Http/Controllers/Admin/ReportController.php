@@ -103,7 +103,6 @@ class ReportController extends Controller
             )
             ->orderBy('remains', 'desc')
             ->groupBy('products.id')
-            ->having('remains', '<>', 0)
             ->get();
 
         return Excel::download(new RemainExcelExport($remains), 'remains.xlsx');

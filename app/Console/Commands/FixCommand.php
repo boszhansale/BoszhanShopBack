@@ -24,6 +24,8 @@ class FixCommand extends Command
      */
     protected $signature = 'app:fix';
 
+    protected $storeId = 4;
+    protected $end_date;
     /**
      * The console command description.
      *
@@ -36,7 +38,8 @@ class FixCommand extends Command
      */
     function handle()
     {
-        $storeId = 4;
+        $this->storeId = 6;
+//        $this->end_date = '2023-05-31';
         $remains = DB::table('products')
             ->select('products.name', 'products.id AS product_id', 'id_1c', 'measure', 'article',
                 DB::raw('COALESCE(moving_from.sum_count, 0) AS moving_from'),
@@ -51,71 +54,69 @@ class FixCommand extends Command
             )
             ->leftJoin(
                 DB::raw("(SELECT moving_products.product_id, SUM(moving_products.count) AS sum_count
-                FROM moving_products
-                INNER JOIN movings ON movings.id = moving_products.moving_id
-                WHERE movings.operation = 1
-                AND movings.store_id = $storeId
-                GROUP BY moving_products.product_id) AS moving_from"),
+            FROM moving_products
+            INNER JOIN movings ON movings.id = moving_products.moving_id
+            WHERE movings.operation = 1
+            AND movings.store_id = $this->storeId
+            " . ($this->end_date ? "AND DATE(movings.created_at) <= '$this->end_date' " : "") .
+                    "GROUP BY moving_products.product_id) AS moving_from"),
                 'moving_from.product_id', '=', 'products.id'
             )
             ->leftJoin(
                 DB::raw("(SELECT moving_products.product_id, SUM(moving_products.count) AS sum_count
-                FROM moving_products
-                INNER JOIN movings ON movings.id = moving_products.moving_id
-                WHERE movings.operation = 2
-                AND movings.store_id = $storeId
-                GROUP BY moving_products.product_id) AS moving_to"),
+            FROM moving_products
+            INNER JOIN movings ON movings.id = moving_products.moving_id
+            WHERE movings.operation = 2
+            AND movings.store_id = $this->storeId
+            " .  ($this->end_date ? "AND DATE(movings.created_at) <= '$this->end_date' " : "") .
+                    "GROUP BY moving_products.product_id) AS moving_to"),
                 'moving_to.product_id', '=', 'products.id'
             )
-//            ->leftJoin(
-//                DB::raw("(SELECT refund_products.product_id, SUM(refund_products.count) AS sum_count
-//                FROM refund_products
-//                INNER JOIN refunds ON refunds.id = refund_products.refund_id
-//                WHERE refunds.store_id = $storeId
-//            " . ($this->end_date ? "AND refunds.created_at <= '$this->end_date' " : "") .
-//                    "GROUP BY refund_products.product_id) AS refund"),
-//                'refund.product_id', '=', 'products.id'
-//            )
             ->leftJoin(
                 DB::raw("(SELECT reject_products.product_id, SUM(reject_products.count) AS sum_count
-                    FROM reject_products
-                    INNER JOIN rejects ON rejects.id = reject_products.reject_id
-                    WHERE rejects.store_id = $storeId
-                    GROUP BY reject_products.product_id) AS reject"),
+            FROM reject_products
+            INNER JOIN rejects ON rejects.id = reject_products.reject_id
+            WHERE rejects.store_id = $this->storeId
+            " .  ($this->end_date ? "AND DATE(rejects.created_at) <= '$this->end_date' " : "") .
+                    "GROUP BY reject_products.product_id) AS reject"),
                 'reject.product_id', '=', 'products.id'
             )
             ->leftJoin(
                 DB::raw("(SELECT refund_producer_products.product_id, SUM(refund_producer_products.count) AS sum_count
-                    FROM refund_producer_products
-                    INNER JOIN refund_producers ON refund_producers.id = refund_producer_products.refund_producer_id
-                    WHERE refund_producers.store_id = $storeId
-                    GROUP BY refund_producer_products.product_id) AS refund_producer"),
+            FROM refund_producer_products
+            INNER JOIN refund_producers ON refund_producers.id = refund_producer_products.refund_producer_id
+            WHERE refund_producers.store_id = $this->storeId
+            " . ($this->end_date ? "AND DATE(refund_producers.created_at) <= '$this->end_date' " : "") .
+                    "GROUP BY refund_producer_products.product_id) AS refund_producer"),
                 'refund_producer.product_id', '=', 'products.id'
             )
             ->leftJoin(
                 DB::raw("(SELECT receipt_products.product_id, SUM(receipt_products.count) AS sum_count
-                FROM receipt_products
-                JOIN receipts ON receipts.id = receipt_products.receipt_id
-                WHERE receipts.store_id = $storeId
-                GROUP BY receipt_products.product_id) AS receipt"),
+        FROM receipt_products
+        JOIN receipts ON receipts.id = receipt_products.receipt_id
+        WHERE receipts.store_id = $this->storeId
+        " . ($this->end_date ? "AND DATE(receipts.created_at) <= '$this->end_date' " : "") .
+                    "GROUP BY receipt_products.product_id) AS receipt"),
                 'receipt.product_id', '=', 'products.id'
             )
             ->leftJoin(
                 DB::raw("(SELECT order_products.product_id, SUM(order_products.count) AS sum_count
-                    FROM order_products
-                    JOIN orders ON orders.id  = order_products.order_id
-                    WHERE orders.store_id = $storeId
-                    AND orders.check_number IS NOT NULL
-                    GROUP BY order_products.product_id) AS orderProduct"),
+        FROM order_products
+        JOIN orders ON orders.id  = order_products.order_id
+        WHERE orders.store_id = $this->storeId
+        AND orders.check_number IS NOT NULL
+
+        " . ($this->end_date ? "AND DATE(orders.created_at) <= '$this->end_date' " : "") .
+                    "GROUP BY order_products.product_id) AS orderProduct"),
                 'orderProduct.product_id', '=', 'products.id'
             )
-            ->orderBy('products.name')
+            ->orderBy('remains', 'desc')
             ->groupBy('products.id')
-            ->having('remains', '<', 0)
+            ->having("remains","<", 0)
             ->get();
 
         $receipt = New Receipt();
-        $receipt->store_id = $storeId;
+        $receipt->store_id = $this->storeId;
         $receipt->user_id = 1;
         $receipt->created_at = now()->subYears(3);
         $receipt->description = 'Превышение остатков';
