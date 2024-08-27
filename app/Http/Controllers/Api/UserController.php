@@ -18,22 +18,25 @@ class UserController extends Controller
     {
         return response()->json(new UserResource(Auth::user()));
     }
+
     public function update(UserUpdateRequest $request)
     {
         $user = Auth::user()->update($request->validated());
 
         return response()->json(new UserResource($user));
     }
+
     public function cashiers(Request $request)
     {
         $cashiers = User::query()
             ->where('role', 'cashier')
-            ->where('status',1)
-            ->with(['store','stores.store'])
+            ->where('status', 1)
+            ->with(['store', 'stores.store'])
             ->get();
 
         return response()->json($cashiers);
     }
+
     public function changeStore(Request $request)
     {
         try {
@@ -45,7 +48,7 @@ class UserController extends Controller
 
             $storeId = $request->get('store_id');
 
-            $userStore = $user->stores()->where('store_id',$storeId)->first();
+            $userStore = $user->stores()->where('store_id', $storeId)->first();
             if (!$userStore) throw new \Exception("нет доступа ТТ");
 
 
@@ -59,12 +62,12 @@ class UserController extends Controller
             $user->save();
             $user->tokens()->delete();
             DB::commit();
-            return response(['message' => 'success'],200);
+            return response(['message' => 'success'], 200);
 
 
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             DB::rollBack();
-            return response()->json($exception->getMessage(),404);
+            return response()->json($exception->getMessage(), 404);
         }
     }
 

@@ -23,43 +23,43 @@ class WebkassaController extends Controller
             ]);
         } catch (\Exception $e) {
 
-            return  response()->json([
+            return response()->json([
                 'message' => $e->getMessage()
-            ],400);
+            ], 400);
         }
     }
 
     public function moneyOperation(WebkassaMoneyOperationRequest $request)
     {
-        $user= \Auth::user();
+        $user = \Auth::user();
         try {
             return response()->json([
-                'sum' => WebKassaService::moneyOperation($user,$request->get('operation_type'),$request->get('sum'))
+                'sum' => WebKassaService::moneyOperation($user, $request->get('operation_type'), $request->get('sum'))
             ]);
         } catch (\Exception $e) {
 
-            return  response()->json([
+            return response()->json([
                 'message' => $e->getMessage()
-            ],400);
+            ], 400);
         }
     }
 
     public function ZReport()
     {
-        $user= \Auth::user();
+        $user = \Auth::user();
         try {
             return response()->json(WebKassaService::ZReport($user));
         } catch (\Exception $e) {
             $user->webkassa_token = null;
             $user->webkassa_login_at = null;
             $user->save();
-            return  response()->view('message', ['message' => $e->getMessage()]);
+            return response()->view('message', ['message' => $e->getMessage()]);
         }
     }
 
     public function XReport()
     {
-        $user= \Auth::user();
+        $user = \Auth::user();
         try {
             $data = WebKassaService::XReport($user);
             Report::create([
@@ -73,7 +73,7 @@ class WebkassaController extends Controller
             $user->webkassa_token = null;
             $user->webkassa_login_at = null;
             $user->save();
-            return  response()->view('message', ['message' => $e->getMessage()]);
+            return response()->view('message', ['message' => $e->getMessage()]);
         }
     }
 
@@ -87,12 +87,12 @@ class WebkassaController extends Controller
                 'name' => 'z-report',
                 'body' => $data
             ]);
-            return view('pdf.z-report',compact('data'));
+            return view('pdf.z-report', compact('data'));
         } catch (\Exception $e) {
             $user->webkassa_token = null;
             $user->webkassa_login_at = null;
             $user->save();
-            return  response()->view('message', ['message' => $e->getMessage()]);
+            return response()->view('message', ['message' => $e->getMessage()]);
         }
     }
 
@@ -107,14 +107,14 @@ class WebkassaController extends Controller
 //                'name' => 'x-report',
 //                'body' => $data
 //            ]);
-            return view('pdf.x-report',compact('data'));
+            return view('pdf.x-report', compact('data'));
         } catch (\Exception $e) {
 
             $user->webkassa_token = null;
             $user->webkassa_login_at = null;
             $user->save();
 
-            return  response()->view('message', ['message' => $e->getMessage()]);
+            return response()->view('message', ['message' => $e->getMessage()]);
         }
     }
 }

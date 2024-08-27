@@ -14,7 +14,6 @@ class AuthController extends Controller
         if (Auth::check()) {
             return to_route('admin.main');
         }
-
         return view('admin.login');
     }
 

@@ -113,14 +113,11 @@ class RefundController extends Controller
     public function printCheck(Refund $refund)
     {
         try {
-
-
             $check = WebkassaCheck::where('refund_id',$refund->id)->whereNotNull('check_number')->latest()->first();
             if (!$check)
             {
                 throw new Exception('чек не найден');
             }
-
             $data =  WebKassaService::printFormat(Auth::user(),$check->number);
             return response()->json($data);
         }catch (\Exception $exception){

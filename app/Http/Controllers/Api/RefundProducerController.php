@@ -122,8 +122,6 @@ class RefundProducerController extends Controller
     {
         try {
             $check = WebkassaCheck::where('refund_producer_id',$refundProducer->id)->latest()->first();
-
-
             if (!$check)
             {
                 throw new Exception('чек не найден');

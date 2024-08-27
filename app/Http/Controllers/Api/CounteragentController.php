@@ -14,6 +14,7 @@ class CounteragentController extends Controller
     {
         return response()->json(Counteragent::with('priceType')->get());
     }
+
     public function all(): JsonResponse
     {
         return response()->json(Counteragent::with('priceType')->get());

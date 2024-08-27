@@ -455,7 +455,7 @@ class InventoryController extends Controller
         $inventory = Inventory::findOrFail($request->get('inventory_id'));
         try {
             if ($inventory->status == 2) {
-               throw new Exception('документ уже активен');
+                throw new Exception('документ уже активен');
             }
             $exists = $inventory->products()->where('product_id', $request->get('product_id'))->exists();
             if ($exists) {
@@ -475,7 +475,7 @@ class InventoryController extends Controller
 //            $receiptStoreAction->execute($data);
 
             $product = Product::findOrFail($request->get('product_id'));
-            $priceType = $product->prices()->where('price_type_id',3)->first();
+            $priceType = $product->prices()->where('price_type_id', 3)->first();
             if (!$priceType) throw new Exception("price not found: $product->id");
 
             $inventory->products()->create([

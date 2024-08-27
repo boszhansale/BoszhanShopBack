@@ -58,8 +58,6 @@ class RejectController extends Controller
         {
            return response()->json(['message' => $exception->getMessage()],400);
         }
-
-
     }
 
     public function delete(Reject $reject)

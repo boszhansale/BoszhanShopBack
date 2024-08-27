@@ -15,7 +15,7 @@ class StoreController extends Controller
     {
 
         $stores = Store::query()
-            ->select(['stores.id','stores.name'])
+            ->select(['stores.id', 'stores.name'])
             ->join('user_stores', 'user_stores.store_id', '=', 'stores.id')
             ->where('user_stores.user_id', Auth::id())
             ->get();
@@ -34,7 +34,7 @@ class StoreController extends Controller
                 ->latest()
                 ->first();
 
-            if (!$userStore){
+            if (!$userStore) {
                 throw new \Exception("not found store");
             }
             $user = Auth::user();
@@ -61,14 +61,14 @@ class StoreController extends Controller
             $user->save();
 
             DB::commit();
-            return response(['message' => 'success'],200);
+            return response(['message' => 'success'], 200);
 
 
         } catch (\Exception $exception) {
             DB::rollBack();
-            return response(['message' => $exception->getMessage()],400);
+            return response(['message' => $exception->getMessage()], 400);
         } catch (\Throwable $e) {
-            return response(['message' => $e->getMessage()],500);
+            return response(['message' => $e->getMessage()], 500);
         }
 
 

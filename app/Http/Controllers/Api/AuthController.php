@@ -15,7 +15,7 @@ class AuthController extends Controller
 {
     public function login(AuthLoginRequest $request): JsonResponse
     {
-        if (! Auth::attempt($request->only('login', 'password'))) {
+        if (!Auth::attempt($request->only('login', 'password'))) {
             return response()->json([
                 'message' => 'неверный пароль',
             ], 400);

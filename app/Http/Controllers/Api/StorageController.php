@@ -12,13 +12,10 @@ class StorageController extends Controller
 {
     public function index(Request $request)
     {
-
         $stores = Storage::query()
             ->orderBy('storages.name')
             ->select('storages.*')
             ->get();
-
-
         return response()->json($stores);
     }
 }
