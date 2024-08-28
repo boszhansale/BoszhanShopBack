@@ -1,0 +1,3368 @@
+{
+	"info": {
+		"_postman_id": "cdc3f937-2762-4eef-9fab-5aa86d6bd01b",
+		"name": "Boszhan shop",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24895539",
+		"_collection_link": "https://postman122333.postman.co/workspace/Pana-Workspace~a406e00f-3dab-4537-95e1-bed0dd2b2f77/collection/24895539-cdc3f937-2762-4eef-9fab-5aa86d6bd01b?action=share&source=collection_link&creator=24895539"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "login",
+									"value": "sad@mail.ru",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/api/auth/login",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/auth/logout",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/user/",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"user",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "device_token",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/api/user/update",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cashiers",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "device_token",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/api/user/cashiers",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"cashiers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "changeStore",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "user_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "store_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/api/user/change-store",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"change-store"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "order (продажи)",
+			"item": [
+				{
+					"name": "index",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/order",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "history",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "453|m2PfKm5F0Q0j446Mkvm8fSNlpqldlKWxFcmIzbfsf99577c0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/order/history?date_from=2024-02-09&date_to=2024-02-10",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"order",
+								"history"
+							],
+							"query": [
+								{
+									"key": "date_from",
+									"value": "2023-11-14",
+									"disabled": true
+								},
+								{
+									"key": "date_to",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "6396",
+									"disabled": true
+								},
+								{
+									"key": "payment_type",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "payment_status",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "status",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "date_from",
+									"value": "2024-02-09"
+								},
+								{
+									"key": "date_to",
+									"value": "2024-02-10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"online_sale\": 0,\r\n\"payment_type\": 1,\r\n\"phone\":\"7004448696\",\r\n\"products\": [\r\n{\r\n\"product_id\": 2266,\r\n\"count\": 2\r\n}\r\n\r\n]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/order",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "counteragent_id",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "online_sale",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "payment_type",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "products[0][product_id]",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "products[0][count]",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "products[0][comment]",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "products[0][event]",
+									"value": "update",
+									"description": "update or create or delete",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/api/order/1",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"order",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/order/1",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"order",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "чек",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "149|h308YAqBFCf8iIcen9o8zJ3FsJMTbJbTLTdP5ZHv",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "payments[0][Sum]",
+									"value": "3100.50",
+									"type": "text"
+								},
+								{
+									"key": "payments[0][PaymentType]",
+									"value": "0",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/api/order/check/100",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"order",
+								"check",
+								"100"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "print check format",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/order/print-check/3255",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"order",
+								"print-check",
+								"3255"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "print check format html",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/order/html/3255",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"order",
+								"html",
+								"3255"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "refund (возвраты)",
+			"item": [
+				{
+					"name": "index",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/refund",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"refund"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "history",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/refund/history",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"refund",
+								"history"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "type",
+									"value": "1",
+									"description": "1 2",
+									"type": "text"
+								},
+								{
+									"key": "counteragent_id",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "order_id",
+									"value": "100",
+									"type": "text"
+								},
+								{
+									"key": "payment_type",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "products[0][product_id]",
+									"value": "2599",
+									"type": "text"
+								},
+								{
+									"key": "products[0][count]",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "products[0][comment]",
+									"value": "text",
+									"type": "text"
+								},
+								{
+									"key": "products[0][reason_refund_id]",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/api/refund",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"refund"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/refund/1",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"refund",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "чек",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"payments\" :[\r\n        {\r\n            \"Sum\":10,\r\n            \"PaymentType\":0\r\n        },\r\n        {\r\n            \"Sum\":73601,\r\n            \"PaymentType\":1\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/refund/check/100",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"refund",
+								"check",
+								"100"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "print check format",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/refund/print-check/1",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"refund",
+								"print-check",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "refund producer (Возврат товара поставщику)",
+			"item": [
+				{
+					"name": "index",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/refund-producer",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"refund-producer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "history",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/refund-producer/history",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"refund-producer",
+								"history"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "counteragent_id",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "payment_type",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "products[0][product_id]",
+									"value": "2554",
+									"type": "text"
+								},
+								{
+									"key": "products[0][count]",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "products[0][comment]",
+									"value": "text",
+									"type": "text"
+								},
+								{
+									"key": "products[0][reason_refund_id]",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/api/refund-producer",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"refund-producer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/refund-producer/1",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"refund-producer",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "чек",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"payments\" :[\r\n        {\r\n            \"Sum\":10,\r\n            \"PaymentType\":0\r\n        },\r\n        {\r\n            \"Sum\":73601,\r\n            \"PaymentType\":1\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/refund-producer/check/10",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"refund-producer",
+								"check",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "print check format",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/refund-producer/print-check/154",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"refund-producer",
+								"print-check",
+								"154"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "receipt (Поступление товара)",
+			"item": [
+				{
+					"name": "index",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/receipt",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"receipt"
+							],
+							"query": [
+								{
+									"key": "date_from",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "date_to",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "history",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/receipt",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"receipt"
+							],
+							"query": [
+								{
+									"key": "date_from",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "date_to",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "counteragent_id",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "operation",
+									"value": "1",
+									"description": "Поступление товара, Оприходование излишков",
+									"type": "text"
+								},
+								{
+									"key": "bank",
+									"value": "44588745598+9322",
+									"description": "Банковский счет",
+									"type": "text"
+								},
+								{
+									"key": "payment_type",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "products[0][product_id]",
+									"value": "2554",
+									"type": "text"
+								},
+								{
+									"key": "products[0][count]",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "products[0][comment]",
+									"value": "text",
+									"type": "text"
+								},
+								{
+									"key": "products[0][price]",
+									"value": "500",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/api/receipt",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"receipt"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "products[0][product_id]",
+									"value": "2554",
+									"type": "text"
+								},
+								{
+									"key": "products[0][count]",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "products[0][comment]",
+									"value": "text",
+									"type": "text"
+								},
+								{
+									"key": "products[0][price]",
+									"value": "500",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/api/receipt/update/1",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"receipt",
+								"update",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/receipt/1",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"receipt",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "чек",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"payments\" :[\r\n        {\r\n            \"Sum\":10,\r\n            \"PaymentType\":0\r\n        },\r\n        {\r\n            \"Sum\":73601,\r\n            \"PaymentType\":1\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/receipt/check/10",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"receipt",
+								"check",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "print check format",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/receipt/print-check/154",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"receipt",
+								"print-check",
+								"154"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Moving (Перемещение )",
+			"item": [
+				{
+					"name": "index",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/moving",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"moving"
+							],
+							"query": [
+								{
+									"key": "date_from",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "date_to",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "history",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/moving",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"moving"
+							],
+							"query": [
+								{
+									"key": "date_from",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "date_to",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "html",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/moving/html/10",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"moving",
+								"html",
+								"10"
+							],
+							"query": [
+								{
+									"key": "date_from",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "date_to",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "operation",
+									"value": "1",
+									"description": "1. с склада 2. на склад",
+									"type": "text"
+								},
+								{
+									"key": "payment_type",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "products[0][product_id]",
+									"value": "2554",
+									"type": "text"
+								},
+								{
+									"key": "products[0][count]",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "products[0][comment]",
+									"value": "text",
+									"type": "text"
+								},
+								{
+									"key": "products[0][price]",
+									"value": "500",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/api/moving",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"moving"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "operation",
+									"value": "1",
+									"description": "1. с склада 2. на склад",
+									"type": "text"
+								},
+								{
+									"key": "payment_type",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "products[0][product_id]",
+									"value": "2554",
+									"type": "text"
+								},
+								{
+									"key": "products[0][count]",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "products[0][comment]",
+									"value": "text",
+									"type": "text"
+								},
+								{
+									"key": "products[0][price]",
+									"value": "500",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/api/moving/update/123",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"moving",
+								"update",
+								"123"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/moving/delete-product/123",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"moving",
+								"delete-product",
+								"123"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/moving/1",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"moving",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "reject (Списание)",
+			"item": [
+				{
+					"name": "index",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/reject",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"reject"
+							],
+							"query": [
+								{
+									"key": "date_from",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "date_to",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "history",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/reject/history",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"reject",
+								"history"
+							],
+							"query": [
+								{
+									"key": "date_from",
+									"value": null,
+									"disabled": true
+								},
+								{
+									"key": "date_to",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "counteragent_id",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "payment_type",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "products[0][product_id]",
+									"value": "2554",
+									"type": "text"
+								},
+								{
+									"key": "products[0][count]",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "products[0][comment]",
+									"value": "text",
+									"type": "text"
+								},
+								{
+									"key": "products[0][price]",
+									"value": "500",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/api/reject",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"reject"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/reject/1",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"reject",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "counteragent",
+			"item": [
+				{
+					"name": "index",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/counteragent",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"counteragent"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "all",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/counteragent/all",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"counteragent",
+								"all"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "WebKassa",
+			"item": [
+				{
+					"name": "get Token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/webkassa/get-token",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"webkassa",
+								"get-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "money operation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "sum",
+									"value": "500",
+									"type": "text"
+								},
+								{
+									"key": "operation_type",
+									"value": "0",
+									"description": "Изьятие = 1,внесение = 0",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/api/webkassa/money-operation",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"webkassa",
+								"money-operation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Z-Report Закрытие Смены",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/webkassa/z-report",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"webkassa",
+								"z-report"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Z-Report print!!!!",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/webkassa/z-report/print/2503",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"webkassa",
+								"z-report",
+								"print",
+								"2503"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "X-Report",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "520|5wEz97xZtUw4j32ZGTtTDxD9UDcw5VJdNkYvDAbL1f20143e",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/webkassa/x-report",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"webkassa",
+								"x-report"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "X-Report print",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/webkassa/x-report/print/2503",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"webkassa",
+								"x-report",
+								"print",
+								"2503"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Инвентаризация",
+			"item": [
+				{
+					"name": "index",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/inventory?date=2024-02-20&time=08:29:00",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"inventory"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "2024-02-20"
+								},
+								{
+									"key": "time",
+									"value": "08:29:00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "index test",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/inventory/test",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"inventory",
+								"test"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "2024-02-20",
+									"disabled": true
+								},
+								{
+									"key": "time",
+									"value": "08:29:00",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "history",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/inventory/history",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"inventory",
+								"history"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "html",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/inventory/html/27",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"inventory",
+								"html",
+								"27"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "store",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"date\" : \"2024-02-20\",\r\n    \"time\" : \"09:30:00\",\r\n    \"products\" : [\r\n    {\r\n        \"product_id\": 2605,\r\n        \"receipt\": 60,\r\n        \"moving_from\": 0,\r\n        \"moving_to\": 0,\r\n        \"sale\": 3.00,\r\n        \"remains\": 57,\r\n        \"count\":60\r\n    }\r\n]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/inventory",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"inventory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "active",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/inventory/active/43",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"inventory",
+								"active",
+								"43"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"products\" : [\r\n    {\r\n        \"product_id\": 2605,\r\n        \"receipt\": 60,\r\n        \"moving\": 0,\r\n        \"sale\": 3.00,\r\n        \"remains\": 57,\r\n        \"count\":60\r\n    },\r\n    {\r\n        \"product_id\": 2599,\r\n        \"moving\": \"0.00\",\r\n        \"receipt\": \"400.00\",\r\n        \"sale\": \"219.00\",\r\n        \"remains\": \"181.00\",\r\n        \"count\":180\r\n    },\r\n    {\r\n        \"product_id\": 2554,\r\n        \"moving\": \"3.00\",\r\n        \"receipt\": \"4000.00\",\r\n        \"sale\": \"1796.00\",\r\n        \"remains\": \"2201.00\",\r\n        \"count\":2201\r\n    }\r\n]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/api/inventory/update-product/1",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"inventory",
+								"update-product",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add receipt (добавит продукт)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "product_id",
+									"value": "2598",
+									"type": "text"
+								},
+								{
+									"key": "count",
+									"value": "2000",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/api/inventory/add-receipt",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"inventory",
+								"add-receipt"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add product (добавит продукт)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "product_id",
+									"value": "2598",
+									"type": "text"
+								},
+								{
+									"key": "count",
+									"value": "2000",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "inventory_id",
+									"value": "81",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/api/inventory/add-product",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"inventory",
+								"add-product"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "отчеты",
+			"item": [
+				{
+					"name": "Остатки",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/report/remains?date_to=2024-03-19",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"report",
+								"remains"
+							],
+							"query": [
+								{
+									"key": "date_from",
+									"value": "2023-10-31",
+									"disabled": true
+								},
+								{
+									"key": "date_to",
+									"value": "2024-03-19"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Остатки print",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/report/remains/print?date_to=2023-10-31&store_id=5",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"report",
+								"remains",
+								"print"
+							],
+							"query": [
+								{
+									"key": "date_from",
+									"value": "2023-10-31",
+									"disabled": true
+								},
+								{
+									"key": "date_to",
+									"value": "2023-10-31"
+								},
+								{
+									"key": "store_id",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Дисконтная карта",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/report/discount-card?search=7004448696",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"report",
+								"discount-card"
+							],
+							"query": [
+								{
+									"key": "date_from",
+									"value": "2022-01-01",
+									"disabled": true
+								},
+								{
+									"key": "date_to",
+									"value": "2024-01-01",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "7004448696"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "онлайн продажа",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/report/order",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"report",
+								"order"
+							],
+							"query": [
+								{
+									"key": "date_from",
+									"value": "2022-01-01",
+									"disabled": true
+								},
+								{
+									"key": "date_to",
+									"value": "2024-01-01",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "6",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "инвинтаризации",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/report/inventor",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"report",
+								"inventor"
+							],
+							"query": [
+								{
+									"key": "date_from",
+									"value": "2022-01-01",
+									"disabled": true
+								},
+								{
+									"key": "date_to",
+									"value": "2024-01-01",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "99|uAq3lX9wj1f9Gn4dakvoFrPRbzCwX5Dz9YTk72ms",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/report/product?date_from=2023-05-30&date_to=2024-01-01",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"report",
+								"product"
+							],
+							"query": [
+								{
+									"key": "date_from",
+									"value": "2023-05-30"
+								},
+								{
+									"key": "date_to",
+									"value": "2024-01-01"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "z",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "99|uAq3lX9wj1f9Gn4dakvoFrPRbzCwX5Dz9YTk72ms",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/report/z",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"report",
+								"z"
+							],
+							"query": [
+								{
+									"key": "date_from",
+									"value": "2023-05-30",
+									"disabled": true
+								},
+								{
+									"key": "date_to",
+									"value": "2024-01-01",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "z print",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "99|uAq3lX9wj1f9Gn4dakvoFrPRbzCwX5Dz9YTk72ms",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/report/z/5/print",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"report",
+								"z",
+								"5",
+								"print"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "store",
+			"item": [
+				{
+					"name": "мои магазины",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{server}}/api/store",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"store"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "set",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "store_id",
+									"value": "4",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{server}}/api/store",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"api",
+								"store"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "brand",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{server}}/api/brand",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"api",
+						"brand"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "product",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{server}}/api/product?id=2532&remainder=true",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"api",
+						"product"
+					],
+					"query": [
+						{
+							"key": "category_id",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "search",
+							"value": "5000000002317",
+							"disabled": true
+						},
+						{
+							"key": "counteragent_id",
+							"value": "20",
+							"disabled": true
+						},
+						{
+							"key": "id",
+							"value": "2532"
+						},
+						{
+							"key": "remainder",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "category",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{server}}/api/category?brnad_id=8",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"api",
+						"category"
+					],
+					"query": [
+						{
+							"key": "brnad_id",
+							"value": "8"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "storages",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{server}}/api/storage",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"api",
+						"storage"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "server",
+			"value": "https://backshop.boszhan.kz",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "495|ipauVzdQ17LT1KwYC6xXk5vkqE2TIRR2WKX2TTff9f6d16e5",
+			"type": "string"
+		}
+	]
+}
