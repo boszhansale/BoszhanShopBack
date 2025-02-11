@@ -31,7 +31,7 @@ class OrderController extends Controller
         $startCreatedAt = $request->get('start_created_at');
         $endCreatedAt = $request->get('end_created_at');
 
-        return view('admin.order.index', compact( 'storeId', 'userId','counteragentId','discountPhone','startCreatedAt','endCreatedAt'));
+        return view('admin.order.index', compact('storeId', 'userId', 'counteragentId', 'discountPhone', 'startCreatedAt', 'endCreatedAt'));
     }
 
     public function productIndex(Request $request)
@@ -39,7 +39,7 @@ class OrderController extends Controller
         $storeId = $request->get('store_id');
         $userId = $request->get('user_id');
 
-        return view('admin.order.product_index', compact( 'storeId', 'userId'));
+        return view('admin.order.product_index', compact('storeId', 'userId'));
     }
 
     public function productExcel(Request $request)
@@ -47,9 +47,9 @@ class OrderController extends Controller
         $startCreatedAt = $request->get('start_created_at');
         $endCreatedAt = $request->get('end_created_at');
         $query = Order::query()
-//            ->join('stores', 'stores.id', 'orders.store_id')
-            ->join('order_products','order_products.order_id','orders.id')
-            ->join('products','products.id','order_products.product_id')
+            //            ->join('stores', 'stores.id', 'orders.store_id')
+            ->join('order_products', 'order_products.order_id', 'orders.id')
+            ->join('products', 'products.id', 'order_products.product_id')
             ->whereNotNull('check_number')
             ->when($request->get('search'), function ($q) {
                 return $q->where('orders.id', 'LIKE', \request('search') . '%');
@@ -70,13 +70,13 @@ class OrderController extends Controller
 
         $totalPrice = $query->sum('all_price');
         $count = $query->sum('order_products.count');
-        $orders  = $query ->selectRaw('store_id,product_id,products.name,products.article,products.measure,price,SUM(count) as count,SUM(all_price) as all_price,orders.user_id')
-            ->groupBy('store_id','product_id','price','orders.user_id')
+        $orders = $query->selectRaw('store_id,product_id,products.name,products.article,products.measure,price,SUM(count) as count,SUM(all_price) as all_price,orders.user_id')
+            ->groupBy('store_id', 'product_id', 'price', 'orders.user_id')
             ->orderBy('products.name')
             ->orderBy('store_id')->get();
 
-        $fileName = 'order_products_'.$startCreatedAt.'_'.$startCreatedAt.'.xlsx';
-        return Excel::download(new OrderProductExcelExport($orders,$count,$totalPrice,$startCreatedAt,$endCreatedAt), $fileName);
+        $fileName = 'order_products_' . $startCreatedAt . '_' . $startCreatedAt . '.xlsx';
+        return Excel::download(new OrderProductExcelExport($orders, $count, $totalPrice, $startCreatedAt, $endCreatedAt), $fileName);
 
 
     }
@@ -147,4 +147,41 @@ class OrderController extends Controller
         return \view('admin.order.history', compact('order'));
     }
 
+    public function generateReport(Request $request)
+    {
+        $query = Order::query();
+
+        if ($request->filled('search')) {
+            $query->where('id', 'like', "%{$request->search}%");
+        }
+
+        if ($request->filled('userId')) {
+            $query->where('user_id', $request->userId);
+        }
+
+        if ($request->filled('start_created_at') && $request->filled('end_created_at')) {
+            $query->whereBetween('created_at', [$request->start_created_at, $request->end_created_at]);
+        }
+
+        if ($request->filled('paymentType') && $request->paymentType !== 'null') {
+            $query->whereJsonContains('payments', ['PaymentType' => (int) $request->paymentType]);
+        }
+
+        if ($request->filled('discountBool')) {
+            $query->where('total_discount_price', '>', 0);
+        }
+
+        if ($request->filled('discountPhoneBool')) {
+            $query->whereNotNull('discount_phone');
+        }
+
+        if ($request->filled('onlineBool')) {
+            $query->where('online_sale', true);
+        }
+
+        $orders = $query->get();
+
+        // Генерация Excel-отчёта
+        return Excel::download(new OrdersExport($orders), 'orders_report.xlsx');
+    }
 }

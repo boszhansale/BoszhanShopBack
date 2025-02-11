@@ -20,8 +20,8 @@
 
                 <div class="col-md-2">
                     <small>даты создания заявки</small>
-                    <input wire:model="start_created_at" type="date"  class="form-control">
-                    <input wire:model="end_created_at" type="date"  class="form-control">
+                    <input wire:model="start_created_at" type="date" class="form-control">
+                    <input wire:model="end_created_at" type="date" class="form-control">
                 </div>
                 <div class="col-md-2">
                     <small>Тип оплаты</small>
@@ -33,14 +33,28 @@
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <input wire:model="discountBool" type="checkbox" id="discount_bool"  class="">
+                    <input wire:model="discountBool" type="checkbox" id="discount_bool" class="">
                     <label for="discount_bool">Скидки</label>
                     <br>
-                    <input wire:model="discountPhoneBool" type="checkbox" id="discount_phone_bool"  class="">
+                    <input wire:model="discountPhoneBool" type="checkbox" id="discount_phone_bool" class="">
                     <label for="discount_phone_bool">Дисконт карты</label>
                     <br>
-                    <input wire:model="onlineBool" type="checkbox" id="onlineBool"  class="">
+                    <input wire:model="onlineBool" type="checkbox" id="onlineBool" class="">
                     <label for="onlineBool">онлайн продажа</label>
+                </div>
+                <div class="d-flex justify-content-end mb-3">
+                    <a href="{{ route('admin.orders.report', [
+    'search' => request('search'),
+    'userId' => request('userId'),
+    'start_created_at' => request('start_created_at'),
+    'end_created_at' => request('end_created_at'),
+    'paymentType' => request('paymentType'),
+    'discountBool' => request('discountBool'),
+    'discountPhoneBool' => request('discountPhoneBool'),
+    'onlineBool' => request('onlineBool'),
+]) }}" class="btn btn-success">
+                        Сформировать отчет
+                    </a>
                 </div>
             </div>
         </div>
@@ -57,10 +71,12 @@
                 Количество безнал:{{$query->clone()->whereJsonContains('payments', ['PaymentType' => 1])->count()}}
             </div>
             <div class="col">
-                Сумма нал: <span class="price">{{$query->clone()->whereJsonContains('payments', ['PaymentType' => 0])->sum('total_price')}}</span>
+                Сумма нал: <span
+                    class="price">{{$query->clone()->whereJsonContains('payments', ['PaymentType' => 0])->sum('total_price')}}</span>
             </div>
             <div class="col">
-                Сумма безнал: <span class="price">{{$query->clone()->whereJsonContains('payments', ['PaymentType' => 1])->sum('total_price')}}</span>
+                Сумма безнал: <span
+                    class="price">{{$query->clone()->whereJsonContains('payments', ['PaymentType' => 1])->sum('total_price')}}</span>
             </div>
         </div>
     </div>
@@ -68,62 +84,62 @@
         <div class="card-body">
             <table class="table table-hover text-nowrap table-responsive">
                 <thead>
-                <tr>
-                    <th>ID</th>
-                    <th></th>
-                    <th>Покупатель</th>
-{{--                    <th>Контрагент</th>--}}
-{{--                    <th>Контрагент(BIN)</th>--}}
-                    <th>ТТ</th>
-                    <th>Признак</th>
-                    <th>Статус</th>
-                    <th>Продавец</th>
-                    <th>тип оплаты</th>
-                    <th>сумма</th>
-                    <th>сдача</th>
-                    <th>скидка</th>
-                    <th>кэшбек</th>
-                    <th>чек</th>
-                    <th>Дата создание</th>
-                    <th>номер дисконт карты</th>
-                </tr>
+                    <tr>
+                        <th>ID</th>
+                        <th></th>
+                        <th>Покупатель</th>
+                        {{-- <th>Контрагент</th>--}}
+                        {{-- <th>Контрагент(BIN)</th>--}}
+                        <th>ТТ</th>
+                        <th>Признак</th>
+                        <th>Статус</th>
+                        <th>Продавец</th>
+                        <th>тип оплаты</th>
+                        <th>сумма</th>
+                        <th>сдача</th>
+                        <th>скидка</th>
+                        <th>кэшбек</th>
+                        <th>чек</th>
+                        <th>Дата создание</th>
+                        <th>номер дисконт карты</th>
+                    </tr>
                 </thead>
                 <tbody>
-                @foreach($orders as $order)
+                    @foreach($orders as $order)
 
                         <tr>
                             <td>{{$order->id}}
                             </td>
                             <td class="project-actions text-left">
-                                <a class="btn btn-primary btn-sm" href="{{route('admin.order.show',$order->id)}}">
+                                <a class="btn btn-primary btn-sm" href="{{route('admin.order.show', $order->id)}}">
                                     <i class="fas fa-folder">
                                     </i>
                                 </a>
-                                {{--                                    <a class="btn btn-info btn-sm" href="{{route('admin.order.edit',$order->id)}}">--}}
-                                {{--                                        <i class="fas fa-pencil-alt">--}}
-                                {{--                                        </i>--}}
-                                {{--                                    </a>--}}
+                                {{-- <a class="btn btn-info btn-sm" href="{{route('admin.order.edit',$order->id)}}">--}}
+                                    {{-- <i class="fas fa-pencil-alt">--}}
+                                        {{-- </i>--}}
+                                    {{-- </a>--}}
 
                             </td>
-                            <td>{{ $order->counteragent_id ? 'Юр':'физ'  }}</td>
+                            <td>{{ $order->counteragent_id ? 'Юр' : 'физ'  }}</td>
 
-{{--                            <td>--}}
-{{--                                @if($order->store?->counteragent_id)--}}
-{{--                                    {{$order->store->counteragent->name}}--}}
-{{--                                @endif--}}
-{{--                            </td>--}}
-{{--                            <td>--}}
-{{--                                @if($order->store?->counteragent_id)--}}
-{{--                                    {{$order->store?->counteragent?->bin}}--}}
-{{--                                @endif--}}
-{{--                            </td>--}}
+                            {{-- <td>--}}
+                                {{-- @if($order->store?->counteragent_id)--}}
+                                {{-- {{$order->store->counteragent->name}}--}}
+                                {{-- @endif--}}
+                                {{-- </td>--}}
+                            {{-- <td>--}}
+                                {{-- @if($order->store?->counteragent_id)--}}
+                                {{-- {{$order->store?->counteragent?->bin}}--}}
+                                {{-- @endif--}}
+                                {{-- </td>--}}
                             <td>
-                                <a href="{{route('admin.store.show',$order->store_id)}}">{{$order->store?->name}}</a>
+                                <a href="{{route('admin.store.show', $order->store_id)}}">{{$order->store?->name}}</a>
                             </td>
                             <td>{{$order->online_sale ? 'онлайн' : 'офлайн' }}</td>
                             <td>{{$order->status}}</td>
                             <td>
-                                <a href="{{route('admin.user.show',$order->user_id)}}">{{$order->user->name}}</a>
+                                <a href="{{route('admin.user.show', $order->user_id)}}">{{$order->user->name}}</a>
                             </td>
                             <td>{{$order->paymentTypeInfo()}}</td>
                             <td class="price">{{$order->total_price}}</td>
@@ -131,7 +147,7 @@
 
                             <td class="price">{{$order->total_discount_price}}</td>
                             <td class="price">{{$order->discount_cashback}}</td>
-                            <td >
+                            <td>
                                 @if($order->ticket_print_url)
                                     <a href="{{$order->ticket_print_url}}">{{$order->check_number}}</a>
                                 @endif
@@ -141,7 +157,7 @@
                             <td>{{$order->discount_phone}}</td>
 
                         </tr>
-                        @endforeach
+                    @endforeach
                 </tbody>
             </table>
 

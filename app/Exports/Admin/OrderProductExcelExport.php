@@ -8,15 +8,15 @@ use Maatwebsite\Excel\Concerns\FromView;
 class OrderProductExcelExport implements FromView
 {
     /**
-    * @return \Illuminate\Support\Collection
-    */
-    public  $orders;
-    public  $count;
-    public  $totalPrice;
-    public  $start;
-    public  $end;
+     * @return \Illuminate\Support\Collection
+     */
+    public $orders;
+    public $count;
+    public $totalPrice;
+    public $start;
+    public $end;
 
-    public function     __construct($orders,$count,$totalPrice,$start,$end)
+    public function __construct($orders, $count, $totalPrice, $start, $end)
     {
         $this->orders = $orders;
         $this->count = $count;

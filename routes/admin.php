@@ -39,7 +39,7 @@ Route::post('/', [AuthController::class, 'auth'])->name('auth');
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
 
-Route::middleware(['admin.check','auth:sanctum'])->group(function (){
+Route::middleware(['admin.check', 'auth:sanctum'])->group(function () {
 
     Route::get('main', [MainController::class, 'index'])->name('main');
     Route::prefix('brand')->name('brand.')->group(function () {
@@ -167,6 +167,7 @@ Route::middleware(['admin.check','auth:sanctum'])->group(function (){
         Route::get('remove/{order}', [OrderController::class, 'remove'])->name('remove');
         Route::get('recover/{order}', [OrderController::class, 'recover'])->name('recover');
         Route::get('history/{order}', [OrderController::class, 'history'])->name('history');
+        Route::get('report', [OrderController::class, 'generateReport'])->name('report');
     });
     Route::prefix('refund')->name('refund.')->group(function () {
         Route::get('/', [RefundController::class, 'index'])->name('index');
