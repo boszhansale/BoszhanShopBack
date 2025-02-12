@@ -27,24 +27,31 @@ class OrderController extends Controller
     {
         $query = Order::query();
 
-        if ($request->filled('store_id')) {
-            $query->where('store_id', $request->store_id);
+        $storeId = $request->get('store_id');
+        $counteragentId = $request->get('counteragent_id');
+        $userId = $request->get('user_id');
+        $discountPhone = $request->get('discount_phone');
+        $startCreatedAt = $request->get('start_created_at');
+        $endCreatedAt = $request->get('end_created_at');
+
+        if ($storeId) {
+            $query->where('store_id', $storeId);
         }
 
-        if ($request->filled('counteragent_id')) {
-            $query->where('counteragent_id', $request->counteragent_id);
+        if ($counteragentId) {
+            $query->where('counteragent_id', $counteragentId);
         }
 
-        if ($request->filled('user_id')) {
-            $query->where('user_id', $request->user_id);
+        if ($userId) {
+            $query->where('user_id', $userId);
         }
 
-        if ($request->filled('discount_phone')) {
-            $query->where('discount_phone', $request->discount_phone);
+        if ($discountPhone) {
+            $query->where('discount_phone', $discountPhone);
         }
 
-        if ($request->filled('start_created_at') && $request->filled('end_created_at')) {
-            $query->whereBetween('created_at', [$request->start_created_at, $request->end_created_at]);
+        if ($startCreatedAt && $endCreatedAt) {
+            $query->whereBetween('created_at', [$startCreatedAt, $endCreatedAt]);
         }
 
         // Сохранение фильтров в сессии
@@ -52,8 +59,17 @@ class OrderController extends Controller
 
         $orders = $query->paginate(10);
 
-        return view('admin.order.index', compact('orders'));
+        return view('admin.order.index', compact(
+            'orders',
+            'storeId',
+            'userId',
+            'counteragentId',
+            'discountPhone',
+            'startCreatedAt',
+            'endCreatedAt'
+        ));
     }
+
 
 
     public function productIndex(Request $request)
