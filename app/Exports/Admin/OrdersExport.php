@@ -17,7 +17,7 @@ class OrdersExport implements FromView
 
     public function view(): View
     {
-        return view('admin.orders.report', [
+        return view('order.report', [
             'orders' => $this->orders
         ]);
     }
