@@ -187,6 +187,9 @@ class OrderController extends Controller
 
     public function generateReport(Request $request)
     {
+
+        dd($request->query());
+
         $filters = $request->all();
 
         $query = Order::query();
