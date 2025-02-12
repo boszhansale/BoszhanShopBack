@@ -43,16 +43,7 @@
                     <label for="onlineBool">онлайн продажа</label>
                 </div>
                 <div class="d-flex justify-content-end mb-3">
-                    <a href="{{ route('admin.order.report', [
-    'search' => request('search'),
-    'userId' => request('userId'),
-    'start_created_at' => request('start_created_at'),
-    'end_created_at' => request('end_created_at'),
-    'paymentType' => request('paymentType'),
-    'discountBool' => request('discountBool'),
-    'discountPhoneBool' => request('discountPhoneBool'),
-    'onlineBool' => request('onlineBool'),
-]) }}" class="btn btn-success">
+                    <a href="{{ route('admin.orders.report') }}" class="btn btn-success">
                         Сформировать отчет
                     </a>
                 </div>

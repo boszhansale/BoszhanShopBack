@@ -25,15 +25,36 @@ class OrderController extends Controller
 {
     public function index(Request $request)
     {
-        $storeId = $request->get('store_id');
-        $counteragentId = $request->get('counteragent_id');
-        $userId = $request->get('user_id');
-        $discountPhone = $request->get('discount_phone');
-        $startCreatedAt = $request->get('start_created_at');
-        $endCreatedAt = $request->get('end_created_at');
+        $query = Order::query();
 
-        return view('admin.order.index', compact('storeId', 'userId', 'counteragentId', 'discountPhone', 'startCreatedAt', 'endCreatedAt'));
+        if ($request->filled('store_id')) {
+            $query->where('store_id', $request->store_id);
+        }
+
+        if ($request->filled('counteragent_id')) {
+            $query->where('counteragent_id', $request->counteragent_id);
+        }
+
+        if ($request->filled('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        if ($request->filled('discount_phone')) {
+            $query->where('discount_phone', $request->discount_phone);
+        }
+
+        if ($request->filled('start_created_at') && $request->filled('end_created_at')) {
+            $query->whereBetween('created_at', [$request->start_created_at, $request->end_created_at]);
+        }
+
+        // Сохранение фильтров в сессии
+        session(['order_filters' => $request->all()]);
+
+        $orders = $query->paginate(10);
+
+        return view('admin.order.index', compact('orders'));
     }
+
 
     public function productIndex(Request $request)
     {
@@ -148,41 +169,35 @@ class OrderController extends Controller
         return \view('admin.order.history', compact('order'));
     }
 
-    public function generateReport(Request $request)
+    public function generateReport()
     {
+        $filters = session('order_filters', []);
+
         $query = Order::query();
 
-        if ($request->filled('search')) {
-            $query->where('id', 'like', "%{$request->search}%");
+        if (!empty($filters['store_id'])) {
+            $query->where('store_id', $filters['store_id']);
         }
 
-        if ($request->filled('userId')) {
-            $query->where('user_id', $request->userId);
+        if (!empty($filters['counteragent_id'])) {
+            $query->where('counteragent_id', $filters['counteragent_id']);
         }
 
-        if ($request->filled('start_created_at') && $request->filled('end_created_at')) {
-            $query->whereBetween('created_at', [$request->start_created_at, $request->end_created_at]);
+        if (!empty($filters['user_id'])) {
+            $query->where('user_id', $filters['user_id']);
         }
 
-        if ($request->filled('paymentType') && $request->paymentType !== 'null') {
-            $query->whereJsonContains('payments', ['PaymentType' => (int) $request->paymentType]);
+        if (!empty($filters['discount_phone'])) {
+            $query->where('discount_phone', $filters['discount_phone']);
         }
 
-        if ($request->filled('discountBool')) {
-            $query->where('total_discount_price', '>', 0);
-        }
-
-        if ($request->filled('discountPhoneBool')) {
-            $query->whereNotNull('discount_phone');
-        }
-
-        if ($request->filled('onlineBool')) {
-            $query->where('online_sale', true);
+        if (!empty($filters['start_created_at']) && !empty($filters['end_created_at'])) {
+            $query->whereBetween('created_at', [$filters['start_created_at'], $filters['end_created_at']]);
         }
 
         $orders = $query->get();
 
-        // Генерация Excel-отчёта
         return Excel::download(new OrdersExport($orders), 'orders_report.xlsx');
     }
+
 }
