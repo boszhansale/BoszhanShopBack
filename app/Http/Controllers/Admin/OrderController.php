@@ -189,6 +189,7 @@ class OrderController extends Controller
     {
 
         dd($request->query());
+        dd(session('order_filters'));
 
         $filters = $request->all();
 
