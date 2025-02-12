@@ -185,9 +185,9 @@ class OrderController extends Controller
         return \view('admin.order.history', compact('order'));
     }
 
-    public function generateReport()
+    public function generateReport(Request $request)
     {
-        $filters = session('order_filters', []);
+        $filters = $request->all();
 
         $query = Order::query();
 
