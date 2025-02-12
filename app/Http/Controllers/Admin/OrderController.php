@@ -187,12 +187,7 @@ class OrderController extends Controller
 
     public function generateReport(Request $request)
     {
-
-        dd($request->query());
-        dd(session('order_filters'));
-
-        $filters = $request->all();
-
+        $filters = session('order_filters', []);
         $query = Order::query();
 
         if (!empty($filters['store_id'])) {

@@ -43,9 +43,12 @@
                     <label for="onlineBool">онлайн продажа</label>
                 </div>
                 <div class="d-flex justify-content-end mb-3">
-                    <a href="{{ route('admin.order.report', request()->query()) }}" class="btn btn-success text-center">
-                        Сформировать отчет
-                    </a>
+                    <form action="{{ route('admin.order.report') }}" method="GET">
+                        @foreach(session('order_filters', []) as $key => $value)
+                            <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                        @endforeach
+                        <button type="submit" class="btn btn-success text-center">Сформировать отчет</button>
+                    </form>
                 </div>
             </div>
         </div>
