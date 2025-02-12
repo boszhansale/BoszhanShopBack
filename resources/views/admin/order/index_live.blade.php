@@ -43,7 +43,7 @@
                     <label for="onlineBool">онлайн продажа</label>
                 </div>
                 <div class="d-flex justify-content-end mb-3">
-                    <a href="{{ route('admin.orders.report') }}" class="btn btn-success">
+                    <a href="{{ route('admin.order.report') }}" class="btn btn-success">
                         Сформировать отчет
                     </a>
                 </div>
