@@ -187,8 +187,6 @@ class OrderController extends Controller
 
     public function generateReport(Request $request)
     {
-        Log::info('Генерация отчета с параметрами:', $request->all());
-
         $query = Order::query();
 
         if ($request->filled('store_id')) {
