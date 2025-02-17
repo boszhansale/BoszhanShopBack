@@ -8,6 +8,7 @@ use App\Models\Store;
 use Illuminate\Database\Query\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Session;
 
 class OrderIndex extends Component
 {
@@ -34,15 +35,34 @@ class OrderIndex extends Component
     public $end_created_at;
     public $discountPhone;
 
+    // Метод для сохранения значений фильтров в сессии
+    public function updated($propertyName)
+    {
+        Session::put($propertyName, $this->{$propertyName});
+    }
+
     public function render()
     {
+        // Загружаем данные из сессии, если они существуют
+        $this->search = Session::get('search', $this->search);
+        $this->userId = Session::get('userId', $this->userId);
+        $this->storeId = Session::get('storeId', $this->storeId);
+        $this->statusId = Session::get('statusId', $this->statusId);
+        $this->discountPhoneBool = Session::get('discountPhoneBool', $this->discountPhoneBool);
+        $this->discountBool = Session::get('discountBool', $this->discountBool);
+        $this->onlineBool = Session::get('onlineBool', $this->onlineBool);
+        $this->counteragentId = Session::get('counteragentId', $this->counteragentId);
+        $this->paymentType = Session::get('paymentType', $this->paymentType);
+        $this->start_created_at = Session::get('start_created_at', $this->start_created_at);
+        $this->end_created_at = Session::get('end_created_at', $this->end_created_at);
+
+        // Запрос на получение заказов с применением фильтров
         $query = Order::query()
             ->join('stores', 'stores.id', 'orders.store_id')
             ->whereNotNull('check_number')
             ->when($this->search, function ($q) {
                 return $q->where('orders.id', 'LIKE', $this->search . '%');
             })
-
             ->when($this->statusId, function ($q) {
                 return $q->where('orders.status_id', $this->statusId);
             })
@@ -81,12 +101,10 @@ class OrderIndex extends Component
 
         return view('admin.order.index_live', [
             'users' => $this->users,
-
             'orders' => $query->clone()
                 ->with(['store'])
                 ->withTrashed()
                 ->paginate(25),
-
             'query' => $query,
         ]);
     }

@@ -54,9 +54,6 @@ class OrderController extends Controller
             $query->whereBetween('created_at', [$startCreatedAt, $endCreatedAt]);
         }
 
-        // Сохранение фильтров в сессии
-        session(['order_filters' => $request->all()]);
-
         $orders = $query->paginate(10);
 
         return view('admin.order.index', compact(
