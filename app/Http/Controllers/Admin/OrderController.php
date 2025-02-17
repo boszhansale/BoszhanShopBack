@@ -188,8 +188,8 @@ class OrderController extends Controller
     public function generateReport(Request $request)
     {
         $query = Order::query()
-            ->join('order_products', 'order_products.order_id', 'orders.id')
-            ->join('products', 'products.id', 'order_products.product_id')
+            ->with(['store', 'user']) // Подгружаем связанные данные для корректного вывода
+            ->whereNotNull('orders.check_number') // Фильтруем только оформленные заказы
             ->when($request->get('store_id'), function ($q) use ($request) {
                 return $q->where('orders.store_id', $request->get('store_id'));
             })
@@ -209,15 +209,7 @@ class OrderController extends Controller
                 return $q->whereDate('orders.created_at', '<=', $request->get('end_created_at'));
             });
 
-        $orders = $query->selectRaw(
-            'store_id, product_id, products.name, products.article, 
-        products.measure, price, SUM(order_products.count) as count, 
-        SUM(all_price) as all_price, orders.user_id'
-        )
-            ->groupBy('store_id', 'product_id', 'price', 'orders.user_id')
-            ->orderBy('products.name')
-            ->orderBy('store_id')
-            ->get();
+        $orders = $query->get();
 
         $fileName = 'orders_report_' . now()->format('Y-m-d') . '.xlsx';
         return Excel::download(new OrdersExport($orders), $fileName);
