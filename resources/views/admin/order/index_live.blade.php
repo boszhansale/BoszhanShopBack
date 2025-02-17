@@ -19,6 +19,16 @@
                 </div>
 
                 <div class="col-md-2">
+                    <small>Торговая точка</small>
+                    <select wire:model="storeId" class="form-control">
+                        <option value="">все</option>
+                        @foreach($stores as $store)
+                            <option value="{{ $store->id }}">{{ $store->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-2">
                     <small>даты создания заявки</small>
                     <input wire:model="start_created_at" type="date" class="form-control">
                     <input wire:model="end_created_at" type="date" class="form-control">
@@ -44,8 +54,7 @@
                 </div>
                 <div class="d-flex justify-content-end mb-3">
                     <a href="{{ route('admin.order.report', [
-    // 'store_id' => $store_id,
-    // 'counteragent_id' => $counteragent_id,
+    'store_id' => $store_id,
     'user_id' => $userId,
     'start_created_at' => $start_created_at,
     'end_created_at' => $end_created_at
