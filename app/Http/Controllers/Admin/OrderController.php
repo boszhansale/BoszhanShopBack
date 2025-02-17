@@ -211,8 +211,6 @@ class OrderController extends Controller
 
         $orders = $query->get();
 
-        Log::info('Количество заказов в отчете: ' . $orders->count());
-
         return Excel::download(new OrdersExport($orders), 'orders_report.xlsx');
     }
 }
