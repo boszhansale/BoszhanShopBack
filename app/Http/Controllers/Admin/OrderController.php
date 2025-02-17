@@ -188,20 +188,12 @@ class OrderController extends Controller
     public function generateReport(Request $request)
     {
         $query = Order::query()
-            ->with(['store', 'user']) // Подгружаем связанные данные для корректного вывода
-            ->whereNotNull('orders.check_number') // Фильтруем только оформленные заказы
-            ->when($request->get('store_id'), function ($q) use ($request) {
-                return $q->where('orders.store_id', $request->get('store_id'));
-            })
-            ->when($request->get('counteragent_id'), function ($q) use ($request) {
-                return $q->where('orders.counteragent_id', $request->get('counteragent_id'));
-            })
+            ->with(['store', 'user'])
+            ->whereNotNull('orders.check_number')
             ->when($request->get('user_id'), function ($q) use ($request) {
                 return $q->where('orders.user_id', $request->get('user_id'));
             })
-            ->when($request->get('discount_phone'), function ($q) use ($request) {
-                return $q->where('orders.discount_phone', $request->get('discount_phone'));
-            })
+
             ->when($request->get('start_created_at'), function ($q) use ($request) {
                 return $q->whereDate('orders.created_at', '>=', $request->get('start_created_at'));
             })

@@ -44,10 +44,9 @@
                 </div>
                 <div class="d-flex justify-content-end mb-3">
                     <a href="{{ route('admin.order.report', [
-    'store_id' => $store_id,
-    'counteragent_id' => $counteragent_id,
+    // 'store_id' => $store_id,
+    // 'counteragent_id' => $counteragent_id,
     'user_id' => $userId,
-    'discount_phone' => $discountPhoneBool,
     'start_created_at' => $start_created_at,
     'end_created_at' => $end_created_at
 ]) }}" target="_blank" class="btn btn-success text-center">
