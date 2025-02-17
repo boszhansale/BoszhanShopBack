@@ -190,6 +190,9 @@ class OrderController extends Controller
         $query = Order::query()
             ->with(['store', 'user'])
             ->whereNotNull('orders.check_number')
+            ->when($request->get('store_id'), function ($q) use ($request) {
+                return $q->where('orders.store_id', $request->get('store_id'));
+            })
             ->when($request->get('user_id'), function ($q) use ($request) {
                 return $q->where('orders.user_id', $request->get('user_id'));
             })

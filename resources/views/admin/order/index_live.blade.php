@@ -3,12 +3,12 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-2">
-                    <small>поиск</small>
+                    <small>Поиск</small>
                     <input wire:model="search" type="search" name="search" placeholder="поиск" class="form-control">
                 </div>
 
                 <div class="col-md-2">
-                    <small>продавец</small>
+                    <small>Продавец</small>
 
                     <select wire:model="userId" class="form-control">
                         <option value="">все</option>
@@ -29,7 +29,7 @@
                 </div>
 
                 <div class="col-md-2">
-                    <small>даты создания заявки</small>
+                    <small>Даты создания заявки</small>
                     <input wire:model="start_created_at" type="date" class="form-control">
                     <input wire:model="end_created_at" type="date" class="form-control">
                 </div>
@@ -54,7 +54,7 @@
                 </div>
                 <div class="d-flex justify-content-end mb-3">
                     <a href="{{ route('admin.order.report', [
-    'store_id' => $store_id,
+    'store_id' => $storeId,
     'user_id' => $userId,
     'start_created_at' => $start_created_at,
     'end_created_at' => $end_created_at
