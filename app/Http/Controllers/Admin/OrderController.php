@@ -188,26 +188,36 @@ class OrderController extends Controller
     public function generateReport(Request $request)
     {
         $query = Order::query()
-            ->when($request->get('store_id'), function ($q) {
-                return $q->where('orders.store_id', request('store_id'));
+            ->join('order_products', 'order_products.order_id', 'orders.id')
+            ->join('products', 'products.id', 'order_products.product_id')
+            ->when($request->get('store_id'), function ($q) use ($request) {
+                return $q->where('orders.store_id', $request->get('store_id'));
             })
-            ->when($request->get('counteragent_id'), function ($q) {
-                return $q->where('orders.counteragent_id', request('counteragent_id'));
+            ->when($request->get('counteragent_id'), function ($q) use ($request) {
+                return $q->where('orders.counteragent_id', $request->get('counteragent_id'));
             })
-            ->when($request->get('user_id'), function ($q) {
-                return $q->where('orders.user_id', request('user_id'));
+            ->when($request->get('user_id'), function ($q) use ($request) {
+                return $q->where('orders.user_id', $request->get('user_id'));
             })
-            ->when($request->get('discount_phone'), function ($q) {
-                return $q->where('orders.discount_phone', request('discount_phone'));
+            ->when($request->get('discount_phone'), function ($q) use ($request) {
+                return $q->where('orders.discount_phone', $request->get('discount_phone'));
             })
-            ->when($request->get('start_created_at'), function ($q) {
-                return $q->whereDate('orders.created_at', '>=', request('start_created_at'));
+            ->when($request->get('start_created_at'), function ($q) use ($request) {
+                return $q->whereDate('orders.created_at', '>=', $request->get('start_created_at'));
             })
-            ->when($request->get('end_created_at'), function ($q) {
-                return $q->whereDate('orders.created_at', '<=', request('end_created_at'));
+            ->when($request->get('end_created_at'), function ($q) use ($request) {
+                return $q->whereDate('orders.created_at', '<=', $request->get('end_created_at'));
             });
 
-        $orders = $query->get();
+        $orders = $query->selectRaw(
+            'store_id, product_id, products.name, products.article, 
+        products.measure, price, SUM(order_products.count) as count, 
+        SUM(all_price) as all_price, orders.user_id'
+        )
+            ->groupBy('store_id', 'product_id', 'price', 'orders.user_id')
+            ->orderBy('products.name')
+            ->orderBy('store_id')
+            ->get();
 
         $fileName = 'orders_report_' . now()->format('Y-m-d') . '.xlsx';
         return Excel::download(new OrdersExport($orders), $fileName);
