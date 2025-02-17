@@ -43,8 +43,14 @@
                     <label for="onlineBool">онлайн продажа</label>
                 </div>
                 <div class="d-flex justify-content-end mb-3">
-                    <a href="{{ route('admin.order.report', ['store_id' => request('store_id'), 'counteragent_id' => request('counteragent_id'), 'user_id' => request('user_id'), 'discount_phone' => request('discount_phone'), 'start_created_at' => request('start_created_at'), 'end_created_at' => request('end_created_at')]) }}"
-                        target="_blank" class="btn btn-success text-center">
+                    <a href="{{ route('admin.order.report', [
+    'store_id' => $store_id,
+    'counteragent_id' => $counteragent_id,
+    'user_id' => $userId,
+    'discount_phone' => $discountPhoneBool,
+    'start_created_at' => $start_created_at,
+    'end_created_at' => $end_created_at
+]) }}" target="_blank" class="btn btn-success text-center">
                         Сформировать отчет
                     </a>
                 </div>
