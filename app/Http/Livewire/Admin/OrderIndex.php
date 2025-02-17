@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Admin;
 
 use App\Models\Order;
 use App\Models\User;
+use App\Models\Store;
 use Illuminate\Database\Query\Builder;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -23,6 +24,8 @@ class OrderIndex extends Component
     public $discountBool;
     public $onlineBool;
     public $users;
+
+    public $stores;
 
     public $counteragentId;
     public $paymentType = 'null';
@@ -47,7 +50,7 @@ class OrderIndex extends Component
                 return $q->where('orders.discount_phone', $this->discountPhone);
             })
             ->when($this->paymentType != 'null', function ($q) {
-                return $q->whereJsonContains('payments', ['PaymentType' => (int)$this->paymentType]);
+                return $q->whereJsonContains('payments', ['PaymentType' => (int) $this->paymentType]);
             })
             ->when($this->userId, function ($q) {
                 return $q->where('orders.user_id', $this->userId);
@@ -90,10 +93,11 @@ class OrderIndex extends Component
 
     public function mount()
     {
-        $this->users =  User::query()
+        $this->stores = Store::whereNotNull('warehouse_in')->get();
+        $this->users = User::query()
             ->where('users.status', 1)
-            ->when($this->storeId, function ( $query) {
-                $query->where('store_id',$this->storeId);
+            ->when($this->storeId, function ($query) {
+                $query->where('store_id', $this->storeId);
             })
             ->whereNotNull('webkassa_login_at')
             ->orderBy('users.name')
