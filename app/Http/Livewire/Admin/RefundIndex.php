@@ -2,12 +2,11 @@
 
 namespace App\Http\Livewire\Admin;
 
-use App\Models\Order;
 use App\Models\Refund;
 use App\Models\Store;
-use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Session;
 
 class RefundIndex extends Component
 {
@@ -21,6 +20,23 @@ class RefundIndex extends Component
     public $stores;
     public $start_created_at;
     public $end_created_at;
+
+    public function mount()
+    {
+        $this->stores = Store::whereNotNull('warehouse_in')->get();
+
+        // Загружаем фильтры из сессии, если они есть
+        $this->search = Session::get('refund_search', '');
+        $this->storeId = Session::get('refund_storeId', '');
+        $this->start_created_at = Session::get('refund_start_created_at', '');
+        $this->end_created_at = Session::get('refund_end_created_at', '');
+    }
+
+    public function updated($propertyName)
+    {
+        // Сохраняем обновленные фильтры в сессию
+        Session::put("refund_$propertyName", $this->$propertyName);
+    }
 
     public function render()
     {
@@ -43,14 +59,7 @@ class RefundIndex extends Component
             ->select('refunds.*');
 
         return view('admin.refund.index_live', [
-            'refunds' => $query->clone()
-                ->with(['store'])
-                ->paginate(50),
+            'refunds' => $query->clone()->with(['store'])->paginate(50),
         ]);
-    }
-
-    public function mount()
-    {
-        $this->stores = Store::whereNotNull('warehouse_in')->get();
     }
 }

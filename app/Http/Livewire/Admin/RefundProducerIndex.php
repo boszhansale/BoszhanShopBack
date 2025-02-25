@@ -2,11 +2,11 @@
 
 namespace App\Http\Livewire\Admin;
 
-use App\Models\Order;
 use App\Models\RefundProducer;
 use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Session;
 
 class RefundProducerIndex extends Component
 {
@@ -23,6 +23,24 @@ class RefundProducerIndex extends Component
     public $start_created_at;
     public $end_created_at;
 
+    public function mount()
+    {
+        // Загружаем значения фильтров из сессии
+        $this->search = Session::get('refund_producer_search', '');
+        $this->userId = Session::get('refund_producer_userId', '');
+        $this->storeId = Session::get('refund_producer_storeId', '');
+        $this->statusId = Session::get('refund_producer_statusId', '');
+        $this->counteragentId = Session::get('refund_producer_counteragentId', '');
+        $this->start_created_at = Session::get('refund_producer_start_created_at', '');
+        $this->end_created_at = Session::get('refund_producer_end_created_at', '');
+    }
+
+    public function updated($propertyName)
+    {
+        // Сохраняем обновленные фильтры в сессию
+        Session::put("refund_producer_$propertyName", $this->$propertyName);
+    }
+
     public function render()
     {
         $query = RefundProducer::query()
@@ -30,7 +48,6 @@ class RefundProducerIndex extends Component
             ->when($this->search, function ($q) {
                 return $q->where('refund_producers.id', 'LIKE', $this->search . '%');
             })
-
             ->when($this->statusId, function ($q) {
                 return $q->where('refund_producers.status_id', $this->statusId);
             })
@@ -63,10 +80,5 @@ class RefundProducerIndex extends Component
                 ->paginate(50),
             'query' => $query,
         ]);
-    }
-
-    public function mount()
-    {
-
     }
 }

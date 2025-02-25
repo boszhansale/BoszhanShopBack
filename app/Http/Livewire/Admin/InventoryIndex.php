@@ -4,9 +4,9 @@ namespace App\Http\Livewire\Admin;
 
 use App\Models\Inventory;
 use App\Models\Store;
-use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Session;
 
 class InventoryIndex extends Component
 {
@@ -20,9 +20,28 @@ class InventoryIndex extends Component
     public $statusId;
     public $counteragentId;
     public $stores;
-
     public $start_created_at;
     public $end_created_at;
+
+    public function mount()
+    {
+        // Загружаем фильтры из сессии
+        $this->search = Session::get('inventory_search', '');
+        $this->userId = Session::get('inventory_userId', '');
+        $this->storeId = Session::get('inventory_storeId', '');
+        $this->statusId = Session::get('inventory_statusId', '');
+        $this->counteragentId = Session::get('inventory_counteragentId', '');
+        $this->start_created_at = Session::get('inventory_start_created_at', '');
+        $this->end_created_at = Session::get('inventory_end_created_at', '');
+
+        $this->stores = Store::whereNotNull('warehouse_in')->get();
+    }
+
+    public function updated($propertyName)
+    {
+        // Сохраняем обновленные фильтры в сессию
+        Session::put("inventory_$propertyName", $this->$propertyName);
+    }
 
     public function render()
     {
@@ -31,11 +50,9 @@ class InventoryIndex extends Component
             ->when($this->search, function ($q) {
                 return $q->where('inventories.id', 'LIKE', $this->search . '%');
             })
-
             ->when($this->statusId, function ($q) {
                 return $q->where('inventories.status_id', $this->statusId);
             })
-
             ->when($this->storeId, function ($q) {
                 return $q->where('inventories.store_id', $this->storeId);
             })
@@ -57,10 +74,5 @@ class InventoryIndex extends Component
                 ->paginate(50),
             'query' => $query,
         ]);
-    }
-
-    public function mount()
-    {
-        $this->stores = Store::whereNotNull('warehouse_in')->get();
     }
 }

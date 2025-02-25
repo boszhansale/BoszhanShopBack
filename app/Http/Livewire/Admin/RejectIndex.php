@@ -4,9 +4,9 @@ namespace App\Http\Livewire\Admin;
 
 use App\Models\Reject;
 use App\Models\Store;
-use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Session;
 
 class RejectIndex extends Component
 {
@@ -19,9 +19,27 @@ class RejectIndex extends Component
     public $stores;
     public $statusId;
     public $counteragentId;
-
     public $start_created_at;
     public $end_created_at;
+
+    public function mount()
+    {
+        // Загружаем фильтры из сессии
+        $this->search = Session::get('reject_search', '');
+        $this->storeId = Session::get('reject_storeId', '');
+        $this->statusId = Session::get('reject_statusId', '');
+        $this->counteragentId = Session::get('reject_counteragentId', '');
+        $this->start_created_at = Session::get('reject_start_created_at', '');
+        $this->end_created_at = Session::get('reject_end_created_at', '');
+
+        $this->stores = Store::whereNotNull('warehouse_in')->get();
+    }
+
+    public function updated($propertyName)
+    {
+        // Сохраняем обновленные фильтры в сессию
+        Session::put("reject_$propertyName", $this->$propertyName);
+    }
 
     public function render()
     {
@@ -48,10 +66,5 @@ class RejectIndex extends Component
                 ->paginate(50),
             'query' => $query,
         ]);
-    }
-
-    public function mount()
-    {
-        $this->stores = Store::whereNotNull('warehouse_in')->get();
     }
 }
